@@ -50,7 +50,7 @@ store ordered,
 /* Functions that returns the average review score per product ordered */
 CREATE OR REPLACE Function getTotalPrice (
 
-BEGIN 
+BEGIN +
     SELECT price from Products
         RETURN price * quantity AS totalPrice;
 END;
@@ -65,4 +65,7 @@ BEGIN
 
 END;
 );
+
+/* Program to make a review to any products at anytime. A customer can also make a review when its making an order */
+
 
