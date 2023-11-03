@@ -1,71 +1,113 @@
 /* Table creation section */
 
-Create Table  Customers (
+Create table Products (
+product_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+product_name VARCHAR2(50),
+product_price NUMBER(10,2),
+product_category VARCHAR2(20),
 
-c_firstname VARCHAR2(50) NOT NULL,
-c_lastname VARCHAR2(50) NOT NULL,
-c_email VARCHAR2(50) NOT NULL,
-c_address VARCHAR2(50) NOT NULL,
-c_reviewFlag NUMBER(1)
--- Make sure customer has an address maybe its nullable  
+    CONSTRAINT pk_product
+        PRIMARY KEY (product_id)
+
 );
 
-Create Table Products (
-product_name VARCHAR2(50),
-product_price NUMBER,
-product_review NUMBER(1),
-product_category VARCHAR2(20)
+Create table Cities (
+city VARCHAR2(50) NOT NULL,
+province VARCHAR2(50),
+country VARCHAR2(50),
 
+    CONSTRAINT pk_Cities PRIMARY KEY (city)
+);
+
+Create table Stores (
+store_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+store_name VARCHAR2(50),
+
+    CONSTRAINT pk_store
+        PRIMARY KEY (store_id)
 );
 
 Create Table Warehouse (
-
-warehouse VARCHAR2(20) NOT NULL,
-warehouse_address VARCHAR2(100) NOT NULL,
-quantity NUMBER
-);
-
-Create Table Warehouse_Product (
-
-product_name VARCHAR2(50)
-
-);
-
-Create Table Order (
-order_date DATE,
-product ,
-customer names,
-email,
-address,
-stores,
-price FROM getTotalPrice,
-quantity ,
-review flag,
-review description,
-store ordered,
---/* takes in orders by customer */
-);
-
-/* Procedure that calcultes total price depending on quantity */
-/* Functions that returns the average review score per product ordered */
-CREATE OR REPLACE Function getTotalPrice (
-
-BEGIN +
-    SELECT price from Products
-        RETURN price * quantity AS totalPrice;
-END;
-
-);
-
-CREATE OR REPLACE Procedure checkReviewFlag(
-
-BEGIN
-    SELECT c_reviewFlag FROM Customers WHERE c_reviewFlag = 2;
+warehouse_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+warehouse_name CHAR(11),
+warehouse_address VARCHAR2(50),
+city VARCHAR2(30),
     
+    CONSTRAINT pk_warehouseid 
+        PRIMARY KEY (warehouse_id),
+        
+    CONSTRAINT fk_city
+        FOREIGN KEY (city) REFERENCES Cities (city) 
 
-END;
 );
 
-/* Program to make a review to any products at anytime. A customer can also make a review when its making an order */
+Create Table Warehouse_Products (
+warehouse_id NUMBER, 
+product_id NUMBER,
+total_quantity NUMBER(10,0),
+
+    CONSTRAINT fk_warehouse_id
+        FOREIGN KEY (warehouse_id) REFERENCES Warehouse (warehouse_id), 
+        
+    CONSTRAINT fk_product_id 
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
+        
+);
+
+Create Table  Project_Customers (
+customer_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+firstname VARCHAR2(50) NOT NULL,
+lastname VARCHAR2(50) NOT NULL,
+email VARCHAR2(50) NOT NULL,
+address VARCHAR2(50) NOT NULL,
+city VARCHAR2(20),
+    
+    CONSTRAINT pk_customer 
+        PRIMARY KEY (customer_id),
+        
+    CONSTRAINT fk_city_id
+        FOREIGN KEY (city) REFERENCES Cities (city)
+);
+
+Create table Project_Orders (
+order_id NUMBER GENERATED ALWAYS AS IDENTITY,
+order_quantity NUMBER(10,0),
+order_date DATE,
+store_id NUMBER,
+customer_id NUMBER,
+product_id NUMBER,
+    
+    CONSTRAINT pk_order 
+        PRIMARY KEY (order_id),
+        
+    CONSTRAINT fk_store_id 
+        FOREIGN KEY (store_id) REFERENCES Stores (store_id),
+    
+    CONSTRAINT fk_customer_id
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+    
+    CONSTRAINT fk_product_order
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
+);
+
+Create table Reviews (
+review_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+flag NUMBER(5,0),
+description VARCHAR2(200),
+customer_id NUMBER,
+product_id NUMBER,
+    
+    CONSTRAINT pk_review
+        PRIMARY KEY (review_id),
+        
+    CONSTRAINT fk_customer_review
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+    CONSTRAINT fk_product_review 
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
+);
+COMMIT;
+
+
+
 
 
