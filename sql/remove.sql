@@ -1,0 +1,7 @@
+--DROP TABLE AREA
+DROP TABLE Products;
+DROP TABLE Orders;
+DROP TABLE Customers;
+DROP TABLE Reviews;
+DROP TABLE Store;
+DROP TABLE Inventory;
