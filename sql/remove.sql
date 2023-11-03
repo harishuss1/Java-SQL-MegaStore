@@ -7,3 +7,4 @@ DROP TABLE Warehouse;
 DROP TABLE Products;
 DROP TABLE Project_Customers;
 DROP TABLE Cities;
+
