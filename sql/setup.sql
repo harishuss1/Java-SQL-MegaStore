@@ -59,7 +59,7 @@ customer_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 firstname VARCHAR2(50) NOT NULL,
 lastname VARCHAR2(50) NOT NULL,
 email VARCHAR2(50) NOT NULL,
-address VARCHAR2(50) NOT NULL,
+address VARCHAR2(50),
 city VARCHAR2(20),
     
     CONSTRAINT pk_customer 
@@ -106,8 +106,96 @@ product_id NUMBER,
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
 );
 COMMIT;
+/
+/*INSERTING DATA AREA*/
+INSERT INTO Cities
+    VALUES('montreal', 'quebec', 'canada');
+INSERT INTO Cities
+    VALUES('brossard', 'quebec', 'canada');
+INSERT INTO Cities
+    VALUES('laval', 'quebec', 'canada');
+INSERT INTO Cities
+    VALUES('saint laurent', 'quebec', 'canada');
+INSERT INTO Cities
+    VALUES('quebec city', 'quebec', 'canada');
+INSERT INTO Cities
+    VALUES('toronto', 'ontario', 'canada');
+INSERT INTO Cities
+    VALUES('ottawa', 'ontario', 'canada');
+INSERT INTO Cities
+    VALUES('calgary', 'alberta', 'canada');
 
+    
+    
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Alex', 'Brown', 'alex@gmail.com', '090 boul saint laurent', 'montreal');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Amanda', 'Harry', 'am.harry@yahioo.com', '100 boul saint laurent', 'montreal');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'montreal');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Mahsa', 'Sadeghi', 'ms@gmail.com', '104 gill street', 'toronto');
+INSERT INTO Project_Customers(firstname, lastname, email, city)
+    VALUES('Martin', 'Alexandre', 'marting@yahoo.com', 'brossard');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Daneil', 'Hanne', 'daneil@yahoo.com', '100 atwater street', 'toronto');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('John', 'Boura', 'bdoura@gmail.com', '100 Young street', 'toronto');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('John', 'belle', 'abcd@yahoo.com', '105 Young street', 'toronto');
+INSERT INTO Project_Customers(firstname, lastname, email)
+    VALUES('Ari', 'Brown', 'b.a@gmail.com');
+INSERT INTO Project_Customers(firstname, lastname, email, city)
+    VALUES('Jack', 'Jonhson', 'johnson.a@gmail.com', 'calgary');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Martin', 'Li', 'm.li@gmail.com', '87 boul saint laurent', 'montreal');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'laval');
+INSERT INTO Project_Customers(firstname, lastname, email, address, city)
+    VALUES('Noah', 'Garcia', 'g.noah@yahoo.com', '22222 happy street', 'laval');
+    
+INSERT INTO Products(product_name)
+    VALUES('Apple');
+INSERT INTO Products(product_name)
+    VALUES('Barbie Movie');
+INSERT INTO Products(product_name)
+    VALUES('BMW i6');
+INSERT INTO Products(product_name)
+    VALUES('BMW iX Lego');
+INSERT INTO Products(product_name)
+    VALUES('Chicken');
+INSERT INTO Products(product_name)
+    VALUES('Lamborghini Lego');
+INSERT INTO Products(product_name)
+    VALUES('L"Oreal Normal Hair');
+INSERT INTO Products(product_name)
+    VALUES('Orange');
+INSERT INTO Products(product_name)
+    VALUES('Paper Towel');
+INSERT INTO Products(product_name)
+    VALUES('Pasta');
+INSERT INTO Products(product_name)
+    VALUES('Plum');
+INSERT INTO Products(product_name)
+    VALUES('PS5');
+INSERT INTO Products(product_name)
+    VALUES('SIMS CD');
+INSERT INTO Products(product_name)
+    VALUES('Tomato');
+INSERT INTO Products(product_name)
+    VALUES('Train X745');
+INSERT INTO Products(product_name)
+    VALUES('Truck 500c');
 
-
-
-
+INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
+    VALUES('warehouse A', '100 rue William', 'saint laurent');
+INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
+    VALUES('warehouse B', '304 Rue François-Perrault, Villera Saint-Michel', 'montreal');
+INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
+    VALUES('warehouse C', '86700 Weston Rd', 'toronto');
+INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
+    VALUES('warehouse D', '170  Sideroad', 'quebec city');
+INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
+    VALUES('warehouse E', '1231 Trudea road', 'ottawa');
+INSERT INTO Warehouse(warehouse_name, warehouse_address)
+    VALUES('warehouse F', '16  Whitlock Rd');
