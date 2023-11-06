@@ -160,16 +160,27 @@ COMMIT;
 INSERT INTO Project_Province (province_name, country_name) 
     VALUES ('Quebec', 'Canada'); -- 1
 INSERT INTO Project_Province (province_name, country_name)
-    VALUES ('Toronto', 'Canada'); -- 2
+    VALUES ('Ontario', 'Canada'); -- 2
 INSERT INTO Project_Province (province_name, country_name)
     VALUES ('Alberta', 'Canada'); -- 3
 
 -- INSERT INTO CITIES AREA    
 INSERT INTO Cities (city_name, province_id) 
     VALUES ('Montreal', 1);
-    
-    
-
+INSERT INTO Cities (city_name, province_id)
+    VALUES ('Brossard', 1);
+INSERT INTO Cities (city_name, province_id)
+    VALUES ('Laval', 1);       
+INSERT INTO Cities (city_name, province_id)
+    VALUES('Saint Laurent', 1);
+INSERT INTO Cities (city_name, province_id)
+    VALUES('Quebec City', 1);
+INSERT INTO Cities (city_name, province_id)
+    VALUES('Toronto', 2);
+INSERT INTO Cities (city_name, province_id)
+    VALUES('Ottawa', 2);
+INSERT INTO Cities (city_name, province_id)
+    VALUES('Calgary', 3);
 -- Sub-programs AREA
 
 
