@@ -10,13 +10,25 @@ product_category VARCHAR2(20),
         PRIMARY KEY (product_id)
 
 );
+Create table Project_Province (
+province_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+province_name VARCHAR(50),
+country_name VARCHAR(50),
+
+    CONSTRAINT pk_Province 
+        PRIMARY KEY (province_id)
+
+); 
 
 Create table Cities (
-city VARCHAR2(50) NOT NULL,
-province VARCHAR2(50),
-country VARCHAR2(50),
+city_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+city_name VARCHAR(50),
+province_id NUMBER,
 
-    CONSTRAINT pk_Cities PRIMARY KEY (city)
+    CONSTRAINT pk_Cities PRIMARY KEY (city_id),
+    
+    CONSTRAINT fk_project_province_id
+        FOREIGN KEY (province_id) REFERENCES Project_Province (province_id)
 );
 
 Create table Stores (
@@ -31,13 +43,13 @@ Create Table Warehouse (
 warehouse_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 warehouse_name CHAR(11),
 warehouse_address VARCHAR2(50),
-city VARCHAR2(30),
+city_id NUMBER,
     
     CONSTRAINT pk_warehouseid 
         PRIMARY KEY (warehouse_id),
         
     CONSTRAINT fk_city
-        FOREIGN KEY (city) REFERENCES Cities (city) 
+        FOREIGN KEY (city_id) REFERENCES Cities (city_id) 
 
 );
 
@@ -60,13 +72,13 @@ firstname VARCHAR2(50) NOT NULL,
 lastname VARCHAR2(50) NOT NULL,
 email VARCHAR2(50) NOT NULL,
 address VARCHAR2(50),
-city VARCHAR2(20),
+city_id NUMBER,
     
     CONSTRAINT pk_customer 
         PRIMARY KEY (customer_id),
         
     CONSTRAINT fk_city_id
-        FOREIGN KEY (city) REFERENCES Cities (city)
+        FOREIGN KEY (city_id) REFERENCES Cities (city_id)
 );
 
 Create table Project_Orders (
@@ -143,126 +155,31 @@ CREATE TABLE StockUpdateAuditLog (
 COMMIT;
 /
 /*INSERTING DATA AREA*/
-INSERT INTO Cities
-    VALUES('montreal', 'quebec', 'canada');
-INSERT INTO Cities
-    VALUES('brossard', 'quebec', 'canada');
-INSERT INTO Cities
-    VALUES('laval', 'quebec', 'canada');
-INSERT INTO Cities
-    VALUES('saint laurent', 'quebec', 'canada');
-INSERT INTO Cities
-    VALUES('quebec city', 'quebec', 'canada');
-INSERT INTO Cities
-    VALUES('toronto', 'ontario', 'canada');
-INSERT INTO Cities
-    VALUES('ottawa', 'ontario', 'canada');
-INSERT INTO Cities
-    VALUES('calgary', 'alberta', 'canada');
 
-    
-    
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Alex', 'Brown', 'alex@gmail.com', '090 boul saint laurent', 'montreal');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Amanda', 'Harry', 'am.harry@yahioo.com', '100 boul saint laurent', 'montreal');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'montreal');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Mahsa', 'Sadeghi', 'ms@gmail.com', '104 gill street', 'toronto');
-INSERT INTO Project_Customers(firstname, lastname, email, city)
-    VALUES('Martin', 'Alexandre', 'marting@yahoo.com', 'brossard');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Daneil', 'Hanne', 'daneil@yahoo.com', '100 atwater street', 'toronto');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('John', 'Boura', 'bdoura@gmail.com', '100 Young street', 'toronto');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('John', 'belle', 'abcd@yahoo.com', '105 Young street', 'toronto');
-INSERT INTO Project_Customers(firstname, lastname, email)
-    VALUES('Ari', 'Brown', 'b.a@gmail.com');
-INSERT INTO Project_Customers(firstname, lastname, email, city)
-    VALUES('Jack', 'Jonhson', 'johnson.a@gmail.com', 'calgary');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Martin', 'Li', 'm.li@gmail.com', '87 boul saint laurent', 'montreal');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'laval');
-INSERT INTO Project_Customers(firstname, lastname, email, address, city)
-    VALUES('Noah', 'Garcia', 'g.noah@yahoo.com', '22222 happy street', 'laval');
-    
-INSERT INTO Products(product_name)
-    VALUES('Apple');
-INSERT INTO Products(product_name)
-    VALUES('Barbie Movie');
-INSERT INTO Products(product_name)
-    VALUES('BMW i6');
-INSERT INTO Products(product_name)
-    VALUES('BMW iX Lego');
-INSERT INTO Products(product_name)
-    VALUES('Chicken');
-INSERT INTO Products(product_name)
-    VALUES('Lamborghini Lego');
-INSERT INTO Products(product_name)
-    VALUES('L"Oreal Normal Hair');
-INSERT INTO Products(product_name)
-    VALUES('Orange');
-INSERT INTO Products(product_name)
-    VALUES('Paper Towel');
-INSERT INTO Products(product_name)
-    VALUES('Pasta');
-INSERT INTO Products(product_name)
-    VALUES('Plum');
-INSERT INTO Products(product_name)
-    VALUES('PS5');
-INSERT INTO Products(product_name)
-    VALUES('SIMS CD');
-INSERT INTO Products(product_name)
-    VALUES('Tomato');
-INSERT INTO Products(product_name)
-    VALUES('Train X745');
-INSERT INTO Products(product_name)
-    VALUES('Truck 500c');
+-- INSERT INTO PROJECT_PROVINCE AREA
+INSERT INTO Project_Province (province_name, country_name) 
+    VALUES ('Quebec', 'Canada'); -- 1
+INSERT INTO Project_Province (province_name, country_name)
+    VALUES ('Toronto', 'Canada'); -- 2
+INSERT INTO Project_Province (province_name, country_name)
+    VALUES ('Alberta', 'Canada'); -- 3
 
-INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
-    VALUES('warehouse A', '100 rue William', 'saint laurent');
-INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
-    VALUES('warehouse B', '304 Rue François-Perrault, Villera Saint-Michel', 'montreal');
-INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
-    VALUES('warehouse C', '86700 Weston Rd', 'toronto');
-INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
-    VALUES('warehouse D', '170  Sideroad', 'quebec city');
-INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
-    VALUES('warehouse E', '1231 Trudea road', 'ottawa');
-INSERT INTO Warehouse(warehouse_name, warehouse_address)
-    VALUES('warehouse F', '16  Whitlock Rd');
+-- INSERT INTO CITIES AREA    
+INSERT INTO Cities (city_name, province_id) 
+    VALUES ('Montreal', 1);
     
     
+
 -- Sub-programs AREA
 
 
 -- KEVIN WU
 
 /* Function that checks for the total stocks for a product */
-/* CREATE OR REPLACE FUNCTION GetTotalStockForProduct(
-    some_variable NUMBER
-) 
-RETURN NUMBER AS 
-    
-BEGIN
-    
-    RETURN 1;
-END GetTotalStockForProduct;
-/
+
 
 /* Function that checks if a product is available or not */
-/*CREATE OR REPLACE FUNCTION IsProductAvailable(
-    some_variable NUMBER
-)
-RETURN NUMBER AS 
-    some_variable NUMBER;
-BEGIN
-    RETURN;
-END IsProductAvailable;
-/ 
+
 
 
 
