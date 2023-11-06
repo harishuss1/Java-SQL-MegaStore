@@ -10,26 +10,30 @@ product_category VARCHAR2(20),
         PRIMARY KEY (product_id)
 
 );
-Create table Project_Province (
-province_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
-province_name VARCHAR(50),
-country_name VARCHAR(50),
 
-    CONSTRAINT pk_Province 
-        PRIMARY KEY (province_id)
+Create table Project_Province (
+city_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+city_name VARCHAR(50),
+province_name VARCHAR2(50),
+country_name VARCHAR2(50),
+
+    CONSTRAINT pk_project_province PRIMARY KEY (city_id)
+
+);
+
+Create table Project_Address (
+address_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
+address VARCHAR(50),
+city_id NUMBER,
+
+    CONSTRAINT pk_project_address 
+        PRIMARY KEY (address_id),
+        
+    CONSTRAINT pk_project_city 
+        FOREIGN KEY (city_id) REFERENCES Project_Province (city_id)
 
 ); 
 
-Create table Cities (
-city_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
-city_name VARCHAR(50),
-province_id NUMBER,
-
-    CONSTRAINT pk_Cities PRIMARY KEY (city_id),
-    
-    CONSTRAINT fk_project_province_id
-        FOREIGN KEY (province_id) REFERENCES Project_Province (province_id)
-);
 
 Create table Stores (
 store_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
@@ -49,7 +53,7 @@ city_id NUMBER,
         PRIMARY KEY (warehouse_id),
         
     CONSTRAINT fk_city
-        FOREIGN KEY (city_id) REFERENCES Cities (city_id) 
+        FOREIGN KEY (city_id) REFERENCES Project_Province (city_id) 
 
 );
 
@@ -78,7 +82,7 @@ city_id NUMBER,
         PRIMARY KEY (customer_id),
         
     CONSTRAINT fk_city_id
-        FOREIGN KEY (city_id) REFERENCES Cities (city_id)
+        FOREIGN KEY (city_id) REFERENCES Project_Province (city_id)
 );
 
 Create table Project_Orders (
@@ -157,30 +161,7 @@ COMMIT;
 /*INSERTING DATA AREA*/
 
 -- INSERT INTO PROJECT_PROVINCE AREA
-INSERT INTO Project_Province (province_name, country_name) 
-    VALUES ('Quebec', 'Canada'); -- 1
-INSERT INTO Project_Province (province_name, country_name)
-    VALUES ('Ontario', 'Canada'); -- 2
-INSERT INTO Project_Province (province_name, country_name)
-    VALUES ('Alberta', 'Canada'); -- 3
 
--- INSERT INTO CITIES AREA    
-INSERT INTO Cities (city_name, province_id) 
-    VALUES ('Montreal', 1);
-INSERT INTO Cities (city_name, province_id)
-    VALUES ('Brossard', 1);
-INSERT INTO Cities (city_name, province_id)
-    VALUES ('Laval', 1);       
-INSERT INTO Cities (city_name, province_id)
-    VALUES('Saint Laurent', 1);
-INSERT INTO Cities (city_name, province_id)
-    VALUES('Quebec City', 1);
-INSERT INTO Cities (city_name, province_id)
-    VALUES('Toronto', 2);
-INSERT INTO Cities (city_name, province_id)
-    VALUES('Ottawa', 2);
-INSERT INTO Cities (city_name, province_id)
-    VALUES('Calgary', 3);
 -- Sub-programs AREA
 
 
@@ -240,7 +221,7 @@ BEGIN
 END CheckFlaggedReviews;
 /
 
-CREATE OR REPLACE TRIGGER OrderPlacedTrigger
+/*CREATE OR REPLACE TRIGGER OrderPlacedTrigger
 AFTER INSERT ON Project_Orders
 FOR EACH ROW
 BEGIN
@@ -258,7 +239,7 @@ BEGIN
         VALUES (SYSTIMESTAMP, :new.product_id, :old.total_quantity, :new.total_quantity, 'Stock updated');
     END IF;
 END;
-/
+/ */
 
 
 
