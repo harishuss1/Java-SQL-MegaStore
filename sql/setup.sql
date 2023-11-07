@@ -254,43 +254,63 @@ INSERT INTO Address(address, city_id)
 -- TONY DO
 
 /* Procedure to update the stock quantity when a customer orders a product */
-CREATE OR REPLACE PROCEDURE UpdateStockQuantity(
-    p_customer_id NUMBER,
-    p_product_id NUMBER,
-    p_order_quantity NUMBER
-
+CREATE OR REPLACE PROCEDURE UpdateStockQuantityFromOrder(
+    p_order_id NUMBER
 ) AS
 BEGIN
-    UPDATE Warehouse_Products
-    SET total_quantity = total_quantity - p_order_quantity
-    WHERE warehouse_id = (SELECT warehouse_id FROM Project_Customers WHERE customer_id = p_customer_id
-    AND product_id = p_product_id);
-    
-    COMMIT;
-END UpdateStockQuantity;
+    -- Loop through order items and update stock quantities.
+    FOR order_item IN (SELECT po.product_id, po.order_quantity
+                       FROM Project_Orders po
+                       WHERE po.order_id = p_order_id)
+    LOOP
+        DECLARE
+            v_current_stock NUMBER;
+        BEGIN
+            -- Get the current stock quantity.
+            SELECT wp.total_quantity INTO v_current_stock
+            FROM Warehouse_Products wp
+            WHERE wp.product_id = order_item.product_id;
+
+            -- Check if there is enough stock to fulfill the order.
+            IF v_current_stock >= order_item.order_quantity THEN
+                -- Update the stock quantity after the order.
+                UPDATE Warehouse_Products
+                SET total_quantity = v_current_stock - order_item.order_quantity
+                WHERE product_id = order_item.product_id;
+            ELSE
+                -- Handle insufficient stock (you can raise an exception or perform other actions).
+                -- Here, we simply print a message to indicate insufficient stock.
+                DBMS_OUTPUT.PUT_LINE('Insufficient stock for product ID ' || order_item.product_id);
+            END IF;
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                -- Handle the case where the product is not found in the Warehouse_Products table.
+                DBMS_OUTPUT.PUT_LINE('Product ID ' || order_item.product_id || ' not found in the Warehouse.');
+            WHEN OTHERS THEN
+                -- Handle other exceptions as needed.
+                DBMS_OUTPUT.PUT_LINE('An error occurred while updating stock quantity.');
+        END;
+    END LOOP;
+END;
 /
 
 /* Checks for reviews that are flagged */
-CREATE OR REPLACE PROCEDURE CheckFlaggedReviews AS 
-BEGIN 
-    DECLARE 
-        v_review_id NUMBER;
-        v_description VARCHAR2(200);
-    BEGIN
-    
-    FOR review_rec IN (SELECT review_id, description FROM Reviews WHERE flag = 1) 
-        LOOP
-        v_review_id := review_rec.review_id;
-        v_description := review_rec.description;
-        
-        dbms_output.put_line('Flagged Review ID: ' || v_review_id);
-        dbms_output.put_line('Description: ' || v_description);
-        END LOOP;
-    END;
-END CheckFlaggedReviews;
+CREATE OR REPLACE PROCEDURE CheckFlaggedReviews AS
+BEGIN
+    FOR review_rec IN (SELECT r.review_id, r.description, p.product_name
+                      FROM Reviews r
+                      JOIN Products p ON r.product_id = p.product_id
+                      WHERE r.flag >= 1)
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('Review ID: ' || review_rec.review_id);
+        DBMS_OUTPUT.PUT_LINE('Review Description: ' || review_rec.description);
+        DBMS_OUTPUT.PUT_LINE('Product Name: ' || review_rec.product_name);
+        DBMS_OUTPUT.PUT_LINE('------------------------------------');
+    END LOOP;
+END;
 /
 
-/*CREATE OR REPLACE TRIGGER OrderPlacedTrigger
+CREATE OR REPLACE TRIGGER OrderPlacedTrigger
 AFTER INSERT ON Project_Orders
 FOR EACH ROW
 BEGIN
@@ -308,7 +328,7 @@ BEGIN
         VALUES (SYSTIMESTAMP, :new.product_id, :old.total_quantity, :new.total_quantity, 'Stock updated');
     END IF;
 END;
-/ */
+/ 
 
 
 
@@ -328,5 +348,4 @@ BEGIN
     
     -- checking for flags 
     CheckFlaggedReviews;
-END; */
-/
+END;*/
