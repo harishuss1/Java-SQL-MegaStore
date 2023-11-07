@@ -226,10 +226,44 @@ INSERT INTO Address(address, city_id)
 INSERT INTO Address(address, city_id)
     VALUES('dawson college', '1');
     
---insert
+--insert store
+INSERT INTO Stores(store_name)
+    VALUES('dawson store');
+INSERT INTO Stores(store_name)
+    VALUES('dealer montreal');
+INSERT INTO Stores(store_name)
+    VALUES('Dealer one');
+INSERT INTO Stores(store_name)
+    VALUES('marche adonis');
+INSERT INTO Stores(store_name)
+    VALUES('marche atwater');
+INSERT INTO Stores(store_name)
+    VALUES('movie start');
+INSERT INTO Stores(store_name)
+    VALUES('movie store');
+INSERT INTO Stores(store_name)
+    VALUES('star store');
+INSERT INTO Stores(store_name)
+    VALUES('store magic');
+INSERT INTO Stores(store_name)
+    VALUES('super rue champlain');
+INSERT INTO Stores(store_name)
+    VALUES('toy r us');
+
+--insert warehouse
 
 
--- INSERT INTO PROJECT_PROVINCE AREA
+--insert warehouse_products
+
+
+--insert customers
+
+
+--insert orders
+
+
+--insert reviews
+
 
 -- Sub-programs AREA
 
