@@ -19,6 +19,5 @@ DROP PROCEDURE IsProductAvailable;
 DROP PROCEDURE UpdateStockQuantity;
 DROP PROCEDURE CheckFlaggedReviews;
 
--- ALTER TRIGGER AREA
 
 
