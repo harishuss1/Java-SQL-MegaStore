@@ -11,13 +11,13 @@ product_category VARCHAR2(20),
 
 );
 
-Create table Project_Province (
+Create table Project_City (
 city_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 city_name VARCHAR(50),
 province_name VARCHAR2(50),
 country_name VARCHAR2(50),
 
-    CONSTRAINT pk_project_province PRIMARY KEY (city_id)
+    CONSTRAINT pk_project_city PRIMARY KEY (city_id)
 
 );
 
@@ -159,6 +159,75 @@ CREATE TABLE StockUpdateAuditLog (
 COMMIT;
 /
 /*INSERTING DATA AREA*/
+
+--insert products
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Apple', '5.00', 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Barbie Movie', '30.00', 'DVD');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('BMW i6', '50000.00', 'Cars');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('BMW iX Lego', '40.00', 'Toys');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Chicken', '9.50', 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Lamborghini Lego', '40.00', 'Toys');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Laptop ASUS 104S', '970.00', 'Electronics');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('L"Oreal Normal Hair', '10.00', 'Health');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Orange', '2.00', 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Paper Towel', '16.67', 'Beauty');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Pasta', '4.50', 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Plum', '1.43', 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('PS5', '200.00', 'Electronics');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('SIMS CD', '16.00', 'Video Games');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Truck 500c', '856600.00', 'Vehicle');
+    
+--insert cities
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Montreal', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Laval', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Brossard', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Toronto', 'Ontario', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Calgary', 'Alberta', 'Canada');
+
+--insert address
+INSERT INTO Address(address, city_id)
+    VALUES('090 boul saint laurent', '1');
+INSERT INTO Address(address, city_id)
+    VALUES('100 atwater street', '4');
+INSERT INTO Address(address, city_id)
+    VALUES('100 boul saint laurent', '1');
+INSERT INTO Address(address, city_id)
+    VALUES('100 Young street', '4');
+INSERT INTO Address(address, city_id)
+    VALUES('104 gill street', '4');
+INSERT INTO Address(address, city_id)
+    VALUES('105 Young street', '4');
+INSERT INTO Address(address, city_id)
+    VALUES('22222 happy street', '2');
+INSERT INTO Address(address, city_id)
+    VALUES('76 boul decalthon', '2');
+INSERT INTO Address(address, city_id)
+    VALUES('87 boul saint laurent', '1');
+INSERT INTO Address(address, city_id)
+    VALUES('dawson college', '1');
+    
+--insert
+
 
 -- INSERT INTO PROJECT_PROVINCE AREA
 

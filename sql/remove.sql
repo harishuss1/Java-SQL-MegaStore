@@ -7,7 +7,7 @@ DROP TABLE Warehouse;
 DROP TABLE Products;
 DROP TABLE Project_Customers;
 DROP TABLE Project_Address;
-DROP TABLE Project_Province;
+DROP TABLE Project_City;
 DROP TABLE OrderAuditLog;
 DROP TABLE LoginAuditLog;
 DROP TABLE StockUpdateAuditLog;
