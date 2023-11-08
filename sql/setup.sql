@@ -11,13 +11,13 @@ product_category VARCHAR2(20),
 
 );
 
-Create table Project_Province (
+Create table Project_City (
 city_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 city_name VARCHAR(50),
 province_name VARCHAR2(50),
 country_name VARCHAR2(50),
 
-    CONSTRAINT pk_project_province PRIMARY KEY (city_id)
+    CONSTRAINT pk_project_city PRIMARY KEY (city_id)
 
 );
 
@@ -29,8 +29,8 @@ city_id NUMBER,
     CONSTRAINT pk_project_address 
         PRIMARY KEY (address_id),
         
-    CONSTRAINT pk_project_city 
-        FOREIGN KEY (city_id) REFERENCES Project_Province (city_id)
+    CONSTRAINT fk_project_city 
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
 
 ); 
 
@@ -46,14 +46,17 @@ store_name VARCHAR2(50),
 Create Table Warehouse (
 warehouse_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 warehouse_name CHAR(11),
-warehouse_address VARCHAR2(50),
+address_id NUMBER,
 city_id NUMBER,
     
-    CONSTRAINT pk_warehouseid 
+    CONSTRAINT pk_warehouse_id 
         PRIMARY KEY (warehouse_id),
+    
+    CONSTRAINT fk_warehouse_project_address
+        FOREIGN KEY (address_id) REFERENCES Project_address (address_id),
         
-    CONSTRAINT fk_city
-        FOREIGN KEY (city_id) REFERENCES Project_Province (city_id) 
+    CONSTRAINT fk_warehouse_project_city
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id) 
 
 );
 
@@ -75,7 +78,7 @@ customer_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 firstname VARCHAR2(50) NOT NULL,
 lastname VARCHAR2(50) NOT NULL,
 email VARCHAR2(50) NOT NULL,
-address VARCHAR2(50),
+address_id NUMBER,
 city_id NUMBER,
     
     CONSTRAINT pk_customer 
@@ -83,6 +86,9 @@ city_id NUMBER,
         
     CONSTRAINT fk_city_id
         FOREIGN KEY (city_id) REFERENCES Project_Province (city_id)
+
+    CONSTRAINT fk_customer_address 
+        FOREIGN KEY (address_id) REFERENCES Project_Address (address_id)
 );
 
 Create table Project_Orders (
@@ -160,7 +166,182 @@ COMMIT;
 /
 /*INSERTING DATA AREA*/
 
--- INSERT INTO PROJECT_PROVINCE AREA
+--insert products
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Apple', 5.00, 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Barbie Movie', 30.00, 'DVD');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('BMW i6', 50000.00, 'Cars');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('BMW iX Lego', 40.00, 'Toys');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Chicken', 9.50, 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Lamborghini Lego', 40.00, 'Toys');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Laptop ASUS 104S', 970.00, 'Electronics');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('L"Oreal Normal Hair', 10.00, 'Health');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Orange', 2.00, 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Paper Towel', 16.67, 'Beauty');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Pasta', 4.50, 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Plum', 1.43, 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('PS5', 200.00, 'Electronics');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('SIMS CD', 16.00, 'Video Games');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Truck 500c', 856600.00, 'Vehicle');
+INSERT INTO Products(product_name, product_category)
+    VALUES('Tomato', 'Grocery');
+INSERT INTO Products(product_name, product_category)
+    VALUES('Train X745', 'Vehicle');
+    
+--insert cities
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Montreal', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Laval', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Brossard', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Toronto', 'Ontario', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Calgary', 'Alberta', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Saint Laurent', 'Quebec', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Ottawa', 'Ontario', 'Canada');
+INSERT INTO Project_City(city_name, province_name, country_name)
+    VALUES('Quebec City', 'Quebec', 'Canada');
+
+--insert address
+INSERT INTO Project_Address(address, city_id)
+    VALUES('090 boul saint laurent', 1);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('100 atwater street', 4);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('100 boul saint laurent', 1);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('100 Young street', 4);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('104 gill street', 4);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('105 Young street', 4);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('22222 happy street', 2);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('76 boul decalthon', 2);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('87 boul saint laurent', 1);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('dawson college', 1);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('100 rue William', 6);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('1231 Trudea road', 7);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('16 Whitlock Rd', 5);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('170 Sideroad', 5);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('304 Rue Fran�ois-Perrault, Villera Saint-Michel', 1);
+INSERT INTO Project_Address(address, city_id)
+    VALUES('86700 Weston Rd', 4);
+    
+--insert store
+INSERT INTO Stores(store_name)
+    VALUES('dawson store');
+INSERT INTO Stores(store_name)
+    VALUES('dealer montreal');
+INSERT INTO Stores(store_name)
+    VALUES('Dealer one');
+INSERT INTO Stores(store_name)
+    VALUES('marche adonis');
+INSERT INTO Stores(store_name)
+    VALUES('marche atwater');
+INSERT INTO Stores(store_name)
+    VALUES('movie start');
+INSERT INTO Stores(store_name)
+    VALUES('movie store');
+INSERT INTO Stores(store_name)
+    VALUES('star store');
+INSERT INTO Stores(store_name)
+    VALUES('store magic');
+INSERT INTO Stores(store_name)
+    VALUES('super rue champlain');
+INSERT INTO Stores(store_name)
+    VALUES('toy r us');
+
+--insert warehouse
+INSERT INTO Warehouse(warehouse_name, address_id, city_id)
+    VALUES('Warehouse A', 11, 6);
+INSERT INTO Warehouse(warehouse_name, address_id, city_id)
+    VALUES('Warehouse B', 15, 1);
+INSERT INTO Warehouse(warehouse_name, address_id, city_id)
+    VALUES('Warehouse C', 16, 4);
+INSERT INTO Warehouse(warehouse_name, address_id, city_id)
+    VALUES('Warehouse D', 14, 8);
+INSERT INTO Warehouse(warehouse_name, address_id, city_id)
+    VALUES('Warehouse E', 12, 7);
+INSERT INTO Warehouse(warehouse_name, address_id, city_id)
+    VALUES('Warehouse F', 13, 5);
+
+--insert warehouse_products
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(1, 7, 1000);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(1, 4, 10);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(1, 3, 6);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(1, 11, 2132);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(1, 16, 352222);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(2, 1, 24980);  
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(2, 10, 39484);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(3, 14, 103);  
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(3, 12, 43242);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(4, 9, 35405);  
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(4, 12, 6579);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(4, 13, 123);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(5, 2, 40);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(5, 15, 1000);  
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(5, 6, 98765);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(5, 17, 4543);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(6, 8, 450);  
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(6, 10, 3532);
+INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
+    VALUES(6, 5, 43523);
+
+--insert customers
+INSERT INTO Project_Customers(firstname, lastname, email, address_id, city_id)
+    VALUES('Alex', 'Brown', 'alex@gmail.com', 1, 1);
+
+
+--insert orders
+
+
+--insert reviews
+
 
 -- Sub-programs AREA
 
