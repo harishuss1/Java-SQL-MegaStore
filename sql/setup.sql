@@ -225,7 +225,7 @@ INSERT INTO Products(product_name)
 INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
     VALUES('warehouse A', '100 rue William', 'saint laurent');
 INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
-    VALUES('warehouse B', '304 Rue François-Perrault, Villera Saint-Michel', 'montreal');
+    VALUES('warehouse B', '304 Rue Franï¿½ois-Perrault, Villera Saint-Michel', 'montreal');
 INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
     VALUES('warehouse C', '86700 Weston Rd', 'toronto');
 INSERT INTO Warehouse(warehouse_name, warehouse_address, city)
@@ -236,6 +236,19 @@ INSERT INTO Warehouse(warehouse_name, warehouse_address)
     VALUES('warehouse F', '16  Whitlock Rd');
     
     
+
+
+
+--Objects
+Create type PRODUCT_TYP  AS object(
+product_id NUMBER
+product_name VARCHAR2(50),
+product_price NUMBER(10,2),
+product_category VARCHAR2(20),
+);
+/
+
+
 -- Sub-programs AREA
 
 

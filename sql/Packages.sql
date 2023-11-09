@@ -1,6 +1,6 @@
 Create or Replace PACKAGE review_package as 
 Procedure add_review;
-Function CalculateAverageReviewScore ( )
+Function CalculateAverageReviewScore (p_product_id NUMBER) return number;
 
 end review_package;
 /
@@ -30,3 +30,18 @@ END CalculateAverageReviewScore;
 
 end review_package;
 /
+Create or Replace PACKAGE product_package AS
+procedure add_product(vproduct in PRODUCT_TYP)
+end product_package;
+
+Create Or REPLACE PACKAGE BODY product_package as
+--Adding a product
+procedure add_product(vproduct in PRODUCT_TYP) is 
+BEGIN
+insert into Product
+Values(vproduct.product_id, vproduct.product_name, vproduct.product_price, vproduct.product_category);
+end;
+/
+
+
+end product_package;
