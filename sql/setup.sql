@@ -73,7 +73,7 @@ total_quantity NUMBER(10,0),
         
 );
 
-Create Table  Project_Customers (
+Create Table Project_Customers (
 customer_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 firstname VARCHAR2(50) NOT NULL,
 lastname VARCHAR2(50) NOT NULL,
@@ -85,7 +85,7 @@ city_id NUMBER,
         PRIMARY KEY (customer_id),
         
     CONSTRAINT fk_city_id
-        FOREIGN KEY (city_id) REFERENCES Project_Province (city_id)
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id),
 
     CONSTRAINT fk_customer_address 
         FOREIGN KEY (address_id) REFERENCES Project_Address (address_id)
@@ -164,6 +164,9 @@ CREATE TABLE StockUpdateAuditLog (
 
 COMMIT;
 /
+
+
+
 /*INSERTING DATA AREA*/
 
 --insert products
@@ -221,38 +224,52 @@ INSERT INTO Project_City(city_name, province_name, country_name)
     VALUES('Quebec City', 'Quebec', 'Canada');
 
 --insert address
-INSERT INTO Project_Address(address, city_id)
-    VALUES('090 boul saint laurent', 1);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('100 atwater street', 4);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('100 boul saint laurent', 1);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('100 Young street', 4);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('104 gill street', 4);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('105 Young street', 4);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('22222 happy street', 2);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('76 boul decalthon', 2);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('87 boul saint laurent', 1);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('dawson college', 1);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('100 rue William', 6);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('1231 Trudea road', 7);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('16 Whitlock Rd', 5);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('170 Sideroad', 5);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('304 Rue Franï¿½ois-Perrault, Villera Saint-Michel', 1);
-INSERT INTO Project_Address(address, city_id)
-    VALUES('86700 Weston Rd', 4);
+CREATE OR REPLACE PROCEDURE InsertAddress(
+    p_address VARCHAR2,
+    p_city_name VARCHAR2
+)
+IS
+    v_city_id NUMBER;
+BEGIN
+    -- Get the city ID based on the city name
+    SELECT city_id INTO v_city_id
+    FROM Project_City
+    WHERE city_name = p_city_name;
+
+    -- Insert the data into Project_Address
+    INSERT INTO Project_Address (address, city_id)
+    VALUES (p_address, v_city_id);
+    
+    COMMIT; -- Commit the transaction
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions if necessary
+        ROLLBACK; -- Rollback the transaction on error
+        RAISE;
+END InsertAddress;
+/
+-- Call the stored procedure to insert data into Project_Address
+BEGIN
+    InsertAddress('090 boul saint laurent', 'Montreal');
+    InsertAddress('100 atwater street', 'Toronto');
+    InsertAddress('100 boul saint laurent', 'Montreal');
+    InsertAddress('100 Young street', 'Toronto');
+    InsertAddress('104 gill street', 'Toronto');
+    InsertAddress('105 Young street', 'Toronto');
+    InsertAddress('22222 happy street', 'Laval');
+    InsertAddress('76 boul decalthon', 'Laval');
+    InsertAddress('87 boul saint laurent', 'Montreal');
+    InsertAddress('dawson college', 'Montreal');
+    InsertAddress('100 rue William', 'Saint Laurent');
+    InsertAddress('1231 Trudea road', 'Ottawa');
+    InsertAddress('16 Whitlock Rd', 'Calgary');
+    InsertAddress('170 Sideroad', 'Calgary');
+    InsertAddress('304 Rue François-Perrault, Villera Saint-Michel', 'Montreal');
+    InsertAddress('86700 Weston Rd', 'Toronto');
+    InsertAddress('boul saint laurent', 'Toronto');
+END;
+/
+
     
 --insert store
 INSERT INTO Stores(store_name)
@@ -279,68 +296,277 @@ INSERT INTO Stores(store_name)
     VALUES('toy r us');
 
 --insert warehouse
-INSERT INTO Warehouse(warehouse_name, address_id, city_id)
-    VALUES('Warehouse A', 11, 6);
-INSERT INTO Warehouse(warehouse_name, address_id, city_id)
-    VALUES('Warehouse B', 15, 1);
-INSERT INTO Warehouse(warehouse_name, address_id, city_id)
-    VALUES('Warehouse C', 16, 4);
-INSERT INTO Warehouse(warehouse_name, address_id, city_id)
-    VALUES('Warehouse D', 14, 8);
-INSERT INTO Warehouse(warehouse_name, address_id, city_id)
-    VALUES('Warehouse E', 12, 7);
-INSERT INTO Warehouse(warehouse_name, address_id, city_id)
-    VALUES('Warehouse F', 13, 5);
+CREATE OR REPLACE PROCEDURE InsertWarehouse(
+    p_warehouse_name VARCHAR2,
+    p_address VARCHAR2,
+    p_city_name VARCHAR2
+)
+IS
+    v_address_id NUMBER;
+    v_city_id NUMBER;
+BEGIN
+    -- Get the address_id based on the address
+    SELECT address_id INTO v_address_id
+    FROM Project_Address
+    WHERE address = p_address;
+
+    -- Get the city_id based on the city name
+    SELECT city_id INTO v_city_id
+    FROM Project_City
+    WHERE city_name = p_city_name;
+
+    -- Insert the data into Warehouse
+    INSERT INTO Warehouse (warehouse_name, address_id, city_id)
+    VALUES (p_warehouse_name, v_address_id, v_city_id);
+    
+    COMMIT; -- Commit the transaction
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions if necessary
+        ROLLBACK; -- Rollback the transaction on error
+        RAISE;
+END InsertWarehouse;
+/
+
+-- Call the stored procedure to insert data into Warehouse
+BEGIN
+    InsertWarehouse('Warehouse A', '100 rue William', 'Saint Laurent');
+    InsertWarehouse('Warehouse B', '16 Whitlock Rd', 'Montreal');
+    InsertWarehouse('Warehouse C', '170 Sideroad', 'Toronto');
+    InsertWarehouse('Warehouse D', '304 Rue François-Perrault, Villera Saint-Michel', 'Quebec City');
+    InsertWarehouse('Warehouse E', '1231 Trudea road', 'Ottawa');
+    InsertWarehouse('Warehouse F', '86700 Weston Rd', 'Calgary');
+    COMMIT; -- Commit the transaction
+END;
+/
+
 
 --insert warehouse_products
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(1, 7, 1000);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(1, 4, 10);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(1, 3, 6);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(1, 11, 2132);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(1, 16, 352222);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(2, 1, 24980);  
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(2, 10, 39484);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(3, 14, 103);  
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(3, 12, 43242);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(4, 9, 35405);  
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(4, 12, 6579);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(4, 13, 123);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(5, 2, 40);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(5, 15, 1000);  
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(5, 6, 98765);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(5, 17, 4543);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(6, 8, 450);  
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(6, 10, 3532);
-INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
-    VALUES(6, 5, 43523);
+CREATE OR REPLACE PROCEDURE InsertWarehouseProduct(
+    p_warehouse_name VARCHAR2,
+    p_product_name VARCHAR2,
+    p_total_quantity NUMBER
+)
+IS
+    v_warehouse_id NUMBER;
+    v_product_id NUMBER;
+BEGIN
+    -- Get the warehouse_id based on the warehouse name
+    SELECT warehouse_id INTO v_warehouse_id
+    FROM Warehouse
+    WHERE warehouse_name = p_warehouse_name;
+
+    -- Get the product_id based on the product name
+    SELECT product_id INTO v_product_id
+    FROM Products
+    WHERE product_name = p_product_name;
+
+    -- Insert the data into Warehouse_Products
+    INSERT INTO Warehouse_Products (warehouse_id, product_id, total_quantity)
+    VALUES (v_warehouse_id, v_product_id, p_total_quantity);
+
+    COMMIT; -- Commit the transaction
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions if necessary
+        ROLLBACK; -- Rollback the transaction on error
+        RAISE;
+END InsertWarehouseProduct;
+/
+
+-- Call the stored procedure to insert data into Warehouse_Products
+BEGIN
+    InsertWarehouseProduct('Warehouse A', 'Laptop ASUS 104S', 10);
+    InsertWarehouseProduct('Warehouse A', 'Apple', 1000);
+    InsertWarehouseProduct('Warehouse A', 'BMW i6', 6);
+    InsertWarehouseProduct('Warehouse A', 'Lamborghini Lego', 352222);
+    
+    InsertWarehouseProduct('Warehouse B', 'Train X745', 24980);
+    InsertWarehouseProduct('Warehouse B', 'Tomato', 39484);
+    
+    InsertWarehouseProduct('Warehouse C', 'Truck 500c', 103);
+    InsertWarehouseProduct('Warehouse C', 'PS5', 43242);
+    
+    InsertWarehouseProduct('Warehouse D', 'Paper Towel', 35405);
+    InsertWarehouseProduct('Warehouse D', 'Plum', 6579);
+    InsertWarehouseProduct('Warehouse D', 'SIMS CD', 123);
+    
+    InsertWarehouseProduct('Warehouse E', 'Barbie Movie', 40);
+    InsertWarehouseProduct('Warehouse E', 'Train X745', 1000);
+    InsertWarehouseProduct('Warehouse E', 'Lamborghini Lego', 98765);
+    InsertWarehouseProduct('Warehouse E', 'Train X745', 4543);
+    
+    InsertWarehouseProduct('Warehouse F', 'L"Oreal Normal Hair', 450);
+    InsertWarehouseProduct('Warehouse F', 'Tomato', 3532);
+    InsertWarehouseProduct('Warehouse F', 'Chicken', 43523);
+    
+    COMMIT; -- Commit the transaction
+END;
+/
+
 
 --insert customers
-INSERT INTO Project_Customers(firstname, lastname, email, address_id, city_id)
-    VALUES('Alex', 'Brown', 'alex@gmail.com', 1, 1);
+CREATE OR REPLACE PROCEDURE InsertCustomer(
+    p_firstname VARCHAR2,
+    p_lastname VARCHAR2,
+    p_email VARCHAR2,
+    p_address_name VARCHAR2,
+    p_city_name VARCHAR2
+)
+IS
+    v_address_id NUMBER;
+    v_city_id NUMBER;
+BEGIN
+    -- Get the address_id based on the address name
+    SELECT address_id INTO v_address_id
+    FROM Project_Address
+    WHERE address = p_address_name;
+
+    -- Get the city_id based on the city name
+    SELECT city_id INTO v_city_id
+    FROM Project_City
+    WHERE city_name = p_city_name;
+
+    -- Insert the data into Project_Customers
+    INSERT INTO Project_Customers (firstname, lastname, email, address_id, city_id)
+    VALUES (p_firstname, p_lastname, p_email, v_address_id, v_city_id);
+    
+    COMMIT; -- Commit the transaction
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions if necessary
+        ROLLBACK; -- Rollback the transaction on error
+        RAISE;
+END InsertCustomer;
+/
+
+-- Call the stored procedure to insert data into Project_Customers
+BEGIN
+    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', '090 boul saint laurent', 'Montreal');
+    /* Martin Alexandre */
+    InsertCustomer('Daneil', 'Hanne', 'daneil@yahoo.com', '100 atwater street', 'Toronto');
+    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
+    /* #7, Martin Alexandre */
+    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
+    InsertCustomer('John', 'Boura', 'bdoura@gmail.com', '100 Young street', 'Toronto');
+    /* #10 Ari Brown */
+    InsertCustomer('Amanda', 'Harry', 'am.harry@yahioo.com', '100 boul saint laurent', 'Montreal');
+    /* #12 Jack Jonhson */
+    /* 13 Martin Alexandre */
+    
+    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
+    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
+    InsertCustomer('Mahsa', 'Sadeghi', 'ms@gmail.com', '104 gill street', 'Toronto');
+    InsertCustomer('John', 'Belle', 'abcd@yahoo.com', '105 Young street', 'Toronto');
+    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
+    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
+    InsertCustomer('Martin', 'Li', 'm.li@gmail.com', '87 boul saint laurent', 'Montreal');
+    InsertCustomer('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'Laval');
+    InsertCustomer('Noah', 'Garcia', 'g.noah@yahoo.com', '22222 happy street', 'Laval');
+    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
+    InsertCustomer('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'Laval');
+    COMMIT; -- Commit the transaction
+END;
+/
+
+
 
 
 --insert orders
+CREATE OR REPLACE PROCEDURE InsertOrder(
+    p_order_quantity NUMBER,
+    p_order_date DATE,
+    p_store_name VARCHAR2,
+    p_customer_email VARCHAR2,
+    p_product_name VARCHAR2
+)
+IS
+    v_store_id NUMBER;
+    v_customer_id NUMBER;
+    v_product_id NUMBER;
+BEGIN
+    -- Get the store_id based on the store name
+    SELECT store_id INTO v_store_id
+    FROM Stores
+    WHERE store_name = p_store_name;
+    
+    -- Get the customer_id based on the customer email
+    SELECT customer_id INTO v_customer_id
+    FROM Project_Customers
+    WHERE email = p_customer_email;
+    
+    -- Get the product_id based on the product name
+    SELECT product_id INTO v_product_id
+    FROM Products
+    WHERE product_name = p_product_name;
+
+    -- Insert the data into Project_Orders
+    INSERT INTO Project_Orders (order_quantity, order_date, store_id, customer_id, product_id)
+    VALUES (p_order_quantity, p_order_date, v_store_id, v_customer_id, v_product_id);
+    
+    COMMIT; -- Commit the transaction
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions if necessary
+        ROLLBACK; -- Rollback the transaction on error
+        RAISE;
+END InsertOrder;
+/
+
+-- Call the stored procedure to insert data into Project_Orders
+BEGIN
+    /* Quantity -> Date -> store_name -> email -> product_name */ 
+    InsertOrder();
+    
+    -- Call the procedure with other order data as needed
+    COMMIT; -- Commit the transaction
+END;
+/
 
 
 --insert reviews
+CREATE OR REPLACE PROCEDURE InsertReview(
+    p_flag NUMBER,
+    p_description VARCHAR2,
+    p_customer_email VARCHAR2,
+    p_product_name VARCHAR2
+)
+IS
+    v_customer_id NUMBER;
+    v_product_id NUMBER;
+BEGIN
+    -- Get the customer_id based on the customer email
+    SELECT customer_id INTO v_customer_id
+    FROM Project_Customers
+    WHERE email = p_customer_email;
+    
+    -- Get the product_id based on the product name
+    SELECT product_id INTO v_product_id
+    FROM Products
+    WHERE product_name = p_product_name;
+
+    -- Insert the data into Reviews
+    INSERT INTO Reviews (flag, description, customer_id, product_id)
+    VALUES (p_flag, p_description, v_customer_id, v_product_id);
+    
+    COMMIT; -- Commit the transaction
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Handle exceptions if necessary
+        ROLLBACK; -- Rollback the transaction on error
+        RAISE;
+END InsertReview;
+/
+
+-- Call the stored procedure to insert data into Reviews
+BEGIN
+    /* flag number -> description -> email -> product_name */
+    InsertReview(0, 'This is a great product!', 'customer@email.com', 'Product Name');
+    
+    -- Call the procedure with other review data as needed
+    COMMIT; -- Commit the transaction
+END;
+/
 
 
 -- Sub-programs AREA
