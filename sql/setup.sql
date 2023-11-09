@@ -333,8 +333,14 @@ INSERT INTO Warehouse_Products(warehouse_id, product_id, total_quantity)
     VALUES(6, 5, 43523);
 
 --insert customers
-INSERT INTO Project_Customers(firstname, lastname, email, address_id, city_id)
-    VALUES('Alex', 'Brown', 'alex@gmail.com', 1, 1);
+INSERT INTO Project_Customers(email, firstname, lastname, address_id, city_id)
+    VALUES('alex@gmail.com', 'Alex', 'Brown', 1, 1);
+INSERT INTO Project_Customers(email, firstname, lastname, address_id, city_id)
+    VALUES('am.harry@yahioo.com', 'Amanda', 'Harry', 3, 1);
+INSERT INTO Project_Customers(email, firstname, lastname)
+    VALUES('b.a@gmail.com', 'Ari', 'Brown');
+INSERT INTO Project_Customers(email, firstname, lastname, address_id, city_id)
+    VALUES('daneil@yahoo.com', 'Daneil', 'Hanne', 2, 4);
 
 
 --insert orders
