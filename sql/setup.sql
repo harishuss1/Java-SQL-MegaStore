@@ -264,7 +264,7 @@ BEGIN
     InsertAddress('1231 Trudea road', 'Ottawa');
     InsertAddress('16 Whitlock Rd', 'Calgary');
     InsertAddress('170 Sideroad', 'Calgary');
-    InsertAddress('304 Rue François-Perrault, Villera Saint-Michel', 'Montreal');
+    InsertAddress('304 Rue Franois-Perrault, Villera Saint-Michel', 'Montreal');
     InsertAddress('86700 Weston Rd', 'Toronto');
     InsertAddress('boul saint laurent', 'Toronto');
 END;
@@ -333,7 +333,7 @@ BEGIN
     InsertWarehouse('Warehouse A', '100 rue William', 'Saint Laurent');
     InsertWarehouse('Warehouse B', '16 Whitlock Rd', 'Montreal');
     InsertWarehouse('Warehouse C', '170 Sideroad', 'Toronto');
-    InsertWarehouse('Warehouse D', '304 Rue François-Perrault, Villera Saint-Michel', 'Quebec City');
+    InsertWarehouse('Warehouse D', '304 Rue Franois-Perrault, Villera Saint-Michel', 'Quebec City');
     InsertWarehouse('Warehouse E', '1231 Trudea road', 'Ottawa');
     InsertWarehouse('Warehouse F', '86700 Weston Rd', 'Calgary');
     COMMIT; -- Commit the transaction
@@ -687,3 +687,107 @@ BEGIN
     -- checking for flags 
     CheckFlaggedReviews;
 END;*/
+
+--Making Objects for each Table
+
+CREATE OR REPLACE TYPE PRODUCT_TYP AS OBJECT (
+    product_id NUMBER,
+    product_name VARCHAR2(50),
+    product_price NUMBER(10,2),
+    product_category VARCHAR2(20)
+);
+/
+CREATE OR REPLACE TYPE PROJECT_CITY_TYP AS OBJECT (
+    city_id NUMBER,
+    city_name VARCHAR2(50),
+    province_name VARCHAR2(50),
+    country_name VARCHAR2(50)
+);
+/
+CREATE OR REPLACE TYPE PROJECT_ADDRESS_TYP AS OBJECT (
+    address_id NUMBER,
+    address VARCHAR2(50),
+    city_id NUMBER
+);
+/
+CREATE OR REPLACE TYPE STORE_TYP AS OBJECT (
+    store_id NUMBER,
+    store_name VARCHAR2(50)
+);
+/
+CREATE OR REPLACE TYPE WAREHOUSE_TYP AS OBJECT (
+    warehouse_id NUMBER,
+    warehouse_name CHAR(11),
+    address_id NUMBER,
+    city_id NUMBER
+);
+/
+CREATE OR REPLACE TYPE WAREHOUSE_PRODUCTS_TYP AS OBJECT (
+    warehouse_id NUMBER,
+    product_id NUMBER,
+    total_quantity NUMBER(10,0)
+);
+/
+CREATE OR REPLACE TYPE PROJECT_CUSTOMERS_TYP AS OBJECT (
+    customer_id NUMBER,
+    firstname VARCHAR2(50),
+    lastname VARCHAR2(50),
+    email VARCHAR2(50),
+    address_id NUMBER,
+    city_id NUMBER
+);
+/
+CREATE OR REPLACE TYPE PROJECT_ORDERS_TYP AS OBJECT (
+    order_id NUMBER,
+    order_quantity NUMBER(10,0),
+    order_date DATE,
+    store_id NUMBER,
+    customer_id NUMBER,
+    product_id NUMBER
+);
+/
+CREATE OR REPLACE TYPE REVIEWS_TYP AS OBJECT (
+    review_id NUMBER,
+    flag NUMBER(5,0),
+    description VARCHAR2(200),
+    customer_id NUMBER,
+    product_id NUMBER
+);
+/
+CREATE OR REPLACE TYPE ORDER_AUDIT_LOG_TYP AS OBJECT (
+    OAL_log_id NUMBER,
+    event_timestamp TIMESTAMP,
+    customer_id NUMBER,
+    product_id NUMBER,
+    event_description VARCHAR2(200)
+);
+/
+CREATE OR REPLACE TYPE LOGIN_AUDIT_LOG_TYP AS OBJECT (
+    LOL_log_id NUMBER,
+    event_timestamp TIMESTAMP,
+    user_id NUMBER,
+    event_description VARCHAR2(200)
+);
+/
+CREATE OR REPLACE TYPE STOCK_UPDATE_AUDIT_LOG_TYP AS OBJECT (
+    SUOL_log_id NUMBER,
+    event_timestamp TIMESTAMP,
+    product_id NUMBER,
+    previous_stock NUMBER,
+    new_stock NUMBER,
+    event_description VARCHAR2(200)
+);
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
