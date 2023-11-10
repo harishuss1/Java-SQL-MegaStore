@@ -13,11 +13,5 @@ DROP TABLE LoginAuditLog;
 DROP TABLE StockUpdateAuditLog;
 
 
--- DROP PROCEDURE AREA
-DROP PROCEDURE GetTotalStockForProduct;
-DROP PROCEDURE IsProductAvailable;
-DROP PROCEDURE UpdateStockQuantity;
-DROP PROCEDURE CheckFlaggedReviews;
-
 
 

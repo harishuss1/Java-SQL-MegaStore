@@ -3,7 +3,7 @@
 Create table Products (
 product_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 product_name VARCHAR2(50),
-product_price NUMBER(10,2),
+product_price NUMBER(10,2) NOT NULL,
 product_category VARCHAR2(20),
 
     CONSTRAINT pk_product
@@ -116,6 +116,7 @@ Create table Reviews (
 review_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
 flag NUMBER(5,0),
 description VARCHAR2(200),
+review_score NUMBER,
 customer_id NUMBER,
 product_id NUMBER,
     
@@ -200,10 +201,10 @@ INSERT INTO Products(product_name, product_price, product_category)
     VALUES('SIMS CD', 16.00, 'Video Games');
 INSERT INTO Products(product_name, product_price, product_category)
     VALUES('Truck 500c', 856600.00, 'Vehicle');
-INSERT INTO Products(product_name, product_category)
-    VALUES('Tomato', 'Grocery');
-INSERT INTO Products(product_name, product_category)
-    VALUES('Train X745', 'Vehicle');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Tomato', 1.5, 'Grocery');
+INSERT INTO Products(product_name, product_price, product_category)
+    VALUES('Train X745', 420, 'Vehicle');
     
 --insert cities
 INSERT INTO Project_City(city_name, province_name, country_name)
@@ -396,7 +397,7 @@ BEGIN
     InsertWarehouseProduct('Warehouse E', 'Lamborghini Lego', 98765);
     InsertWarehouseProduct('Warehouse E', 'Train X745', 4543);
     
-    InsertWarehouseProduct('Warehouse F', 'L"Oreal Normal Hair', 450);
+    InsertWarehouseProduct('Warehouse F', 'L''Oreal Normal Hair', 450);
     InsertWarehouseProduct('Warehouse F', 'Tomato', 3532);
     InsertWarehouseProduct('Warehouse F', 'Chicken', 43523);
     
@@ -418,15 +419,17 @@ IS
     v_city_id NUMBER;
 BEGIN
     -- Get the address_id based on the address name
-    SELECT address_id INTO v_address_id
-    FROM Project_Address
-    WHERE address = p_address_name;
-
+    IF p_address_name IS NOT NULL THEN
+        SELECT address_id INTO v_address_id
+        FROM Project_Address
+        WHERE address = p_address_name;
+    END IF;
     -- Get the city_id based on the city name
-    SELECT city_id INTO v_city_id
-    FROM Project_City
-    WHERE city_name = p_city_name;
-
+    IF p_city_name IS NOT NULL THEN
+        SELECT city_id INTO v_city_id
+        FROM Project_City
+        WHERE city_name = p_city_name;
+    END IF;
     -- Insert the data into Project_Customers
     INSERT INTO Project_Customers (firstname, lastname, email, address_id, city_id)
     VALUES (p_firstname, p_lastname, p_email, v_address_id, v_city_id);
@@ -447,7 +450,7 @@ BEGIN
     InsertCustomer('Amanda', 'Harry', 'am.harry@yahioo.com', '100 boul saint laurent', 'Montreal');
     InsertCustomer('Ari', 'Brown', 'b.a@gmail.com', null, null);
     InsertCustomer('Daneil', 'Hanne', 'daneil@yahoo.com', '100 atwater street', 'Toronto');
-    InsertCustomer('Jack', 'Jonhson', 'johnson@yahoo.com', null, 'Calgary');
+    InsertCustomer('Jack', 'Jonhson', 'johnson.a@gmail.com', null, 'Calgary');
     InsertCustomer('John', 'Boura', 'bdoura@gmail.com', '100 Young street', 'Toronto');
     InsertCustomer('John', 'Belle', 'abcd@yahoo.com', '105 Young street', 'Toronto');
     InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
@@ -456,8 +459,6 @@ BEGIN
     InsertCustomer('Martin', 'Li', 'm.li@gmail.com', '87 boul saint laurent', 'Montreal');
     InsertCustomer('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'Laval');
     InsertCustomer('Noah', 'Garcia', 'g.noah@yahoo.com', '22222 happy street', 'Laval');
-    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
-    InsertCustomer('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'Laval');
     COMMIT; -- Commit the transaction
 END;
 /
@@ -484,7 +485,8 @@ BEGIN
     -- Get the customer_id based on the customer email
     SELECT customer_id INTO v_customer_id
     FROM Project_Customers
-    WHERE email = p_customer_email;
+    WHERE email = p_customer_email
+    AND ROWNUM = 1;
     
     -- Get the product_id based on the product name
     SELECT product_id INTO v_product_id
@@ -515,7 +517,7 @@ BEGIN
     InsertOrder(1, '2023-10-11', 'toy r us', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
     InsertOrder(1, '2023-10-10', 'Dealer one', 'bdoura@gmail.com', 'BMW i6');
     InsertOrder(1, null, 'dealer montreal', 'b.a@gmail.com', 'Truck 500c');
-    InsertOrder(3, null, 'movie start', 'am.harry@yahioo.com', 'Paper towel');
+    InsertOrder(3, null, 'movie start', 'am.harry@yahioo.com', 'Paper Towel');
     InsertOrder(6, '2020-05-06', 'marche atwater', 'johnson.a@gmail.com', 'Plum');
     InsertOrder(3, '2019-09-12', 'super rue champlain', 'marting@yahoo.com', 'L''Oreal Normal Hair');
     InsertOrder(1, '2010-10-11', 'toy r us', 'msadeghi@dawsoncollege.qc.ca', 'Lamborghini Lego');
@@ -538,6 +540,7 @@ END;
 CREATE OR REPLACE PROCEDURE InsertReview(
     p_flag NUMBER,
     p_description VARCHAR2,
+    p_review_score NUMBER,
     p_customer_email VARCHAR2,
     p_product_name VARCHAR2
 )
@@ -556,8 +559,8 @@ BEGIN
     WHERE product_name = p_product_name;
 
     -- Insert the data into Reviews
-    INSERT INTO Reviews (flag, description, customer_id, product_id)
-    VALUES (p_flag, p_description, v_customer_id, v_product_id);
+    INSERT INTO Reviews (flag, description, review_score, customer_id, product_id)
+    VALUES (p_flag, p_description, p_review_score, v_customer_id, v_product_id);
     
     COMMIT; -- Commit the transaction
 EXCEPTION
@@ -571,121 +574,34 @@ END InsertReview;
 -- Call the stored procedure to insert data into Reviews
 BEGIN
     /* flag number -> description -> email -> product_name */
-    InsertReview(0, 'it was affordable.', 'msadeghi@dawsoncollege.qc.ca', 'Laptop ASUS 104S');
-    InsertReview(0, 'quality was not good', 'alex@gmail.com', 'Apple');
-    InsertReview(1, null, 'marting@yahoo.com', 'SIMS CD');
-    InsertReview(0, 'highly recommend', 'daneil@yahoo.com', 'Orange');
-    InsertReview(0, null, 'alex@gmail.com', 'Barbie Movie');
-    InsertReview(0, 'did not worth the price', 'marting@yahoo.com', 'L''Oreal Normal Hair');
-    InsertReview(0, 'missing some parts', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
-    InsertReview(1, 'trash', 'bdoura@gmail.com', 'BMW i6');
-    InsertReview(0, 'missing some parts', 'msadeghi@dawsoncollege.qc.ca', 'Lamborghini Lego');
-    InsertReview(0, 'great product', 'ms@gmail.com', 'Lamborghini Lego');
-    InsertReview(1, 'bad quality', 'abcd@yahoo.com', 'BMW i6');
-    InsertReview(0, null, 'alex@gmail.com', 'SIMS CD');
-    InsertReview(0, null, 'alex@gmail.com', 'Barbie Movie');
-    InsertReview(2, 'worse car i have droven!', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
+    InsertReview(0, 'it was affordable.', 4, 'msadeghi@dawsoncollege.qc.ca', 'Laptop ASUS 104S');
+    InsertReview(0, 'quality was not good', 3, 'alex@gmail.com', 'Apple');
+    InsertReview(1, null, 2, 'marting@yahoo.com', 'SIMS CD');
+    InsertReview(0, 'highly recommend', 5, 'daneil@yahoo.com', 'Orange');
+    InsertReview(0, null, 1, 'alex@gmail.com', 'Barbie Movie');
+    InsertReview(0, 'did not worth the price', 1, 'marting@yahoo.com', 'L''Oreal Normal Hair');
+    InsertReview(0, 'missing some parts', 1, 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
+    InsertReview(1, 'trash', 5, 'bdoura@gmail.com', 'BMW i6');
+    InsertReview(0, null, 2, 'b.a@gmail.com', 'Truck 500c');
+    InsertReview(0, null, 5, 'am.harry@yahioo.com', 'Paper Towel');
+    InsertReview(0, null, 4, 'johnson.a@gmail.com', 'Plum');
+    InsertReview(0, null, 3, 'marting@yahoo.com', 'L''Oreal Normal Hair');
+    InsertReview(0, 'missing some parts', 1, 'msadeghi@dawsoncollege.qc.ca', 'Lamborghini Lego');
+    InsertReview(0, null, 4, 'msadeghi@dawsoncollege.qc.ca', 'Plum');
+    InsertReview(0, 'great product', 1, 'ms@gmail.com', 'Lamborghini Lego');
+    InsertReview(1, 'bad quality', 5, 'abcd@yahoo.com', 'BMW i6');
+    InsertReview(0, null, 1, 'alex@gmail.com', 'SIMS CD');
+    InsertReview(0, null, 4, 'alex@gmail.com', 'Barbie Movie');
+    InsertReview(0, null, 4, 'm.li@gmail.com', 'Chicken');
+    InsertReview(0, null, null, 'g.noah@yahoo.com', 'PS5');
+    InsertReview(2, 'worse car i have droven!', 1, 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
+    InsertReview(0, null, 4, 'smith@hotmail.com', 'Pasta'); 
     COMMIT; -- Commit the transaction
 END;
 /
 
 
 -- Sub-programs AREA
-
-
--- KEVIN WU
-
-//* Function that checks for the total stocks for a product */
-CREATE OR REPLACE FUNCTION GetTotalStockForProduct(
-    p_product_id NUMBER
-) 
-RETURN NUMBER AS 
-    v_total_stock NUMBER;
-BEGIN
-    SELECT SUM(total_quantity)
-    INTO v_total_stock
-    FROM Warehouse_Products WHERE product_id = p_product_id;
-    
-    RETURN v_total_stock;
-END GetTotalStockForProduct;
-/
-/* Function that checks if a product is available or not */
-CREATE OR REPLACE FUNCTION IsProductAvailable(
-    p_product_id NUMBER
-)
-RETURN NUMBER AS 
-    v_total_stock NUMBER;
-BEGIN
-    v_total_stock := GetTotalStockForProduct(p_product_id);
-    
-    IF v_total_stock > 0 THEN
-        dbms_output.put_line('There are ' || v_total_stock || ' available.');
-        RETURN 1;
-    ELSE
-        RETURN 0;
-    END IF;
-END IsProductAvailable;
-/
-
-
--- TONY DO
-
-/* Procedure to update the stock quantity when a customer orders a product */
-CREATE OR REPLACE PROCEDURE UpdateStockQuantityFromOrder(
-    p_order_id NUMBER
-) AS
-BEGIN
-    -- Loop through order items and update stock quantities.
-    FOR order_item IN (SELECT po.product_id, po.order_quantity
-                       FROM Project_Orders po
-                       WHERE po.order_id = p_order_id)
-    LOOP
-        DECLARE
-            v_current_stock NUMBER;
-        BEGIN
-            -- Get the current stock quantity.
-            SELECT wp.total_quantity INTO v_current_stock
-            FROM Warehouse_Products wp
-            WHERE wp.product_id = order_item.product_id;
-
-            -- Check if there is enough stock to fulfill the order.
-            IF v_current_stock >= order_item.order_quantity THEN
-                -- Update the stock quantity after the order.
-                UPDATE Warehouse_Products
-                SET total_quantity = v_current_stock - order_item.order_quantity
-                WHERE product_id = order_item.product_id;
-            ELSE
-                -- Handle insufficient stock (you can raise an exception or perform other actions).
-                -- Here, we simply print a message to indicate insufficient stock.
-                DBMS_OUTPUT.PUT_LINE('Insufficient stock for product ID ' || order_item.product_id);
-            END IF;
-        EXCEPTION
-            WHEN NO_DATA_FOUND THEN
-                -- Handle the case where the product is not found in the Warehouse_Products table.
-                DBMS_OUTPUT.PUT_LINE('Product ID ' || order_item.product_id || ' not found in the Warehouse.');
-            WHEN OTHERS THEN
-                -- Handle other exceptions as needed.
-                DBMS_OUTPUT.PUT_LINE('An error occurred while updating stock quantity.');
-        END;
-    END LOOP;
-END;
-/
-
-/* Checks for reviews that are flagged */
-CREATE OR REPLACE PROCEDURE CheckFlaggedReviews AS
-BEGIN
-    FOR review_rec IN (SELECT r.review_id, r.description, p.product_name
-                      FROM Reviews r
-                      JOIN Products p ON r.product_id = p.product_id
-                      WHERE r.flag >= 1)
-    LOOP
-        DBMS_OUTPUT.PUT_LINE('Review ID: ' || review_rec.review_id);
-        DBMS_OUTPUT.PUT_LINE('Review Description: ' || review_rec.description);
-        DBMS_OUTPUT.PUT_LINE('Product Name: ' || review_rec.product_name);
-        DBMS_OUTPUT.PUT_LINE('------------------------------------');
-    END LOOP;
-END;
-/
 
 CREATE OR REPLACE TRIGGER OrderPlacedTrigger
 AFTER INSERT ON Project_Orders
@@ -710,20 +626,7 @@ END;
 
 -- HARIS HUSSAIN
 
-/* Anonymous block for testing */
-/*DECLARE
-     v_product_id NUMBER := 1; 
-     v_available NUMBER;
-BEGIN 
-    -- checking availability 
-    v_available := IsProductAvailable(v_product_id);
-    IF v_available = 0 THEN
-        dbms_output.put_line('That product isnt available');
-    END IF;
-    
-    -- checking for flags 
-    CheckFlaggedReviews;
-END;*/
+
 
 --Making Objects for each Table
 
@@ -815,16 +718,3 @@ CREATE OR REPLACE TYPE STOCK_UPDATE_AUDIT_LOG_TYP AS OBJECT (
     event_description VARCHAR2(200)
 );
 /
-
-
-
-
-
-
-
-
-
-
-
-
-
