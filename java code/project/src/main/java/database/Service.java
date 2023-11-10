@@ -46,15 +46,4 @@ public class Service {
             System.out.println("Disconnected to database");
         }
     }
-
-    public void AddCourse(Courses myCourses) throws SQLException, ClassNotFoundException {
-
-        myCourses.AddToDatabase(this.conn);
-
-        Close();
-
-    }
-}
-
-
 }
