@@ -185,7 +185,7 @@ INSERT INTO Products(product_name, product_price, product_category)
 INSERT INTO Products(product_name, product_price, product_category)
     VALUES('Laptop ASUS 104S', 970.00, 'Electronics');
 INSERT INTO Products(product_name, product_price, product_category)
-    VALUES('L"Oreal Normal Hair', 10.00, 'Health');
+    VALUES('L''Oreal Normal Hair', 10.00, 'Health');
 INSERT INTO Products(product_name, product_price, product_category)
     VALUES('Orange', 2.00, 'Grocery');
 INSERT INTO Products(product_name, product_price, product_category)
@@ -443,23 +443,16 @@ END InsertCustomer;
 -- Call the stored procedure to insert data into Project_Customers
 BEGIN
     InsertCustomer('Alex', 'Brown', 'alex@gmail.com', '090 boul saint laurent', 'Montreal');
-    /* Martin Alexandre */
-    InsertCustomer('Daneil', 'Hanne', 'daneil@yahoo.com', '100 atwater street', 'Toronto');
-    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
-    /* #7, Martin Alexandre */
-    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
-    InsertCustomer('John', 'Boura', 'bdoura@gmail.com', '100 Young street', 'Toronto');
-    /* #10 Ari Brown */
+    -- arnt email unique?? typo in address?--> InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
     InsertCustomer('Amanda', 'Harry', 'am.harry@yahioo.com', '100 boul saint laurent', 'Montreal');
-    /* #12 Jack Jonhson */
-    /* 13 Martin Alexandre */
-    
-    InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
+    InsertCustomer('Ari', 'Brown', 'b.a@gmail.com', null, null);
+    InsertCustomer('Daneil', 'Hanne', 'daneil@yahoo.com', '100 atwater street', 'Toronto');
+    InsertCustomer('Jack', 'Jonhson', 'johnson@yahoo.com', null, 'Calgary');
+    InsertCustomer('John', 'Boura', 'bdoura@gmail.com', '100 Young street', 'Toronto');
+    InsertCustomer('John', 'Belle', 'abcd@yahoo.com', '105 Young street', 'Toronto');
     InsertCustomer('Mahsa', 'Sadeghi', 'msadeghi@dawsoncollege.qc.ca', 'dawson college', 'Montreal');
     InsertCustomer('Mahsa', 'Sadeghi', 'ms@gmail.com', '104 gill street', 'Toronto');
-    InsertCustomer('John', 'Belle', 'abcd@yahoo.com', '105 Young street', 'Toronto');
-    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
-    InsertCustomer('Alex', 'Brown', 'alex@gmail.com', 'boul saint laurent', 'Montreal');
+    InsertCustomer('Martin', 'Alexandre', 'marting@yahoo.com', null, 'Brossard');
     InsertCustomer('Martin', 'Li', 'm.li@gmail.com', '87 boul saint laurent', 'Montreal');
     InsertCustomer('Olivia', 'Smith', 'smith@hotmail.com', '76 boul decalthon', 'Laval');
     InsertCustomer('Noah', 'Garcia', 'g.noah@yahoo.com', '22222 happy street', 'Laval');
@@ -468,8 +461,6 @@ BEGIN
     COMMIT; -- Commit the transaction
 END;
 /
-
-
 
 
 --insert orders
@@ -515,10 +506,29 @@ END InsertOrder;
 
 -- Call the stored procedure to insert data into Project_Orders
 BEGIN
-    /* Quantity -> Date -> store_name -> email -> product_name */ 
-    InsertOrder();
-    
-    -- Call the procedure with other order data as needed
+    InsertOrder(1, '2023-04-21', 'marche adonis', 'msadeghi@dawsoncollege.qc.ca', 'Laptop ASUS 104S');
+    InsertOrder(2, '2023-10-23', 'marche atwater', 'alex@gmail.com', 'Apple');
+    InsertOrder(3, '2023-10-01', 'dawson store', 'marting@yahoo.com', 'SIMS CD');
+    InsertOrder(1, '2023-10-23', 'store magic', 'daneil@yahoo.com', 'Orange');
+    InsertOrder(1, '2023-10-23', 'movie store', 'alex@gmail.com', 'Barbie Movie');
+    InsertOrder(1, '2023-10-10', 'super rue champlain', 'marting@yahoo.com', 'L''Oreal Normal Hair');
+    InsertOrder(1, '2023-10-11', 'toy r us', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
+    InsertOrder(1, '2023-10-10', 'Dealer one', 'bdoura@gmail.com', 'BMW i6');
+    InsertOrder(1, null, 'dealer montreal', 'b.a@gmail.com', 'Truck 500c');
+    InsertOrder(3, null, 'movie start', 'am.harry@yahioo.com', 'Paper towel');
+    InsertOrder(6, '2020-05-06', 'marche atwater', 'johnson.a@gmail.com', 'Plum');
+    InsertOrder(3, '2019-09-12', 'super rue champlain', 'marting@yahoo.com', 'L''Oreal Normal Hair');
+    InsertOrder(1, '2010-10-11', 'toy r us', 'msadeghi@dawsoncollege.qc.ca', 'Lamborghini Lego');
+    InsertOrder(7, '2022-05-06', 'marche atwater', 'msadeghi@dawsoncollege.qc.ca', 'Plum');
+    InsertOrder(2, '2023-10-07', 'toy r us', 'ms@gmail.com', 'Lamborghini Lego');
+    InsertOrder(1, '2023-08-10', 'Dealer one', 'abcd@yahoo.com', 'BMW i6');
+    InsertOrder(1, '2023-10-23', 'movie store', 'alex@gmail.com', 'SIMS CD');
+    InsertOrder(1, '2023-10-02', 'toy r us', 'alex@gmail.com', 'Barbie Movie');
+    InsertOrder(1, '2019-04-03', 'marche adonis', 'm.li@gmail.com', 'Chicken');
+    InsertOrder(3, '2021-12-29', 'marche atwater', 'smith@hotmail.com', 'Pasta');
+    InsertOrder(1, '2020-01-20', 'star store', 'g.noah@yahoo.com', 'PS5');
+    InsertOrder(1, '2022-10-11', 'toy r us', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
+    InsertOrder(3, '2021-12-29', 'store magic', 'smith@hotmail.com', 'Pasta');
     COMMIT; -- Commit the transaction
 END;
 /
@@ -561,9 +571,20 @@ END InsertReview;
 -- Call the stored procedure to insert data into Reviews
 BEGIN
     /* flag number -> description -> email -> product_name */
-    InsertReview(0, 'This is a great product!', 'customer@email.com', 'Product Name');
-    
-    -- Call the procedure with other review data as needed
+    InsertReview(0, 'it was affordable.', 'msadeghi@dawsoncollege.qc.ca', 'Laptop ASUS 104S');
+    InsertReview(0, 'quality was not good', 'alex@gmail.com', 'Apple');
+    InsertReview(1, null, 'marting@yahoo.com', 'SIMS CD');
+    InsertReview(0, 'highly recommend', 'daneil@yahoo.com', 'Orange');
+    InsertReview(0, null, 'alex@gmail.com', 'Barbie Movie');
+    InsertReview(0, 'did not worth the price', 'marting@yahoo.com', 'L''Oreal Normal Hair');
+    InsertReview(0, 'missing some parts', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
+    InsertReview(1, 'trash', 'bdoura@gmail.com', 'BMW i6');
+    InsertReview(0, 'missing some parts', 'msadeghi@dawsoncollege.qc.ca', 'Lamborghini Lego');
+    InsertReview(0, 'great product', 'ms@gmail.com', 'Lamborghini Lego');
+    InsertReview(1, 'bad quality', 'abcd@yahoo.com', 'BMW i6');
+    InsertReview(0, null, 'alex@gmail.com', 'SIMS CD');
+    InsertReview(0, null, 'alex@gmail.com', 'Barbie Movie');
+    InsertReview(2, 'worse car i have droven!', 'msadeghi@dawsoncollege.qc.ca', 'BMW iX Lego');
     COMMIT; -- Commit the transaction
 END;
 /
@@ -574,19 +595,37 @@ END;
 
 -- KEVIN WU
 
-/* Function that checks for the total stocks for a product */
-
-
+//* Function that checks for the total stocks for a product */
+CREATE OR REPLACE FUNCTION GetTotalStockForProduct(
+    p_product_id NUMBER
+) 
+RETURN NUMBER AS 
+    v_total_stock NUMBER;
+BEGIN
+    SELECT SUM(total_quantity)
+    INTO v_total_stock
+    FROM Warehouse_Products WHERE product_id = p_product_id;
+    
+    RETURN v_total_stock;
+END GetTotalStockForProduct;
+/
 /* Function that checks if a product is available or not */
-
-
-
-
-
-
-
-
-
+CREATE OR REPLACE FUNCTION IsProductAvailable(
+    p_product_id NUMBER
+)
+RETURN NUMBER AS 
+    v_total_stock NUMBER;
+BEGIN
+    v_total_stock := GetTotalStockForProduct(p_product_id);
+    
+    IF v_total_stock > 0 THEN
+        dbms_output.put_line('There are ' || v_total_stock || ' available.');
+        RETURN 1;
+    ELSE
+        RETURN 0;
+    END IF;
+END IsProductAvailable;
+/
 
 
 -- TONY DO
@@ -667,8 +706,6 @@ BEGIN
     END IF;
 END;
 / 
-
-
 
 
 -- HARIS HUSSAIN
