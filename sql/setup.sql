@@ -129,39 +129,353 @@ product_id NUMBER,
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
 );
 
-CREATE TABLE OrderAuditLog (
-    OAL_log_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
-    event_timestamp TIMESTAMP,
+-- Audit table for Products
+CREATE TABLE Products_Audit_Log (
+    audit_products_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    product_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    product_name VARCHAR2(50),
+    product_price NUMBER(10,2),
+    product_category VARCHAR2(20),
+    
+    PRIMARY KEY (audit_products_id),
+    CONSTRAINT fk_product_audit_log
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
+);
+
+-- Audit table for Project_Address 
+CREATE TABLE Project_Address_Audit_Log (
+    audit_address_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    address_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    address VARCHAR(50),
+    city_id NUMBER,
+
+    PRIMARY KEY (audit_address_id),
+    
+    CONSTRAINT fk_address_audit_log
+        FOREIGN KEY (address_id) REFERENCES Project_Address (address_id),
+    CONSTRAINT fk_city_audit_log
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
+);
+
+-- Audit table for Project_City 
+CREATE TABLE Project_City_Audit_Log (
+    audit_city_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    city_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    city_name VARCHAR2(50),
+    province_name VARCHAR2(50),
+    country_name VARCHAR2(50),
+
+    PRIMARY KEY (audit_city_id),
+    
+    CONSTRAINT fk_project_city_audit_log
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
+);
+
+-- Audit table for Stores
+CREATE TABLE Stores_Audit_Log (
+    audit_store_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    store_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    store_name VARCHAR2(50),
+
+    PRIMARY KEY (audit_store_id),
+    
+    CONSTRAINT fk_store_audit_log
+        FOREIGN KEY (store_id) REFERENCES Stores (store_id)
+);
+
+-- Audit table for Warehouse_Products
+CREATE TABLE Warehouse_Products_Audit_Log (
+    audit_warehouseProducts_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    warehouse_id NUMBER,
+    product_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total_quantity NUMBER(10,0),
+
+    PRIMARY KEY (audit_warehouseProducts_id),
+    
+    CONSTRAINT fk_warehouseProducts_audit_log
+        FOREIGN KEY (warehouse_id) REFERENCES Warehouse (warehouse_id),
+    
+    CONSTRAINT fk_productForWarehouse_audit_log 
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
+);
+
+-- Audit table for Project_Customers 
+CREATE TABLE Project_Customers_Audit_Log (
+    audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    customer_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    firstname VARCHAR2(50) NOT NULL,
+    lastname VARCHAR2(50) NOT NULL,
+    email VARCHAR2(50) NOT NULL,
+    address_id NUMBER,
+    city_id NUMBER,
+
+    PRIMARY KEY (audit_id),
+
+    CONSTRAINT fk_customer_audit_log
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+    
+    CONSTRAINT fk_cityCustomer_audit_log
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id),
+
+    CONSTRAINT fk_addressOfCustomer_audit_log
+        FOREIGN KEY (address_id) REFERENCES Project_Address (address_id)
+);
+
+-- Audit table for Project_Orders
+CREATE TABLE Project_Orders_Audit_Log (
+    audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    order_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    order_quantity NUMBER(10,0),
+    order_date DATE,
+    store_id NUMBER,
     customer_id NUMBER,
     product_id NUMBER,
-    event_description VARCHAR2(200),
+
+    PRIMARY KEY (audit_id),
+
+    CONSTRAINT fk_order_audit_log
+        FOREIGN KEY (order_id) REFERENCES Project_Orders (order_id),
     
-    CONSTRAINT pk_OAL
-        PRIMARY KEY (OAL_log_id)
-    
+    CONSTRAINT fk_storeOrder_audit_log
+        FOREIGN KEY (store_id) REFERENCES Stores (store_id),
+
+    CONSTRAINT fk_customerOrder_audit_log
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+
+    CONSTRAINT fk_product_order_audit_log
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
 );
 
-CREATE TABLE LoginAuditLog (
-    LOL_log_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
-    event_timestamp TIMESTAMP,
-    user_id NUMBER,
-    event_description VARCHAR2(200),
-    
-    CONSTRAINT pk_LOL
-        PRIMARY KEY (LOL_log_id)
-);
-
-CREATE TABLE StockUpdateAuditLog (
-    SUOL_log_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL,
-    event_timestamp TIMESTAMP,
+-- Audit table for Reviews
+CREATE TABLE Reviews_Audit_Log (
+    audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
+    review_id NUMBER,
+    audit_type VARCHAR2(10),
+    audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    flag NUMBER(5,0),
+    description VARCHAR2(200),
+    review_score NUMBER,
+    customer_id NUMBER,
     product_id NUMBER,
-    previous_stock NUMBER,
-    new_stock NUMBER,
-    event_description VARCHAR2(200),
+
+    PRIMARY KEY (audit_id),
+
+    CONSTRAINT fk_review_audit_log
+        FOREIGN KEY (review_id) REFERENCES Reviews (review_id),
     
-    CONSTRAINT pk_SUOL
-        PRIMARY KEY (SUOL_log_id)
+    CONSTRAINT fk_customerReview_audit_log
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+
+    CONSTRAINT fk_product_review_audit_log
+        FOREIGN KEY (product_id) REFERENCES Products (product_id)
 );
+
+
+-- Trigger for Products
+CREATE OR REPLACE TRIGGER Products_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Products
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+    
+    IF INSERTING OR UPDATING THEN
+        INSERT INTO Products_Audit_Log (product_id, audit_type, product_name, product_price, product_category)
+            VALUES(:NEW.product_id, v_audit_type, :NEW.product_name, :NEW.product_price, :NEW.product_category);
+    ELSIF DELETING THEN
+        INSERT INTO Products_Audit_Log (product_id, audit_type, product_name, product_price, product_category)
+            VALUES(:OLD.product_id, v_audit_type, :OLD.product_name, :OLD.product_price, :OLD.product_category);
+    END IF;
+END Products_Audit_Trigger;
+/
+
+-- Trigger for Project_Address
+CREATE OR REPLACE TRIGGER Project_Address_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Project_Address
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+
+    -- Insert a record into the audit log
+    IF INSERTING OR UPDATING THEN
+        INSERT INTO Project_Address_Audit_Log (address_id, audit_type, address, city_id)
+        VALUES (:NEW.address_id, v_audit_type, :NEW.address, :NEW.city_id);
+    ELSIF DELETING THEN
+        INSERT INTO Project_Address_Audit_Log (address_id, audit_type, address, city_id)
+        VALUES (:OLD.address_id, v_audit_type, :OLD.address, :OLD.city_id);
+    END IF;
+END;
+/
+
+-- Trigger for Project_City
+CREATE OR REPLACE TRIGGER Project_City_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Project_City
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    -- Determine the audit type based on the SQL operation
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+
+    -- Insert a record into the audit log
+    IF INSERTING OR UPDATING THEN
+        INSERT INTO Project_City_Audit_Log (city_id, audit_type, city_name, province_name, country_name)
+        VALUES (:NEW.city_id, v_audit_type, :NEW.city_name, :NEW.province_name, :NEW.country_name);
+    ELSIF DELETING THEN
+        INSERT INTO Project_City_Audit_Log (city_id, audit_type, city_name, province_name, country_name)
+        VALUES (:OLD.city_id, v_audit_type, :OLD.city_name, :OLD.province_name, :OLD.country_name);
+    END IF;
+END;
+/
+
+-- Trigger for Stores
+CREATE OR REPLACE TRIGGER Stores_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Stores
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    -- Determine the audit type based on the SQL operation
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+
+    -- Insert a record into the audit log
+    IF INSERTING OR UPDATING THEN
+        INSERT INTO Stores_Audit_Log (store_id, audit_type,store_name)
+        VALUES (:NEW.store_id, v_audit_type, :NEW.store_name);
+    ELSIF DELETING THEN
+        INSERT INTO Stores_Audit_Log (store_id, audit_type, store_name)
+        VALUES (:OLD.store_id, v_audit_type, :OLD.store_name);
+    END IF;
+END;
+/
+
+-- Trigger for Warehouse_Products
+CREATE OR REPLACE TRIGGER Warehouse_Products_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Warehouse_Products
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    -- Determine the audit type based on the SQL operation
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+
+    -- Insert a record into the audit log
+    IF INSERTING OR UPDATING THEN
+        INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, product_id, audit_type, total_quantity)
+        VALUES (:NEW.warehouse_id, :NEW.product_id, v_audit_type, :NEW.total_quantity);
+    ELSIF DELETING THEN
+        INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, product_id, audit_type, total_quantity)
+        VALUES (:OLD.warehouse_id, :OLD.product_id, v_audit_type, :OLD.total_quantity);
+    END IF;
+END;
+/
+
+-- Trigger for Project_Customers
+CREATE OR REPLACE TRIGGER Project_Customers_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Project_Customers
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+
+    INSERT INTO Project_Customers_Audit_Log (customer_id, audit_type, audit_timestamp, firstname, lastname, email, address_id, city_id)
+        VALUES (:NEW.customer_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.firstname, :NEW.lastname, :NEW.email, :NEW.address_id, :NEW.city_id);
+END Project_Customers_Audit_Trigger;
+/
+
+-- Trigger for Project_Orders
+CREATE OR REPLACE TRIGGER Project_Orders_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Project_Orders
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+    
+    INSERT INTO Project_Orders_Audit_Log (order_id,audit_type,audit_timestamp,order_quantity,order_date,store_id,customer_id,product_id)
+        VALUES (:NEW.order_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.order_quantity, :NEW.order_date, :NEW.store_id, :NEW.customer_id, :NEW.product_id);
+END Project_Orders_Audit_Trigger;    
+/
+
+-- Trigger for Reviews
+CREATE OR REPLACE TRIGGER Reviews_Audit_Trigger
+AFTER INSERT OR UPDATE OR DELETE ON Reviews
+FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(10);
+BEGIN
+    IF INSERTING THEN
+        v_audit_type := 'INSERT';
+    ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    ELSIF DELETING THEN
+        v_audit_type := 'DELETE';
+    END IF;
+    INSERT INTO Reviews_Audit_Log (review_id, audit_type, audit_timestamp, flag ,description, review_score, customer_id, product_id)
+        VALUES (:NEW.review_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.flag, :NEW.description, :NEW.review_score, :NEW.customer_id, :NEW.product_id);
+END Reviews_Audit_Trigger;
+/
 
 COMMIT;
 /
@@ -599,29 +913,6 @@ BEGIN
     COMMIT; -- Commit the transaction
 END;
 /
-
-
--- Sub-programs AREA
-
-CREATE OR REPLACE TRIGGER OrderPlacedTrigger
-AFTER INSERT ON Project_Orders
-FOR EACH ROW
-BEGIN
-    INSERT INTO OrderAuditLog (event_timestamp, customer_id, product_id, event_description)
-    VALUES (SYSTIMESTAMP, :new.customer_id, :new.product_id, 'Customer placed an order');
-END;
-/
-
-CREATE OR REPLACE TRIGGER StockUpdateTrigger
-AFTER UPDATE ON Warehouse_Products
-FOR EACH ROW
-BEGIN
-    IF :new.total_quantity <> :old.total_quantity THEN
-        INSERT INTO StockUpdateAuditLog (event_timestamp, product_id, previous_stock, new_stock, event_description)
-        VALUES (SYSTIMESTAMP, :new.product_id, :old.total_quantity, :new.total_quantity, 'Stock updated');
-    END IF;
-END;
-/ 
 
 
 -- HARIS HUSSAIN
