@@ -70,7 +70,7 @@ total_quantity NUMBER(10,0),
         
     CONSTRAINT fk_product_id 
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
-        
+        ON DELETE CASCADE
 );
 
 Create Table Project_Customers (
@@ -110,6 +110,7 @@ product_id NUMBER,
     
     CONSTRAINT fk_product_order
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
+        ON DELETE CASCADE
 );
 
 Create table Reviews (
@@ -127,13 +128,15 @@ product_id NUMBER,
         FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
     CONSTRAINT fk_product_review 
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Products
 CREATE TABLE Products_Audit_Log (
     audit_products_id NUMBER GENERATED ALWAYS AS IDENTITY,
     product_id NUMBER,
-    audit_type VARCHAR2(10),
+    old_product_id NUMBER,
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     product_name VARCHAR2(50),
     product_price NUMBER(10,2),
@@ -142,13 +145,14 @@ CREATE TABLE Products_Audit_Log (
     PRIMARY KEY (audit_products_id),
     CONSTRAINT fk_product_audit_log
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Project_Address 
 CREATE TABLE Project_Address_Audit_Log (
     audit_address_id NUMBER GENERATED ALWAYS AS IDENTITY,
     address_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     address VARCHAR(50),
     city_id NUMBER,
@@ -165,7 +169,7 @@ CREATE TABLE Project_Address_Audit_Log (
 CREATE TABLE Project_City_Audit_Log (
     audit_city_id NUMBER GENERATED ALWAYS AS IDENTITY,
     city_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     city_name VARCHAR2(50),
     province_name VARCHAR2(50),
@@ -181,7 +185,7 @@ CREATE TABLE Project_City_Audit_Log (
 CREATE TABLE Stores_Audit_Log (
     audit_store_id NUMBER GENERATED ALWAYS AS IDENTITY,
     store_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     store_name VARCHAR2(50),
 
@@ -196,7 +200,7 @@ CREATE TABLE Warehouse_Products_Audit_Log (
     audit_warehouseProducts_id NUMBER GENERATED ALWAYS AS IDENTITY,
     warehouse_id NUMBER,
     product_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     total_quantity NUMBER(10,0),
 
@@ -207,13 +211,14 @@ CREATE TABLE Warehouse_Products_Audit_Log (
     
     CONSTRAINT fk_productForWarehouse_audit_log 
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Project_Customers 
 CREATE TABLE Project_Customers_Audit_Log (
     audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
     customer_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     firstname VARCHAR2(50) NOT NULL,
     lastname VARCHAR2(50) NOT NULL,
@@ -237,7 +242,7 @@ CREATE TABLE Project_Customers_Audit_Log (
 CREATE TABLE Project_Orders_Audit_Log (
     audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
     order_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     order_quantity NUMBER(10,0),
     order_date DATE,
@@ -264,7 +269,7 @@ CREATE TABLE Project_Orders_Audit_Log (
 CREATE TABLE Reviews_Audit_Log (
     audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
     review_id NUMBER,
-    audit_type VARCHAR2(10),
+    audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     flag NUMBER(5,0),
     description VARCHAR2(200),
@@ -286,29 +291,18 @@ CREATE TABLE Reviews_Audit_Log (
 
 
 -- Trigger for Products
-CREATE OR REPLACE TRIGGER Products_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Products
+CREATE OR REPLACE TRIGGER products_audit_trigger_after
+AFTER INSERT OR UPDATE ON Products
 FOR EACH ROW
-DECLARE
-    v_audit_type VARCHAR2(10);
 BEGIN
-    IF INSERTING THEN
-        v_audit_type := 'INSERT';
-    ELSIF UPDATING THEN
-        v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
-    END IF;
-    
-    IF INSERTING OR UPDATING THEN
-        INSERT INTO Products_Audit_Log (product_id, audit_type, product_name, product_price, product_category)
-            VALUES(:NEW.product_id, v_audit_type, :NEW.product_name, :NEW.product_price, :NEW.product_category);
-    ELSIF DELETING THEN
-        INSERT INTO Products_Audit_Log (product_id, audit_type, product_name, product_price, product_category)
-            VALUES(:OLD.product_id, v_audit_type, :OLD.product_name, :OLD.product_price, :OLD.product_category);
-    END IF;
-END Products_Audit_Trigger;
+  
+  -- Insert into the audit log table
+  INSERT INTO Products_Audit_Log (product_id, old_product_id, audit_type, audit_timestamp, product_name, product_price, product_category)
+  VALUES (:NEW.product_id, :NEW.product_id, 'INSERT/UPDATE', SYSTIMESTAMP, :NEW.product_name, :NEW.product_price, :NEW.product_category);
+END;
 /
+
+
 
 -- Trigger for Project_Address
 CREATE OR REPLACE TRIGGER Project_Address_Audit_Trigger

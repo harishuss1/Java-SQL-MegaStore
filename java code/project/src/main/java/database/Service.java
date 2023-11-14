@@ -32,7 +32,7 @@ public class Service {
         String username = scan.next();
         System.out.println("Enter password: ");
         String password = scan.next();
-        scan.close();
+        
 
         String url = "jdbc:oracle:thin:@198.168.52.211: 1521/pdbora19c.dawsoncollege.qc.ca";
         conn = DriverManager.getConnection(url, username, password);
@@ -41,7 +41,7 @@ public class Service {
     }
 
     public void Close() throws SQLException {
-        if (!this.conn.isClosed()) {
+        if (!this.conn.isClosed() && this.conn != null) {
             this.conn.close();
             System.out.println("Disconnected to database");
         }
