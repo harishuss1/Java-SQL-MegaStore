@@ -15,12 +15,15 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     -- Deleting product
     PROCEDURE delete_product(vproduct_id IN NUMBER) IS
     BEGIN
+        UPDATE Project_Orders SET product_id = NULL WHERE product_id = vproduct_id;
         DELETE FROM Products WHERE product_id = vproduct_id;
     END delete_product;
 
     -- Deleting project city
     PROCEDURE delete_project_city(vcity_id IN NUMBER) IS
     BEGIN
+        UPDATE Project_Customers SET city_id = NULL WHERE city_id = vcity_id;
+        UPDATE Project_Address SET city_id = NULL WHERE city_id = vcity_id;
         DELETE FROM Project_City WHERE city_id = vcity_id;
     END delete_project_city;
 
@@ -51,6 +54,8 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     -- Deleting customer
     PROCEDURE delete_customer(vcustomer_id IN NUMBER) IS
     BEGIN
+        UPDATE Project_Orders SET customer_id = NULL WHERE customer_id = vcustomer_id;
+        UPDATE Reviews SET customer_id = NULL WHERE customer_id = vcustomer_id;
         DELETE FROM Project_Customers WHERE customer_id = vcustomer_id;
     END delete_customer;
 

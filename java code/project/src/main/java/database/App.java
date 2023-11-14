@@ -13,8 +13,7 @@ public class App {
             DeleteData deleteData = new DeleteData(connection);
 
             // Step 3: Use DeleteData methods to interact with stored procedures
-            deleteData.deleteProduct(1);
-            
+            deleteData.deleteProjectCustomers(1);
             // Add more delete operations as needed...
 
             // Step 4: Close the database connection
