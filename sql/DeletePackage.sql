@@ -8,9 +8,6 @@ CREATE OR REPLACE PACKAGE delete_data AS
     PROCEDURE delete_customer(vcustomer_id IN NUMBER);
     PROCEDURE delete_order(vorder_id IN NUMBER);
     PROCEDURE delete_review(vreview_id IN NUMBER);
-    PROCEDURE delete_order_audit_log(vlog_id IN NUMBER);
-    PROCEDURE delete_login_audit_log(vlog_id IN NUMBER);
-    PROCEDURE delete_stock_update_audit_log(vlog_id IN NUMBER);
 END delete_data;
 /
 
@@ -68,24 +65,6 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     BEGIN
         DELETE FROM Reviews WHERE review_id = vreview_id;
     END delete_review;
-
-    -- Deleting order audit log
-    PROCEDURE delete_order_audit_log(vlog_id IN NUMBER) IS
-    BEGIN
-        DELETE FROM OrderAuditLog WHERE OAL_log_id = vlog_id;
-    END delete_order_audit_log;
-
-    -- Deleting login audit log
-    PROCEDURE delete_login_audit_log(vlog_id IN NUMBER) IS
-    BEGIN
-        DELETE FROM LoginAuditLog WHERE LOL_log_id = vlog_id;
-    END delete_login_audit_log;
-
-    -- Deleting stock update audit log
-    PROCEDURE delete_stock_update_audit_log(vlog_id IN NUMBER) IS
-    BEGIN
-        DELETE FROM StockUpdateAuditLog WHERE SUOL_log_id = vlog_id;
-    END delete_stock_update_audit_log;
 
 END delete_data;
 /
