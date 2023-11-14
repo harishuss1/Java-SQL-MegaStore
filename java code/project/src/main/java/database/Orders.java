@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.Map;
 
 public class Orders implements SQLData {
     private int order_id;
@@ -97,4 +98,19 @@ public class Orders implements SQLData {
         stream.writeInt(getCustomer_id());
         stream.writeInt(getProduct_id());
     }
+
+    // ADD TO DATABASE METHOD
+    public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
+        Map map = conn.getTypeMap();
+        conn.setTypeMap(map);
+        map.put(this.typeName, Class.forName("database.Orders"));
+        Orders myOrders = new Orders(this.order_id, this.order_quantity, this.order_date, this.store_id,
+                this.customer_id, this.product_id);
+        String sql = "{call add_order(?)}";
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setObject(1, myOrders);
+            stmt.execute();
+        }
+    }
+
 }
