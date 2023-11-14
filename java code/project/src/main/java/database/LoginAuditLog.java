@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.Map;
 
 public class LoginAuditLog implements SQLData {
     private int log_id;
@@ -73,4 +74,19 @@ public class LoginAuditLog implements SQLData {
         stream.writeInt(getUser_id());
         stream.writeString(getEvent_description());
     }
+
+    // ADD TO DATABASE METHOD
+    public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
+        Map map = conn.getTypeMap();
+        conn.setTypeMap(map);
+        map.put(this.typeName, Class.forName("database.LoginAuditLog"));
+        LoginAuditLog myLoginAuditLog = new LoginAuditLog(this.log_id, this.event_timestamp, this.user_id,
+                this.event_description);
+        String sql = "{call add_login_audit_log(?)}";
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setObject(1, myLoginAuditLog);
+            stmt.execute();
+        }
+    }
+
 }

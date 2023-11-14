@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.Map;
 
 public class StockUpdateAuditLog implements SQLData {
     private int log_id;
@@ -11,7 +12,8 @@ public class StockUpdateAuditLog implements SQLData {
     private String event_description;
     private String typeName;
 
-    public StockUpdateAuditLog(int log_id, Timestamp event_timestamp, int product_id, int previous_stock, int new_stock, String event_description) {
+    public StockUpdateAuditLog(int log_id, Timestamp event_timestamp, int product_id, int previous_stock, int new_stock,
+            String event_description) {
         this.log_id = log_id;
         this.event_timestamp = event_timestamp;
         this.product_id = product_id;
@@ -97,4 +99,19 @@ public class StockUpdateAuditLog implements SQLData {
         stream.writeInt(getNew_stock());
         stream.writeString(getEvent_description());
     }
+
+    // ADD TO DATABASE METHOD
+    public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
+        Map map = conn.getTypeMap();
+        conn.setTypeMap(map);
+        map.put(this.typeName, Class.forName("database.StockUpdateAuditLog"));
+        StockUpdateAuditLog myStockUpdateAuditLog = new StockUpdateAuditLog(this.log_id, this.event_timestamp,
+                this.product_id, this.previous_stock, this.new_stock, this.event_description);
+        String sql = "{call add_stock_update_audit_log(?)}";
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setObject(1, myStockUpdateAuditLog);
+            stmt.execute();
+        }
+    }
+
 }
