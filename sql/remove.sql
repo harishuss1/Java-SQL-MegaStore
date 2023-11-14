@@ -1,4 +1,12 @@
---DROP TABLE AREA 
+--DROP TABLE AREA
+DROP TABLE Products_Audit_Log;
+DROP TABLE Project_Address_Audit_Log;
+DROP TABLE Project_City_Audit_Log;
+DROP TABLE Stores_Audit_Log;
+DROP TABLE Warehouse_Products_Audit_Log;
+DROP TABLE Project_Customers_Audit_Log;
+DROP TABLE Project_Orders_Audit_Log;
+DROP TABLE Reviews_Audit_Log;
 DROP TABLE Reviews;
 DROP TABLE Project_Orders;
 DROP TABLE Warehouse_Products;
@@ -8,9 +16,7 @@ DROP TABLE Products;
 DROP TABLE Project_Customers;
 DROP TABLE Project_Address;
 DROP TABLE Project_City;
-DROP TABLE OrderAuditLog;
-DROP TABLE LoginAuditLog;
-DROP TABLE StockUpdateAuditLog;
+
 
 
 
