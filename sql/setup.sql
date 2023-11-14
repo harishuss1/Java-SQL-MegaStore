@@ -8,7 +8,7 @@ product_category VARCHAR2(20),
 
     CONSTRAINT pk_product
         PRIMARY KEY (product_id)
-
+    
 );
 
 Create table Project_City (
@@ -31,7 +31,7 @@ city_id NUMBER,
         
     CONSTRAINT fk_project_city 
         FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
-
+        ON DELETE CASCADE
 ); 
 
 
@@ -53,11 +53,12 @@ city_id NUMBER,
         PRIMARY KEY (warehouse_id),
     
     CONSTRAINT fk_warehouse_project_address
-        FOREIGN KEY (address_id) REFERENCES Project_address (address_id),
+        FOREIGN KEY (address_id) REFERENCES Project_address (address_id)
+        ON DELETE CASCADE,
         
     CONSTRAINT fk_warehouse_project_city
         FOREIGN KEY (city_id) REFERENCES Project_City (city_id) 
-
+        ON DELETE CASCADE
 );
 
 Create Table Warehouse_Products (
@@ -66,7 +67,8 @@ product_id NUMBER,
 total_quantity NUMBER(10,0),
 
     CONSTRAINT fk_warehouse_id
-        FOREIGN KEY (warehouse_id) REFERENCES Warehouse (warehouse_id), 
+        FOREIGN KEY (warehouse_id) REFERENCES Warehouse (warehouse_id)
+        ON DELETE CASCADE,
         
     CONSTRAINT fk_product_id 
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
@@ -85,10 +87,12 @@ city_id NUMBER,
         PRIMARY KEY (customer_id),
         
     CONSTRAINT fk_city_id
-        FOREIGN KEY (city_id) REFERENCES Project_City (city_id),
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_customer_address 
         FOREIGN KEY (address_id) REFERENCES Project_Address (address_id)
+        ON DELETE CASCADE
 );
 
 Create table Project_Orders (
@@ -106,7 +110,8 @@ product_id NUMBER,
         FOREIGN KEY (store_id) REFERENCES Stores (store_id),
     
     CONSTRAINT fk_customer_id
-        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id)
+        ON DELETE CASCADE,
     
     CONSTRAINT fk_product_order
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
@@ -125,7 +130,9 @@ product_id NUMBER,
         PRIMARY KEY (review_id),
         
     CONSTRAINT fk_customer_review
-        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id)
+        ON DELETE CASCADE,
+        
     CONSTRAINT fk_product_review 
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
         ON DELETE CASCADE
@@ -135,7 +142,6 @@ product_id NUMBER,
 CREATE TABLE Products_Audit_Log (
     audit_products_id NUMBER GENERATED ALWAYS AS IDENTITY,
     product_id NUMBER,
-    old_product_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     product_name VARCHAR2(50),
@@ -160,9 +166,12 @@ CREATE TABLE Project_Address_Audit_Log (
     PRIMARY KEY (audit_address_id),
     
     CONSTRAINT fk_address_audit_log
-        FOREIGN KEY (address_id) REFERENCES Project_Address (address_id),
+        FOREIGN KEY (address_id) REFERENCES Project_Address (address_id)
+        ON DELETE CASCADE,
+        
     CONSTRAINT fk_city_audit_log
         FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Project_City 
@@ -179,6 +188,7 @@ CREATE TABLE Project_City_Audit_Log (
     
     CONSTRAINT fk_project_city_audit_log
         FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Stores
@@ -193,6 +203,7 @@ CREATE TABLE Stores_Audit_Log (
     
     CONSTRAINT fk_store_audit_log
         FOREIGN KEY (store_id) REFERENCES Stores (store_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Warehouse_Products
@@ -207,8 +218,8 @@ CREATE TABLE Warehouse_Products_Audit_Log (
     PRIMARY KEY (audit_warehouseProducts_id),
     
     CONSTRAINT fk_warehouseProducts_audit_log
-        FOREIGN KEY (warehouse_id) REFERENCES Warehouse (warehouse_id),
-    
+        FOREIGN KEY (warehouse_id) REFERENCES Warehouse (warehouse_id)
+        ON DELETE CASCADE,
     CONSTRAINT fk_productForWarehouse_audit_log 
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
         ON DELETE CASCADE
@@ -229,13 +240,16 @@ CREATE TABLE Project_Customers_Audit_Log (
     PRIMARY KEY (audit_id),
 
     CONSTRAINT fk_customer_audit_log
-        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
-    
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id)
+        ON DELETE CASCADE,
+        
     CONSTRAINT fk_cityCustomer_audit_log
-        FOREIGN KEY (city_id) REFERENCES Project_City (city_id),
+        FOREIGN KEY (city_id) REFERENCES Project_City (city_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_addressOfCustomer_audit_log
         FOREIGN KEY (address_id) REFERENCES Project_Address (address_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Project_Orders
@@ -253,16 +267,20 @@ CREATE TABLE Project_Orders_Audit_Log (
     PRIMARY KEY (audit_id),
 
     CONSTRAINT fk_order_audit_log
-        FOREIGN KEY (order_id) REFERENCES Project_Orders (order_id),
-    
+        FOREIGN KEY (order_id) REFERENCES Project_Orders (order_id)
+        ON DELETE CASCADE,
+        
     CONSTRAINT fk_storeOrder_audit_log
-        FOREIGN KEY (store_id) REFERENCES Stores (store_id),
+        FOREIGN KEY (store_id) REFERENCES Stores (store_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_customerOrder_audit_log
-        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_product_order_audit_log
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
+        ON DELETE CASCADE
 );
 
 -- Audit table for Reviews
@@ -280,11 +298,13 @@ CREATE TABLE Reviews_Audit_Log (
     PRIMARY KEY (audit_id),
 
     CONSTRAINT fk_review_audit_log
-        FOREIGN KEY (review_id) REFERENCES Reviews (review_id),
+        FOREIGN KEY (review_id) REFERENCES Reviews (review_id)
+        ON DELETE CASCADE,
     
     CONSTRAINT fk_customerReview_audit_log
-        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id),
-
+        FOREIGN KEY (customer_id) REFERENCES Project_Customers (customer_id)
+        ON DELETE CASCADE,
+        
     CONSTRAINT fk_product_review_audit_log
         FOREIGN KEY (product_id) REFERENCES Products (product_id)
 );
@@ -294,180 +314,168 @@ CREATE TABLE Reviews_Audit_Log (
 CREATE OR REPLACE TRIGGER products_audit_trigger_after
 AFTER INSERT OR UPDATE ON Products
 FOR EACH ROW
+DECLARE
+    v_audit_type VARCHAR2(30);
 BEGIN
-  
+  IF INSERTING THEN
+    v_audit_type := 'INSERT';
+  ELSIF UPDATING THEN
+        v_audit_type := 'UPDATE';
+    END IF;
   -- Insert into the audit log table
-  INSERT INTO Products_Audit_Log (product_id, old_product_id, audit_type, audit_timestamp, product_name, product_price, product_category)
-  VALUES (:NEW.product_id, :NEW.product_id, 'INSERT/UPDATE', SYSTIMESTAMP, :NEW.product_name, :NEW.product_price, :NEW.product_category);
+  INSERT INTO Products_Audit_Log (product_id, audit_type, audit_timestamp, product_name, product_price, product_category)
+  VALUES (:NEW.product_id, v_audit_type, SYSTIMESTAMP, :NEW.product_name, :NEW.product_price, :NEW.product_category);
 END;
 /
-
 
 
 -- Trigger for Project_Address
 CREATE OR REPLACE TRIGGER Project_Address_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Project_Address
+AFTER INSERT OR UPDATE ON Project_Address
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
-
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
 
-    -- Insert a record into the audit log
+    -- Insert a record into the audit log for INSERT or UPDATE
     IF INSERTING OR UPDATING THEN
         INSERT INTO Project_Address_Audit_Log (address_id, audit_type, address, city_id)
         VALUES (:NEW.address_id, v_audit_type, :NEW.address, :NEW.city_id);
-    ELSIF DELETING THEN
-        INSERT INTO Project_Address_Audit_Log (address_id, audit_type, address, city_id)
-        VALUES (:OLD.address_id, v_audit_type, :OLD.address, :OLD.city_id);
     END IF;
 END;
 /
 
+
 -- Trigger for Project_City
 CREATE OR REPLACE TRIGGER Project_City_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Project_City
+AFTER INSERT OR UPDATE ON Project_City
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
     -- Determine the audit type based on the SQL operation
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
 
     -- Insert a record into the audit log
     IF INSERTING OR UPDATING THEN
         INSERT INTO Project_City_Audit_Log (city_id, audit_type, city_name, province_name, country_name)
         VALUES (:NEW.city_id, v_audit_type, :NEW.city_name, :NEW.province_name, :NEW.country_name);
-    ELSIF DELETING THEN
-        INSERT INTO Project_City_Audit_Log (city_id, audit_type, city_name, province_name, country_name)
-        VALUES (:OLD.city_id, v_audit_type, :OLD.city_name, :OLD.province_name, :OLD.country_name);
     END IF;
 END;
 /
 
 -- Trigger for Stores
 CREATE OR REPLACE TRIGGER Stores_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Stores
+AFTER INSERT OR UPDATE ON Stores
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
     -- Determine the audit type based on the SQL operation
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
 
     -- Insert a record into the audit log
     IF INSERTING OR UPDATING THEN
         INSERT INTO Stores_Audit_Log (store_id, audit_type,store_name)
         VALUES (:NEW.store_id, v_audit_type, :NEW.store_name);
-    ELSIF DELETING THEN
-        INSERT INTO Stores_Audit_Log (store_id, audit_type, store_name)
-        VALUES (:OLD.store_id, v_audit_type, :OLD.store_name);
     END IF;
 END;
 /
 
 -- Trigger for Warehouse_Products
 CREATE OR REPLACE TRIGGER Warehouse_Products_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Warehouse_Products
+AFTER INSERT OR UPDATE ON Warehouse_Products
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
     -- Determine the audit type based on the SQL operation
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
 
     -- Insert a record into the audit log
     IF INSERTING OR UPDATING THEN
         INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, product_id, audit_type, total_quantity)
         VALUES (:NEW.warehouse_id, :NEW.product_id, v_audit_type, :NEW.total_quantity);
-    ELSIF DELETING THEN
-        INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, product_id, audit_type, total_quantity)
-        VALUES (:OLD.warehouse_id, :OLD.product_id, v_audit_type, :OLD.total_quantity);
     END IF;
 END;
 /
 
 -- Trigger for Project_Customers
 CREATE OR REPLACE TRIGGER Project_Customers_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Project_Customers
+AFTER INSERT OR UPDATE ON Project_Customers
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
-
+    
+    IF INSERTING OR UPDATING THEN
     INSERT INTO Project_Customers_Audit_Log (customer_id, audit_type, audit_timestamp, firstname, lastname, email, address_id, city_id)
         VALUES (:NEW.customer_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.firstname, :NEW.lastname, :NEW.email, :NEW.address_id, :NEW.city_id);
+    END IF;
 END Project_Customers_Audit_Trigger;
 /
 
+
+
 -- Trigger for Project_Orders
 CREATE OR REPLACE TRIGGER Project_Orders_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Project_Orders
+AFTER INSERT OR UPDATE ON Project_Orders
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
     
+    IF INSERTING OR UPDATING THEN
     INSERT INTO Project_Orders_Audit_Log (order_id,audit_type,audit_timestamp,order_quantity,order_date,store_id,customer_id,product_id)
         VALUES (:NEW.order_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.order_quantity, :NEW.order_date, :NEW.store_id, :NEW.customer_id, :NEW.product_id);
+    END IF;
 END Project_Orders_Audit_Trigger;    
 /
 
 -- Trigger for Reviews
 CREATE OR REPLACE TRIGGER Reviews_Audit_Trigger
-AFTER INSERT OR UPDATE OR DELETE ON Reviews
+AFTER INSERT OR UPDATE ON Reviews
 FOR EACH ROW
 DECLARE
-    v_audit_type VARCHAR2(10);
+    v_audit_type VARCHAR2(30);
 BEGIN
     IF INSERTING THEN
         v_audit_type := 'INSERT';
     ELSIF UPDATING THEN
         v_audit_type := 'UPDATE';
-    ELSIF DELETING THEN
-        v_audit_type := 'DELETE';
     END IF;
+    
+    IF INSERTING OR UPDATING THEN
     INSERT INTO Reviews_Audit_Log (review_id, audit_type, audit_timestamp, flag ,description, review_score, customer_id, product_id)
         VALUES (:NEW.review_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.flag, :NEW.description, :NEW.review_score, :NEW.customer_id, :NEW.product_id);
+    END IF;
 END Reviews_Audit_Trigger;
 /
 
