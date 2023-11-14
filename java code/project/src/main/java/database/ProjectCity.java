@@ -1,6 +1,7 @@
 package database;
 
 import java.sql.*;
+import java.util.Map;
 
 public class ProjectCity implements SQLData {
     private int city_id;
@@ -73,4 +74,19 @@ public class ProjectCity implements SQLData {
         stream.writeString(getProvince_name());
         stream.writeString(getCountry_name());
     }
+
+    // ADD TO DATABASE METHOD
+    public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
+        Map map = conn.getTypeMap();
+        conn.setTypeMap(map);
+        map.put(this.typeName, Class.forName("database.ProjectCity"));
+        ProjectCity myProjectCity = new ProjectCity(this.city_id, this.city_name, this.province_name,
+                this.country_name);
+        String sql = "{call add_project_city(?)}";
+        try (CallableStatement stmt = conn.prepareCall(sql)) {
+            stmt.setObject(1, myProjectCity);
+            stmt.execute();
+        }
+    }
+
 }
