@@ -21,7 +21,18 @@ public class DeleteData {
     public void deleteProjectCustomers(int customerId) {
         executeStoredProcedure("delete_data.delete_customer(?)", customerId);
     }
+    
+    public void deleteAddress(int addressId) {
+        executeStoredProcedure("delete_data.delete_project_address(?)", addressId);
+    }
 
+    public void deleteStores(int storeId) {
+        executeStoredProcedure("delete_data.delete_store(?)", storeId);
+    }
+
+    public void deleteReviews(int reviewId) {
+        executeStoredProcedure("delete_data.delete_review(?)", reviewId);
+    }
     
 
     private void executeStoredProcedure(String procedureCall, int parameter) {
