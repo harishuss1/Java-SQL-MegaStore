@@ -2,20 +2,28 @@ package database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
+import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        Display display  = new Display(connection);
+        display.Greet();
         try {
-            // Step 1: Create a Service instance to establish a connection
             Connection connection = Service.getConnection();
+            display.DisplayOptions();
+            String user_choice = scan.nextLine();
+    
+            if(user_choice.equals("YES")) {
+                  displayData.displayAllProducts();
 
-            // Step 2: Create a DeleteData instance and pass the connection
+                /* call display method */
+            }
+
             DeleteData deleteData = new DeleteData(connection);
 
-            // Step 3: Use DeleteData methods to interact with stored procedures
-            deleteData.deleteProduct(1);
-            deleteData.deleteReviews(1);
-            // Add more delete operations as needed...
+            // deleteData.deleteProduct(1);
+            // deleteData.deleteReviews(1);
+            
 
             // Step 4: Close the database connection
             connection.close();
