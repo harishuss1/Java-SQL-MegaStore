@@ -142,6 +142,7 @@ product_id NUMBER,
 CREATE TABLE Products_Audit_Log (
     audit_products_id NUMBER GENERATED ALWAYS AS IDENTITY,
     product_id NUMBER,
+    old_product_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     product_name VARCHAR2(50),
@@ -158,6 +159,7 @@ CREATE TABLE Products_Audit_Log (
 CREATE TABLE Project_Address_Audit_Log (
     audit_address_id NUMBER GENERATED ALWAYS AS IDENTITY,
     address_id NUMBER,
+    old_address_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     address VARCHAR(50),
@@ -178,6 +180,7 @@ CREATE TABLE Project_Address_Audit_Log (
 CREATE TABLE Project_City_Audit_Log (
     audit_city_id NUMBER GENERATED ALWAYS AS IDENTITY,
     city_id NUMBER,
+    old_city_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     city_name VARCHAR2(50),
@@ -195,6 +198,7 @@ CREATE TABLE Project_City_Audit_Log (
 CREATE TABLE Stores_Audit_Log (
     audit_store_id NUMBER GENERATED ALWAYS AS IDENTITY,
     store_id NUMBER,
+    old_store_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     store_name VARCHAR2(50),
@@ -287,6 +291,7 @@ CREATE TABLE Project_Orders_Audit_Log (
 CREATE TABLE Reviews_Audit_Log (
     audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
     review_id NUMBER,
+    old_review_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     flag NUMBER(5,0),
@@ -323,8 +328,8 @@ BEGIN
         v_audit_type := 'UPDATE';
     END IF;
   -- Insert into the audit log table
-  INSERT INTO Products_Audit_Log (product_id, audit_type, audit_timestamp, product_name, product_price, product_category)
-  VALUES (:NEW.product_id, v_audit_type, SYSTIMESTAMP, :NEW.product_name, :NEW.product_price, :NEW.product_category);
+  INSERT INTO Products_Audit_Log (product_id, old_product_id, audit_type, audit_timestamp, product_name, product_price, product_category)
+  VALUES (:NEW.product_id, NULL, v_audit_type, SYSTIMESTAMP, :NEW.product_name, :NEW.product_price, :NEW.product_category);
 END;
 /
 
@@ -344,8 +349,8 @@ BEGIN
 
     -- Insert a record into the audit log for INSERT or UPDATE
     IF INSERTING OR UPDATING THEN
-        INSERT INTO Project_Address_Audit_Log (address_id, audit_type, address, city_id)
-        VALUES (:NEW.address_id, v_audit_type, :NEW.address, :NEW.city_id);
+        INSERT INTO Project_Address_Audit_Log (address_id, old_address_id, audit_type, address, city_id)
+        VALUES (:NEW.address_id, NULL, v_audit_type, :NEW.address, :NEW.city_id);
     END IF;
 END;
 /
@@ -367,8 +372,8 @@ BEGIN
 
     -- Insert a record into the audit log
     IF INSERTING OR UPDATING THEN
-        INSERT INTO Project_City_Audit_Log (city_id, audit_type, city_name, province_name, country_name)
-        VALUES (:NEW.city_id, v_audit_type, :NEW.city_name, :NEW.province_name, :NEW.country_name);
+        INSERT INTO Project_City_Audit_Log (city_id, old_city_id, audit_type, city_name, province_name, country_name)
+        VALUES (:NEW.city_id, NULL, v_audit_type, :NEW.city_name, :NEW.province_name, :NEW.country_name);
     END IF;
 END;
 /
@@ -389,8 +394,8 @@ BEGIN
 
     -- Insert a record into the audit log
     IF INSERTING OR UPDATING THEN
-        INSERT INTO Stores_Audit_Log (store_id, audit_type,store_name)
-        VALUES (:NEW.store_id, v_audit_type, :NEW.store_name);
+        INSERT INTO Stores_Audit_Log (store_id, old_store_id, audit_type,store_name)
+        VALUES (:NEW.store_id, NULL, v_audit_type, :NEW.store_name);
     END IF;
 END;
 /
@@ -473,8 +478,8 @@ BEGIN
     END IF;
     
     IF INSERTING OR UPDATING THEN
-    INSERT INTO Reviews_Audit_Log (review_id, audit_type, audit_timestamp, flag ,description, review_score, customer_id, product_id)
-        VALUES (:NEW.review_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.flag, :NEW.description, :NEW.review_score, :NEW.customer_id, :NEW.product_id);
+    INSERT INTO Reviews_Audit_Log (review_id, old_review_id, audit_type, audit_timestamp, flag ,description, review_score, customer_id, product_id)
+        VALUES (:NEW.review_id, NULL, v_audit_type, CURRENT_TIMESTAMP, :NEW.flag, :NEW.description, :NEW.review_score, :NEW.customer_id, :NEW.product_id);
     END IF;
 END Reviews_Audit_Trigger;
 /
