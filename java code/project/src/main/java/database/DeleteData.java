@@ -17,7 +17,7 @@ public class DeleteData {
     public void deleteProjectCity(int cityId) {
         executeStoredProcedure("delete_data.delete_project_city(?)", cityId);
     }
-
+    
     public void deleteProjectCustomers(int customerId) {
         executeStoredProcedure("delete_data.delete_customer(?)", customerId);
     }
