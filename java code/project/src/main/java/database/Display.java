@@ -7,7 +7,19 @@ import java.util.Scanner;
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
 
-    public void Greet(){
+
+
+
+
+     public static void main(String[] args) {
+        // Assume the program starts here
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        Greet();
+        displayLoginMenu();
+    }
+    
+    public static void Greet(){
         System.out.println("   ________________");
         System.out.println("  /\\              /\\");
         System.out.println(" /  \\____________/  \\");
@@ -16,17 +28,13 @@ public class Display {
         System.out.println("|        SHOP        |");
         System.out.println("\\                    /");
         System.out.println(" \\__________________/");
-    }    
-
+        System.out.println("");
+       
+    }
 
     
 
-    public static void main(String[] args) {
-        // Assume the program starts here
-        displayLoginMenu();
-    }
-
-    private static void displayLoginMenu() {
+    public static void displayLoginMenu() {
         System.out.println("Welcome to the Application!");
         System.out.println("1. Log In");
         System.out.println("2. Exit");
@@ -48,7 +56,7 @@ public class Display {
         }
     }
 
-    private static void displayMainMenu() {
+    public static void displayMainMenu() {
         System.out.println("\nMain Menu:");
         System.out.println("1. Add");
         System.out.println("2. Remove");
@@ -89,7 +97,7 @@ public class Display {
         }
     }
 
-    private static int getUserChoice() {
+    public static int getUserChoice() {
         int choice = 0;
         boolean isValidInput = false;
 
@@ -108,7 +116,7 @@ public class Display {
     }
 
 
-    private static void addData() {
+    public static void addData() {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -175,6 +183,7 @@ public class Display {
         }
     }
 }
+
 
 
 

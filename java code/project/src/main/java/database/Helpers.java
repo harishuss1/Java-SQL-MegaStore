@@ -69,5 +69,4 @@ public class Helpers {
         return userInput;
     }
 
-    // Add more helper methods as needed...
 }
