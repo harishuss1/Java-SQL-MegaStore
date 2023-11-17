@@ -49,24 +49,35 @@ public class Display {
                 // For example: loginUser();
                 Connection connection = Service.getConnection();
                 Stocks.getTotalStockForAllProducts(connection);
-                System.out.println("Do you want to display specific products of a category? YES/NO");
-                String answer = scanner.nextLine();
+                while(true) {
+                    System.out.println("Do you want to display specific products of a category? YES/NO");
+                    String answer = scanner.nextLine();
                 
-                if(answer.equals("YES")) {
-                    System.out.println("Which category from this list? \n" +
-                    "Grocery\n" +
-                    "DVD\n" +
-                    "Cars\n" +
-                    "Toys\n" +
-                    "Electronics\n" +
-                    "Health\n" +
-                    "Beauty\n" +
-                    "Video Games\n" +
-                    "Vehicle\n" +
-                    "------------------------");
-                    String category_choice = scanner.nextLine();
-                    DisplayProducts.displayProductsByCategory(connection, category_choice);
+                    if(answer.equals("YES")) {
+                        System.out.println("Which category from this list? \n" +
+                        "Grocery\n" +
+                        "DVD\n" +
+                        "Cars\n" +
+                        "Toys\n" +
+                        "Electronics\n" +
+                        "Health\n" +
+                        "Beauty\n" +
+                        "Video Games\n" +
+                        "Vehicle\n" +
+                        "------------------------");
+                        String category_choice = scanner.nextLine();
+                        DisplayProducts.displayProductsByCategory(connection, category_choice);
+                    }
+                    else if(answer.equals("NO")) {
+                        displayMainMenu();
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid choice. Please enter YES or NO.");
+                    }
                 }
+                
+                
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
