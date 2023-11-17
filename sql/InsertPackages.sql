@@ -20,7 +20,6 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
     BEGIN
         INSERT INTO Products
         VALUES (
-            vproduct.product_id,
             vproduct.product_name,
             vproduct.product_price,
             vproduct.product_category

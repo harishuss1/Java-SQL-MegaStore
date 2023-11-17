@@ -6,27 +6,31 @@ end utility_package;
 /
 Create Or REPLACE PACKAGE BODY utility_package as
 
---    FUNCTION CalculateAverageReviewScore(
---        p_product_id NUMBER
---    )
---    RETURN NUMBER AS
---        v_total_reviews NUMBER;
---        v_total_score NUMBER;
---        v_average_score NUMBER;
---    BEGIN
---        SELECT COUNT(review_id), SUM(flag) INTO v_total_reviews, v_total_score
---        FROM Reviews
---        WHERE product_id = p_product_id;
---    
---        IF v_total_reviews > 0 THEN
---            v_average_score := v_total_score / v_total_reviews;
---        ELSE
---            v_average_score := 0; 
---        END IF;
---    
---        RETURN v_average_score;
---    END CalculateAverageReviewScore;
-    
+--Get the Average Review of a product.
+FUNCTION calculate_average_review_score(p_product_id NUMBER)
+ RETURN NUMBER
+ IS
+     v_total_score NUMBER := 0;
+     v_review_count NUMBER := 0;
+     v_average_score NUMBER;
+ BEGIN
+     -- Calculate the total score and count of reviews for the specified product
+     FOR r IN (SELECT review_score FROM Reviews WHERE product_id = p_product_id)
+     LOOP
+         v_total_score := v_total_score + r.review_score;
+         v_review_count := v_review_count + 1;
+     END LOOP;
+
+     -- Avoid division by zero
+     IF v_review_count > 0 THEN
+         v_average_score := v_total_score / v_review_count;
+     ELSE
+         v_average_score := NULL;
+     END IF;
+
+     RETURN v_average_score;
+ END;
+
     /* Checks for reviews that are flagged */
     PROCEDURE CheckFlaggedReviews AS
     BEGIN

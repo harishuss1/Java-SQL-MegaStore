@@ -2,6 +2,7 @@ package database;
 
 import java.sql.*;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Product implements SQLData {
     private int product_id;
@@ -86,6 +87,20 @@ public class Product implements SQLData {
             stmt.setObject(1, myProduct);
             stmt.execute();
         }
+    }
+
+
+    public static Product collectProductInformation() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nAdding Product:");
+
+        // Collect product information from the user with input validation
+        int productId = Helpers.getUserInputInt("Enter product ID: ");
+        String productName = Helpers.getUserInputString("Enter product name: ");
+        double productPrice = Helpers.getUserInputDouble("Enter product price: ");
+        String productCategory = Helpers.getUserInputString("Enter product category: ");
+
+        return new Product(productId, productName, productPrice, productCategory);
     }
 
 }
