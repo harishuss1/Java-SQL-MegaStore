@@ -10,22 +10,30 @@ public class App {
         try {
             Connection connection = Service.getConnection();
 
-            ResultSet resultSet = Stocks.getTotalStockForAllProducts(connection);
-  
-            while (resultSet.next()) {
-                int productId = resultSet.getInt("product_id");
-                int totalStock = resultSet.getInt("total_stock");
-
-                System.out.println("Product ID: " + productId + ", Total Stock: " + totalStock);
+            Stocks.getTotalStockForAllProducts(connection);
+            System.out.println("Do you want to display specific products of a category? YES/NO");
+            String answer = scan.nextLine();
+            
+            if(answer.equals("YES")) {
+                System.out.println("Which category from this list? \n" +
+                "Grocery\n" +
+                "DVD\n" +
+                "Cars\n" +
+                "Toys\n" +
+                "Electronics\n" +
+                "Health\n" +
+                "Beauty\n" +
+                "Video Games\n" +
+                "Vehicle\n" +
+                "------------------------");
+                String category_choice = scan.nextLine();
+                DisplayProducts.displayProductsByCategory(connection, category_choice);
             }
-
-           
+            
             connection.close();
-        } 
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 }
-
-
+   
