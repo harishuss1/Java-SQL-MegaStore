@@ -1,27 +1,31 @@
 package database;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
-
+        Scanner scan = new Scanner(System.in);
         try {
-            // Step 1: Create a Service instance to establish a connection
             Connection connection = Service.getConnection();
 
-            // Step 2: Create a DeleteData instance and pass the connection
-            DeleteData deleteData = new DeleteData(connection);
+            ResultSet resultSet = Stocks.getTotalStockForAllProducts(connection);
+  
+            while (resultSet.next()) {
+                int productId = resultSet.getInt("product_id");
+                int totalStock = resultSet.getInt("total_stock");
 
-            // Step 3: Use DeleteData methods to interact with stored procedures
-            deleteData.deleteProduct(1);
-            deleteData.deleteReviews(1);
-            // Add more delete operations as needed...
+                System.out.println("Product ID: " + productId + ", Total Stock: " + totalStock);
+            }
 
-            // Step 4: Close the database connection
+           
             connection.close();
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
 }
+
+
