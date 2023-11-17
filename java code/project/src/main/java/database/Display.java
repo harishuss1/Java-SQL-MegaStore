@@ -1,5 +1,7 @@
 package database;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -11,7 +13,7 @@ public class Display {
 
 
 
-     public static void main(String[] args) {
+     public static void main(String[] args) throws SQLException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -34,18 +36,37 @@ public class Display {
 
     
 
-    public static void displayLoginMenu() {
+    public static void displayLoginMenu() throws SQLException {
         System.out.println("Welcome to the Application!");
         System.out.println("1. Log In");
         System.out.println("2. Exit");
 
         int choice = getUserChoice();
-
+        scanner.nextLine();
         switch (choice) {
             case 1:
                 // Call the method for user login
                 // For example: loginUser();
-                displayMainMenu();
+                Connection connection = Service.getConnection();
+                Stocks.getTotalStockForAllProducts(connection);
+                System.out.println("Do you want to display specific products of a category? YES/NO");
+                String answer = scanner.nextLine();
+                
+                if(answer.equals("YES")) {
+                    System.out.println("Which category from this list? \n" +
+                    "Grocery\n" +
+                    "DVD\n" +
+                    "Cars\n" +
+                    "Toys\n" +
+                    "Electronics\n" +
+                    "Health\n" +
+                    "Beauty\n" +
+                    "Video Games\n" +
+                    "Vehicle\n" +
+                    "------------------------");
+                    String category_choice = scanner.nextLine();
+                    DisplayProducts.displayProductsByCategory(connection, category_choice);
+                }
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
