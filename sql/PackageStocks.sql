@@ -1,6 +1,7 @@
 CREATE OR REPLACE PACKAGE ProductStockPackage AS
     -- Declare the function signature
     FUNCTION GetTotalStockForProduct(p_product_id NUMBER) RETURN NUMBER;
+    PROCEDURE GetInventoryPerProduct(p_product_id NUMBER);
     FUNCTION IsProductAvailable(p_product_id NUMBER) RETURN NUMBER;
     PROCEDURE UpdateStockQuantityFromOrder(p_order_id NUMBER);
 END ProductStockPackage;
@@ -13,10 +14,47 @@ CREATE OR REPLACE PACKAGE BODY ProductStockPackage AS
     BEGIN
         SELECT SUM(total_quantity)
         INTO v_total_stock
-        FROM Warehouse_Products WHERE product_id = p_product_id;
+        FROM Warehouse_Products
+        WHERE product_id = p_product_id;
 
         RETURN v_total_stock;
     END GetTotalStockForProduct;
+    
+    FUNCTION GetInventoryPerProduct(p_product_id NUMBER) AS
+       idk yet
+    BEGIN
+        SELECT p.product_name, w.warehouse_name, wp.total_quantity
+        INTO idk yet
+        FROM Products p
+        JOIN Warehouse_Products wp
+        ON p.product_id = wp.product_id
+        JOIN Warehouse w
+        ON w.warehouse_id = wp.warehouse_id
+        WHERE p.product_id = p_product_id;
+        RETURN idk yet
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            dbms_output.put_line('Product not found.');
+        WHEN OTHERS THEN
+            -- Handle other exceptions if necessary
+            dbms_output.put_line('Error.');
+    END GetInventoryPerProduct;
+    
+    FUNCTION DisplayProductPerCategory(p_category VARCHAR2) AS
+    idk yet
+    BEGIN
+        SELECT p.product_id, p.product_name
+        INTO idk yet
+        FROM Products p
+        WHERE p.product_category = p_category;
+        RETURN idk yet
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            dbms_output.put_line('Category not found.');
+        WHEN OTHERS THEN
+            -- Handle other exceptions if necessary
+            dbms_output.put_line('Error.');
+    END DisplayProductPerCategory;
     
     FUNCTION IsProductAvailable(p_product_id NUMBER) RETURN NUMBER AS 
         v_total_stock NUMBER;
