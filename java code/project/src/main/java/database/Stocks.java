@@ -8,36 +8,27 @@ import oracle.jdbc.OracleTypes;
 
 public class Stocks {
 
-    public static ResultSet getTotalStockForAllProducts(Connection connection) {
-        ResultSet resultSet = null;
+    public static void getTotalStockForAllProducts(Connection connection) {
+        
 
-        try (CallableStatement statement = connection.prepareCall("{ ? = call ProductStockPackage.GetTotalStockForProduct(?) }")) {
-
-            // Register the output parameter as a cursor
-            statement.registerOutParameter(1, OracleTypes.CURSOR);
-
+        try {
             // Get the total count of product IDs
             int totalProductCount = getTotalProductCount(connection);
 
             // Iterate through product IDs
             for (int productId = 1; productId <= totalProductCount; productId++) {
-                // Set the input parameter
-                statement.setInt(2, productId);
+                // Call the function to get total stock for each product
+                int totalStock = getTotalStockForProduct(connection, productId);
 
-                // Execute the function
-                statement.execute();
-
-                // Retrieve the result set
-                resultSet = (ResultSet) statement.getObject(1);
-                
-                // Process the result set here if needed
+                // Process the result here if needed
+                System.out.println("Product ID: " + productId + ", Total Stock: " + totalStock);
             }
 
-        } catch (SQLException e) {
+        } 
+        catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return resultSet;
     }
 
     private static int getTotalProductCount(Connection connection) throws SQLException {
@@ -55,5 +46,25 @@ public class Stocks {
         }
 
         return totalProductCount;
+    }
+
+    private static int getTotalStockForProduct(Connection connection, int productId) throws SQLException {
+        int totalStock = 0;
+
+        try (CallableStatement statement = connection.prepareCall("{ ? = call ProductStockPackage.GetTotalStockForProduct(?) }")) {
+            // Register the output parameter
+            statement.registerOutParameter(1, java.sql.Types.INTEGER);
+
+            // Set the input parameter (product_id)
+            statement.setInt(2, productId);
+
+            // Execute the function
+            statement.execute();
+
+            // Retrieve the result
+            totalStock = statement.getInt(1);
+        }
+
+        return totalStock;
     }
 }
