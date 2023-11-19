@@ -1,9 +1,13 @@
 package database;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import oracle.jdbc.OracleTypes;
 
 //All the stuff related to Displaying information is here
 public class Display {
@@ -48,36 +52,7 @@ public class Display {
                 // Call the method for user login
                 // For example: loginUser();
                 connection = Service.getConnection();
-                Stocks.getTotalStockForAllProducts(connection);
-                while(true) {
-                    System.out.println("Do you want to display specific products of a category? YES/NO");
-                    String answer = scanner.nextLine();
-                
-                    if(answer.equals("YES")) {
-                        System.out.println("Which category from this list? \n" +
-                        "Grocery\n" +
-                        "DVD\n" +
-                        "Cars\n" +
-                        "Toys\n" +
-                        "Electronics\n" +
-                        "Health\n" +
-                        "Beauty\n" +
-                        "Video Games\n" +
-                        "Vehicle\n" +
-                        "------------------------");
-                        String category_choice = scanner.nextLine();
-                        DisplayProducts.displayProductsByCategory(connection, category_choice);
-                    }
-                    else if(answer.equals("NO")) {
-                        displayMainMenu();
-                        break;
-                    }
-                    else {
-                        System.out.println("Invalid choice. Please enter YES or NO.");
-                    }
-                }
-                
-                
+                displayMainMenu();
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
@@ -88,7 +63,7 @@ public class Display {
         }
     }
 
-    public static void displayMainMenu() {
+    public static void displayMainMenu() throws SQLException {
         System.out.println("\nMain Menu:");
         System.out.println("1. Add");
         System.out.println("2. Remove");
@@ -114,8 +89,7 @@ public class Display {
                 displayMainMenu();
                 break;
             case 4:
-                // Call the method for viewing reports
-                // For example: viewfunctions();
+                viewFunctions();
                 displayMainMenu();
                 break;
             case 5:
@@ -147,7 +121,7 @@ public class Display {
     }
 
 
-    public static void addData() {
+    public static void addData() throws SQLException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -227,7 +201,7 @@ public class Display {
         }
     }
 
-    public static void viewFunctions(){
+    public static void viewFunctions() throws SQLException{
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
         System.out.println("2. Show Total inventory For A Product");
@@ -235,7 +209,7 @@ public class Display {
         System.out.println("4. Show Audit Logs");
 
              int choice = getUserChoice();
-
+             scanner.nextLine();
         switch (choice) {
             case 1:
                 System.out.println("Enter a Product's id You'd like to see the reviews for: ");
@@ -244,12 +218,38 @@ public class Display {
                 displayFunctions.displayAverageReviewScore(productid); 
                 break;
             case 2:
+                Stocks.getTotalStockForAllProducts(connection);
+                while(true) {
+                    System.out.println("Do you want to display specific products of a category? YES/NO");
+                    String answer = scanner.nextLine();
                 
+                    if(answer.equals("YES")) {
+                        System.out.println("Which category from this list? \n" +
+                        "Grocery\n" +
+                        "DVD\n" +
+                        "Cars\n" +
+                        "Toys\n" +
+                        "Electronics\n" +
+                        "Health\n" +
+                        "Beauty\n" +
+                        "Video Games\n" +
+                        "Vehicle\n" +
+                        "------------------------");
+                        String category_choice = scanner.nextLine();
+                        DisplayProducts.displayProductsByCategory(connection, category_choice);
+                    }
+                    else if(answer.equals("NO")) {
+                        displayMainMenu();
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid choice. Please enter YES or NO.");
+                    }
+                }
                 break;
             case 3:
                 System.out.println("Here are The Flagged Reviews");
-                DisplayFunctions displayFunctions3 = new DisplayFunctions(connection);
-                displayFunctions3.displayFlaggedReviews();
+                displayFlaggedReviews(connection);
                 break;
             case 4:
 
@@ -260,6 +260,36 @@ public class Display {
                 default:
                 System.out.println("Invalid choice. Please try again.");
                 viewFunctions();
+        }
+    }
+
+
+    private static void displayFlaggedReviews(Connection connection) throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("{ ? = call utility_package.GetFlaggedReviews }")) {
+            // Register the output parameter as a cursor
+            statement.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Execute the function
+            statement.execute();
+
+            // Retrieve the result set
+            try (ResultSet resultSet = (ResultSet) statement.getObject(1)) {
+                while (resultSet.next()) {
+                    int reviewId = resultSet.getInt("review_id");
+                    int customerId = resultSet.getInt("customer_id");
+                    int flag = resultSet.getInt("flag");
+                    String description = resultSet.getString("description");
+                    String productName = resultSet.getString("product_name");
+
+                    // Process the result here
+                    System.out.println("Review ID: " + reviewId);
+                    System.out.println("Customer ID: " + customerId);
+                    System.out.println("Flag: " + flag);
+                    System.out.println("Review Description: " + description);
+                    System.out.println("Product Name: " + productName);
+                    System.out.println("------------------------------------");
+                }
+            }
         }
     }
 }
