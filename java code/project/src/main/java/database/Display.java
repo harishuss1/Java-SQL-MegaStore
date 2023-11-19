@@ -175,8 +175,7 @@ public class Display {
     public static void removeData() {
         System.out.println("\nRemove Data Menu:");
         System.out.println("1. Remove Product");
-        System.out.println("2. Remove Customer");
-        System.out.println("3. Remove Warehouse");
+        System.out.println("2. Remove Warehouse");
         int choice = getUserChoice();
         scanner.nextLine();
         switch(choice) {
@@ -188,14 +187,17 @@ public class Display {
                 deleteData.deleteProduct(productId);
                 break;
             case 2:
-                // call deleteData.deleteCustomer
-                break;
-            case 3:
                 System.out.println("Enter the Warehouse Name to delete: ");
                 String warehouseName = scanner.nextLine();
-                DeleteData deleteData3 = new DeleteData(connection);
-                deleteData3.deleteWarehouse(warehouseName);
+                DeleteData deleteData2 = new DeleteData(connection);
+                deleteData2.deleteWarehouse(warehouseName);
                 Stocks.getTotalStockForAllProducts(connection);
+                break;
+            case 3:
+                System.out.println("Enter which Review to delete: "); 
+                int reviewId = getUserChoice();
+                DeleteData deleteData3 = new DeleteData(connection);
+                deleteData3.deleteReviews(reviewId);
                 break;
 
         }
@@ -248,8 +250,8 @@ public class Display {
                 }
                 break;
             case 3:
-                System.out.println("Here are The Flagged Reviews");
-                displayFlaggedReviews(connection);
+                DisplayFunctions displayFunctions3 = new DisplayFunctions(connection);
+                displayFunctions3.displayFlaggedReviews(connection);
                 break;
             case 4:
 
@@ -264,33 +266,6 @@ public class Display {
     }
 
 
-    private static void displayFlaggedReviews(Connection connection) throws SQLException {
-        try (CallableStatement statement = connection.prepareCall("{ ? = call utility_package.GetFlaggedReviews }")) {
-            // Register the output parameter as a cursor
-            statement.registerOutParameter(1, OracleTypes.CURSOR);
-
-            // Execute the function
-            statement.execute();
-
-            // Retrieve the result set
-            try (ResultSet resultSet = (ResultSet) statement.getObject(1)) {
-                while (resultSet.next()) {
-                    int reviewId = resultSet.getInt("review_id");
-                    int customerId = resultSet.getInt("customer_id");
-                    int flag = resultSet.getInt("flag");
-                    String description = resultSet.getString("description");
-                    String productName = resultSet.getString("product_name");
-
-                    // Process the result here
-                    System.out.println("Review ID: " + reviewId);
-                    System.out.println("Customer ID: " + customerId);
-                    System.out.println("Flag: " + flag);
-                    System.out.println("Review Description: " + description);
-                    System.out.println("Product Name: " + productName);
-                    System.out.println("------------------------------------");
-                }
-            }
-        }
-    }
+    
 }
 

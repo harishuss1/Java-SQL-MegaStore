@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import oracle.jdbc.OracleTypes;
+
 public class DisplayFunctions {
 
     private Connection conn;
@@ -30,25 +32,32 @@ public class DisplayFunctions {
         }
     }
 
-    public void displayFlaggedReviews() {
-        try (CallableStatement callableStatement = conn.prepareCall("{ call utility_package.CheckFlaggedReviews }");
-             ResultSet resultSet = callableStatement.executeQuery()) {
+    public void displayFlaggedReviews(Connection connection) throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("{ ? = call utility_package.GetFlaggedReviews }")) {
+            // Register the output parameter as a cursor
+            statement.registerOutParameter(1, OracleTypes.CURSOR);
 
-            while (resultSet.next()) {
-                int reviewId = resultSet.getInt("review_id");
-                String description = resultSet.getString("description");
-                String productName = resultSet.getString("product_name");
-                int flag = resultSet.getInt("flag");
+            // Execute the function
+            statement.execute();
 
-                System.out.println("Review ID: " + reviewId);
-                System.out.println("Flag: " + flag);
-                System.out.println("Review Description: " + description);
-                System.out.println("Product Name: " + productName);
-                System.out.println("------------------------------------");
+            // Retrieve the result set
+            try (ResultSet resultSet = (ResultSet) statement.getObject(1)) {
+                while (resultSet.next()) {
+                    int reviewId = resultSet.getInt("review_id");
+                    int customerId = resultSet.getInt("customer_id");
+                    int flag = resultSet.getInt("flag");
+                    String description = resultSet.getString("description");
+                    String productName = resultSet.getString("product_name");
+
+                    // Process the result here
+                    System.out.println("Review ID: " + reviewId);
+                    System.out.println("Customer ID: " + customerId);
+                    System.out.println("Flag: " + flag);
+                    System.out.println("Review Description: " + description);
+                    System.out.println("Product Name: " + productName);
+                    System.out.println("------------------------------------");
+                }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Error executing stored procedure.");
         }
     }
 }
