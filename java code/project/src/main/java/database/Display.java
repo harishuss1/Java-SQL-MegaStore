@@ -115,7 +115,7 @@ public class Display {
                 break;
             case 4:
                 // Call the method for viewing reports
-                // For example: viewReports();
+                // For example: viewfunctions();
                 displayMainMenu();
                 break;
             case 5:
@@ -156,10 +156,7 @@ public class Display {
         System.out.println("5. Add Project Address");
         System.out.println("6. Add Warehouse");
         System.out.println("7. Add Warehouse Product");
-        System.out.println("8. Add Order Audit Log");
-        System.out.println("9. Add Login Audit Log");
-        System.out.println("10. Add Stock Update Audit Log");
-        System.out.println("11. Back to Main Menu");
+        System.out.println("8. Back to Main Menu");
 
         int choice = getUserChoice();
 
@@ -193,19 +190,6 @@ public class Display {
                 // For example: addWarehouseProduct();
                 break;
             case 8:
-                // Call the method to add an order audit log
-                // For example: addOrderAuditLog();
-                break;
-            case 9:
-                // Call the method to add a login audit log
-                // For example: addLoginAuditLog();
-                break;
-            case 10:
-                // Call the method to add a stock update audit log
-                // For example: addStockUpdateAuditLog();
-                break;
-            case 11:
-                // Go back to the main menu
                 displayMainMenu();
                 break;
             default:
@@ -240,6 +224,42 @@ public class Display {
                 Stocks.getTotalStockForAllProducts(connection);
                 break;
 
+        }
+    }
+
+    public static void viewFunctions(){
+        System.out.println("\nView Function Menu:");
+        System.out.println("1. Show Average Rating Score For A Product");
+        System.out.println("2. Show Total inventory For A Product");
+        System.out.println("3. Show Flagged Customers");
+        System.out.println("4. Show Audit Logs");
+
+             int choice = getUserChoice();
+
+        switch (choice) {
+            case 1:
+                System.out.println("Enter a Product's id You'd like to see the reviews for: ");
+                int productid = scanner.nextInt();
+                DisplayFunctions displayFunctions = new DisplayFunctions(connection);
+                displayFunctions.displayAverageReviewScore(productid); 
+                break;
+            case 2:
+                
+                break;
+            case 3:
+                System.out.println("Here are The Flagged Reviews");
+                DisplayFunctions displayFunctions3 = new DisplayFunctions(connection);
+                displayFunctions3.displayFlaggedReviews();
+                break;
+            case 4:
+
+                break;
+            case 5:
+
+                break;
+                default:
+                System.out.println("Invalid choice. Please try again.");
+                viewFunctions();
         }
     }
 }
