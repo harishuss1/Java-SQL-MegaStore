@@ -14,31 +14,27 @@ public class Display {
     private static Scanner scanner = new Scanner(System.in);
     private static Connection connection;
 
-
-
-
-     public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
         System.out.flush();
         Greet();
         displayLoginMenu();
     }
-    
-    public static void Greet(){
-        System.out.println("   ________________");
-        System.out.println("  /\\              /\\");
-        System.out.println(" /  \\____________/  \\");
-        System.out.println("/____________________\\");
-        System.out.println("|                    |");
-        System.out.println("|        SHOP        |");
-        System.out.println("\\                    /");
-        System.out.println(" \\__________________/");
-        System.out.println("");
-       
-    }
 
-    
+    public static void Greet() {
+        System.out.println("⠀⠈⠛⠻⠶⣶⡄   SHOPPING...");
+        System.out.println(" ⠀⠀⠀⠀⠀⠈⢻⣆⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀⣀");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⢻⡏⠉⠉⠉⠉⢹⡏⠉⠉⠉⠉⣿⠉⠉⠉⠉⠉⣹⠇");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠈⣿⣀⣀⣀⣀⣸⣧⣀⣀⣀⣀⣿⣄⣀⣀⣀⣠⡿");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠸⣧⠀⠀⠀⢸⡇⠀⠀⠀⠀⣿⠁⠀⠀⠀⣿⠃");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⣧⣤⣤⣼⣧⣤⣤⣤⣤⣿⣤⣤⣤⣼⡏");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⠀⠀⢸⡇⠀⠀⠀⠀⣿⠀⠀⢠⡿");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣷⠤⠼⠷⠤⠤⠤⠤⠿⠦⠤⠾⠃");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⠁");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⢾⣷⢶⣶⠶⠶⠶⠶⠶⠶⣶⠶⣶⡶");
+        System.out.println("⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣧⣠⡿⠀⠀⠀⠀⠀⠀⢷⣄⣼⠇");
+    }
 
     public static void displayLoginMenu() throws SQLException {
         System.out.println("Welcome to the Application!");
@@ -52,7 +48,37 @@ public class Display {
                 // Call the method for user login
                 // For example: loginUser();
                 connection = Service.getConnection();
+<<<<<<< HEAD
+                Stocks.getTotalStockForAllProducts(connection);
+                while (true) {
+                    System.out.println("Do you want to display specific products of a category? YES/NO");
+                    String answer = scanner.nextLine();
+
+                    if (answer.equals("YES")) {
+                        System.out.println("Which category from this list? \n" +
+                                "Grocery\n" +
+                                "DVD\n" +
+                                "Cars\n" +
+                                "Toys\n" +
+                                "Electronics\n" +
+                                "Health\n" +
+                                "Beauty\n" +
+                                "Video Games\n" +
+                                "Vehicle\n" +
+                                "------------------------");
+                        String category_choice = scanner.nextLine();
+                        DisplayProducts.displayProductsByCategory(connection, category_choice);
+                    } else if (answer.equals("NO")) {
+                        displayMainMenu();
+                        break;
+                    } else {
+                        System.out.println("Invalid choice. Please enter YES or NO.");
+                    }
+                }
+
+=======
                 displayMainMenu();
+>>>>>>> 9dfabb3d43452e619c61e43f75ede0092cff9c13
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
@@ -120,8 +146,12 @@ public class Display {
         return choice;
     }
 
+<<<<<<< HEAD
+    public static void addData() {
+=======
 
     public static void addData() throws SQLException {
+>>>>>>> 9dfabb3d43452e619c61e43f75ede0092cff9c13
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -179,9 +209,10 @@ public class Display {
         System.out.println("3. Remove Warehouse");
         int choice = getUserChoice();
         scanner.nextLine();
-        switch(choice) {
+        switch (choice) {
             case 1:
-                System.out.println("Enter the ID of the product to remove. (Please refer to the list of products on top)");
+                System.out.println(
+                        "Enter the ID of the product to remove. (Please refer to the list of products on top)");
 
                 int productId = getUserChoice();
                 DeleteData deleteData = new DeleteData(connection);
@@ -293,4 +324,3 @@ public class Display {
         }
     }
 }
-
