@@ -2,15 +2,15 @@ CREATE OR REPLACE PACKAGE insert_data AS
     PROCEDURE add_product(vproduct IN PRODUCT_TYP);
     PROCEDURE add_project_city(vcities IN PROJECT_CITY_TYP);
     PROCEDURE add_project_address(vaddresses IN PROJECT_ADDRESS_TYP);
-    PROCEDURE add_store(vstores IN STORES_TYP);
+    PROCEDURE add_store(vstores IN STORE_TYP);
     PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP);
     PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP);
     PROCEDURE add_customer(vcustomers IN PROJECT_CUSTOMERS_TYP);
     PROCEDURE add_order(vorders IN PROJECT_ORDERS_TYP);
     PROCEDURE add_review(vreviews IN REVIEWS_TYP);
-    PROCEDURE add_order_audit_log(vorder_audit_logs IN ORDERAUDITLOG_TYP);
-    PROCEDURE add_login_audit_log(vlogin_audit_logs IN LOGINAUDITLOG_TYP);
-    PROCEDURE add_stock_update_audit_log(vstock_update_audit_logs IN STOCKUPDATEAUDITLOG_TYP);
+    PROCEDURE add_order_audit_log(vorder_audit_logs IN ORDER_AUDIT_LOG_TYP);
+    PROCEDURE add_login_audit_log(vlogin_audit_logs IN LOGIN_AUDIT_LOG_TYP);
+    PROCEDURE add_stock_update_audit_log(vstock_update_audit_logs IN STOCK_UPDATE_AUDIT_LOG_TYP);
 END insert_data;
 /
 
@@ -54,7 +54,7 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
     END add_project_address;
 
     -- Adding store
-    PROCEDURE add_store(vstores IN STORES_TYP) IS
+    PROCEDURE add_store(vstores IN STORE_TYP) IS
     BEGIN
         INSERT INTO Stores
         VALUES (
@@ -128,7 +128,7 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
     END add_review;
 
     -- Adding order audit log
-    PROCEDURE add_order_audit_log(vorder_audit_logs IN ORDERAUDITLOG_TYP) IS
+    PROCEDURE add_order_audit_log(vorder_audit_logs IN ORDER_AUDIT_LOG_TYP) IS
     BEGIN
         INSERT INTO OrderAuditLog
         VALUES (
@@ -141,7 +141,7 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
     END add_order_audit_log;
 
     -- Adding login audit log
-    PROCEDURE add_login_audit_log(vlogin_audit_logs IN LOGINAUDITLOG_TYP) IS
+    PROCEDURE add_login_audit_log(vlogin_audit_logs IN LOGIN_AUDIT_LOG_TYP) IS
     BEGIN
         INSERT INTO LoginAuditLog
         VALUES (
@@ -153,7 +153,7 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
     END add_login_audit_log;
 
     -- Adding stock update audit log
-    PROCEDURE add_stock_update_audit_log(vstock_update_audit_logs IN STOCKUPDATEAUDITLOG_TYP) IS
+    PROCEDURE add_stock_update_audit_log(vstock_update_audit_logs IN STOCK_UPDATE_AUDIT_LOG_TYP) IS
     BEGIN
         INSERT INTO StockUpdateAuditLog
         VALUES (
