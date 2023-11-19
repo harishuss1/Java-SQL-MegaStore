@@ -1,9 +1,13 @@
 package database;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import oracle.jdbc.OracleTypes;
 
 //All the stuff related to Displaying information is here
 public class Display {
@@ -44,6 +48,7 @@ public class Display {
                 // Call the method for user login
                 // For example: loginUser();
                 connection = Service.getConnection();
+<<<<<<< HEAD
                 Stocks.getTotalStockForAllProducts(connection);
                 while (true) {
                     System.out.println("Do you want to display specific products of a category? YES/NO");
@@ -71,6 +76,9 @@ public class Display {
                     }
                 }
 
+=======
+                displayMainMenu();
+>>>>>>> 9dfabb3d43452e619c61e43f75ede0092cff9c13
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
@@ -81,7 +89,7 @@ public class Display {
         }
     }
 
-    public static void displayMainMenu() {
+    public static void displayMainMenu() throws SQLException {
         System.out.println("\nMain Menu:");
         System.out.println("1. Add");
         System.out.println("2. Remove");
@@ -107,8 +115,7 @@ public class Display {
                 displayMainMenu();
                 break;
             case 4:
-                // Call the method for viewing reports
-                // For example: viewReports();
+                viewFunctions();
                 displayMainMenu();
                 break;
             case 5:
@@ -139,7 +146,12 @@ public class Display {
         return choice;
     }
 
+<<<<<<< HEAD
     public static void addData() {
+=======
+
+    public static void addData() throws SQLException {
+>>>>>>> 9dfabb3d43452e619c61e43f75ede0092cff9c13
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -148,10 +160,7 @@ public class Display {
         System.out.println("5. Add Project Address");
         System.out.println("6. Add Warehouse");
         System.out.println("7. Add Warehouse Product");
-        System.out.println("8. Add Order Audit Log");
-        System.out.println("9. Add Login Audit Log");
-        System.out.println("10. Add Stock Update Audit Log");
-        System.out.println("11. Back to Main Menu");
+        System.out.println("8. Back to Main Menu");
 
         int choice = getUserChoice();
 
@@ -185,19 +194,6 @@ public class Display {
                 // For example: addWarehouseProduct();
                 break;
             case 8:
-                // Call the method to add an order audit log
-                // For example: addOrderAuditLog();
-                break;
-            case 9:
-                // Call the method to add a login audit log
-                // For example: addLoginAuditLog();
-                break;
-            case 10:
-                // Call the method to add a stock update audit log
-                // For example: addStockUpdateAuditLog();
-                break;
-            case 11:
-                // Go back to the main menu
                 displayMainMenu();
                 break;
             default:
@@ -233,6 +229,98 @@ public class Display {
                 Stocks.getTotalStockForAllProducts(connection);
                 break;
 
+        }
+    }
+
+    public static void viewFunctions() throws SQLException{
+        System.out.println("\nView Function Menu:");
+        System.out.println("1. Show Average Rating Score For A Product");
+        System.out.println("2. Show Total inventory For A Product");
+        System.out.println("3. Show Flagged Customers");
+        System.out.println("4. Show Audit Logs");
+
+             int choice = getUserChoice();
+             scanner.nextLine();
+        switch (choice) {
+            case 1:
+                System.out.println("Enter a Product's id You'd like to see the reviews for: ");
+                int productid = scanner.nextInt();
+                DisplayFunctions displayFunctions = new DisplayFunctions(connection);
+                displayFunctions.displayAverageReviewScore(productid); 
+                break;
+            case 2:
+                Stocks.getTotalStockForAllProducts(connection);
+                while(true) {
+                    System.out.println("Do you want to display specific products of a category? YES/NO");
+                    String answer = scanner.nextLine();
+                
+                    if(answer.equals("YES")) {
+                        System.out.println("Which category from this list? \n" +
+                        "Grocery\n" +
+                        "DVD\n" +
+                        "Cars\n" +
+                        "Toys\n" +
+                        "Electronics\n" +
+                        "Health\n" +
+                        "Beauty\n" +
+                        "Video Games\n" +
+                        "Vehicle\n" +
+                        "------------------------");
+                        String category_choice = scanner.nextLine();
+                        DisplayProducts.displayProductsByCategory(connection, category_choice);
+                    }
+                    else if(answer.equals("NO")) {
+                        displayMainMenu();
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid choice. Please enter YES or NO.");
+                    }
+                }
+                break;
+            case 3:
+                System.out.println("Here are The Flagged Reviews");
+                displayFlaggedReviews(connection);
+                break;
+            case 4:
+
+                break;
+            case 5:
+
+                break;
+                default:
+                System.out.println("Invalid choice. Please try again.");
+                viewFunctions();
+        }
+    }
+
+
+    private static void displayFlaggedReviews(Connection connection) throws SQLException {
+        try (CallableStatement statement = connection.prepareCall("{ ? = call utility_package.GetFlaggedReviews }")) {
+            // Register the output parameter as a cursor
+            statement.registerOutParameter(1, OracleTypes.CURSOR);
+
+            // Execute the function
+            statement.execute();
+
+            // Retrieve the result set
+            try (ResultSet resultSet = (ResultSet) statement.getObject(1)) {
+                while (resultSet.next()) {
+                    int reviewId = resultSet.getInt("review_id");
+                    int customerId = resultSet.getInt("customer_id");
+                    int flag = resultSet.getInt("flag");
+                    String description = resultSet.getString("description");
+                    String productName = resultSet.getString("product_name");
+
+                    // Process the result here
+                    System.out.println("Review ID: " + reviewId);
+                    System.out.println("Customer ID: " + customerId);
+                    System.out.println("Flag: " + flag);
+                    System.out.println("Review Description: " + description);
+                    System.out.println("Product Name: " + productName);
+                    System.out.println("------------------------------------");
+                }
+            }
         }
     }
 }
