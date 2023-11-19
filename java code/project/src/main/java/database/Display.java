@@ -8,7 +8,7 @@ import java.util.Scanner;
 //All the stuff related to Displaying information is here
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
-
+    private static Connection connection;
 
 
 
@@ -47,7 +47,7 @@ public class Display {
             case 1:
                 // Call the method for user login
                 // For example: loginUser();
-                Connection connection = Service.getConnection();
+                connection = Service.getConnection();
                 Stocks.getTotalStockForAllProducts(connection);
                 while(true) {
                     System.out.println("Do you want to display specific products of a category? YES/NO");
@@ -105,8 +105,7 @@ public class Display {
                 displayMainMenu();
                 break;
             case 2:
-                // Call the method for removing data
-                // For example: removeData();
+                removeData();
                 displayMainMenu();
                 break;
             case 3:
@@ -214,14 +213,34 @@ public class Display {
                 addData();
         }
     }
+
+    public static void removeData() {
+        System.out.println("\nRemove Data Menu:");
+        System.out.println("1. Remove Product");
+        System.out.println("2. Remove Customer");
+        System.out.println("3. Remove Warehouse");
+        int choice = getUserChoice();
+        scanner.nextLine();
+        switch(choice) {
+            case 1:
+                System.out.println("Enter the ID of the product to remove. (Please refer to the list of products on top)");
+
+                int productId = getUserChoice();
+                DeleteData deleteData = new DeleteData(connection);
+                deleteData.deleteProduct(productId);
+                break;
+            case 2:
+                // call deleteData.deleteCustomer
+                break;
+            case 3:
+                System.out.println("Enter the Warehouse Name to delete: ");
+                String warehouseName = scanner.nextLine();
+                DeleteData deleteData3 = new DeleteData(connection);
+                deleteData3.deleteWarehouse(warehouseName);
+                Stocks.getTotalStockForAllProducts(connection);
+                break;
+
+        }
+    }
 }
-
-
-
-
-
-
-        
-        
-    
 
