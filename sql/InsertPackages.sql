@@ -16,13 +16,17 @@ END insert_data;
 
 CREATE OR REPLACE PACKAGE BODY insert_data AS
     -- Adding product
-    PROCEDURE add_product(vproduct IN PRODUCT_TYP) IS
+    PROCEDURE add_product(
+        vproduct_name IN VARCHAR2,
+        vproduct_price IN NUMBER,
+        vproduct_category IN VARCHAR2
+    ) IS
     BEGIN
         INSERT INTO Products
         VALUES (
-            vproduct.product_name,
-            vproduct.product_price,
-            vproduct.product_category
+            vproduct_name,
+            vproduct_price,
+            vproduct_category
         );
     END add_product;
 
