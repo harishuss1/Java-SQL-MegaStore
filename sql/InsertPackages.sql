@@ -1,5 +1,5 @@
 CREATE OR REPLACE PACKAGE insert_data AS
-    PROCEDURE add_product(vproduct_name VARCHAR2, vproduct_price NUMBER, vproduct_category VARCHAR2);
+    PROCEDURE add_product(vproduct IN PRODUCT_TYP);
 --    PROCEDURE add_project_city(vcities IN PROJECT_CITY_TYP);
 --    PROCEDURE add_project_address(vaddresses IN PROJECT_ADDRESS_TYP);
 --    PROCEDURE add_store(vstores IN STORE_TYP);
@@ -15,16 +15,14 @@ END insert_data;
 CREATE OR REPLACE PACKAGE BODY insert_data AS
     -- Adding product
     PROCEDURE add_product(
-        vproduct_name IN VARCHAR2,
-        vproduct_price IN NUMBER,
-        vproduct_category IN VARCHAR2
+        vproduct IN PRODUCT_TYP
     ) IS
     BEGIN
         INSERT INTO Products (product_name, product_price, product_category)
         VALUES (
-            vproduct_name,
-            vproduct_price,
-            vproduct_category
+            vproduct.product_name,
+            vproduct.product_price,
+            vproduct.product_category
         );
     END add_product;
 
