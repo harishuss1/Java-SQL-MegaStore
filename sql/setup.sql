@@ -214,6 +214,7 @@ CREATE TABLE Stores_Audit_Log (
 CREATE TABLE Warehouse_Products_Audit_Log (
     audit_warehouseProducts_id NUMBER GENERATED ALWAYS AS IDENTITY,
     warehouse_id NUMBER,
+    old_warehouse_id NUMBER,
     product_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -416,8 +417,8 @@ BEGIN
 
     -- Insert a record into the audit log
     IF INSERTING OR UPDATING THEN
-        INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, product_id, audit_type, total_quantity)
-        VALUES (:NEW.warehouse_id, :NEW.product_id, v_audit_type, :NEW.total_quantity);
+        INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, old_warehouse_id, product_id, audit_type, total_quantity)
+        VALUES (:NEW.warehouse_id, NULL, :NEW.product_id, v_audit_type, :NEW.total_quantity);
     END IF;
 END;
 /

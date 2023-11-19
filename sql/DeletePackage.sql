@@ -3,7 +3,7 @@ CREATE OR REPLACE PACKAGE delete_data AS
     PROCEDURE delete_project_city(vcity_id IN NUMBER);
     PROCEDURE delete_project_address(vaddress_id IN NUMBER);
     PROCEDURE delete_store(vstore_id IN NUMBER);
-    PROCEDURE delete_warehouse(vwarehouse_id IN NUMBER);
+    PROCEDURE delete_warehouse(vwarehouse_name IN VARCHAR2);
     PROCEDURE delete_warehouse_product(vwarehouse_id IN NUMBER, vproduct_id IN NUMBER);
     PROCEDURE delete_customer(vcustomer_id IN NUMBER);
     PROCEDURE delete_order(vorder_id IN NUMBER);
@@ -87,11 +87,37 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     END delete_store;
 
     -- Deleting warehouse
-    PROCEDURE delete_warehouse(vwarehouse_id IN NUMBER) IS
+    PROCEDURE delete_warehouse(vwarehouse_name IN VARCHAR2) IS
+        vwarehouse_id Warehouse.warehouse_id%TYPE;
+        v_old_warehouse_id NUMBER;
+        v_product_id NUMBER;
+        v_total_quantity NUMBER;
+        v_audit_type VARCHAR2(30);
+        v_audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP; 
     BEGIN
-        DELETE FROM Warehouse WHERE warehouse_id = vwarehouse_id;
+        -- Get the warehouse_id
+        SELECT warehouse_id INTO vwarehouse_id
+        FROM Warehouse
+        WHERE warehouse_name = vwarehouse_name;
+    
+        -- Open a cursor to fetch product_id and total_quantity
+        FOR warehouse_prod IN (SELECT product_id, total_quantity FROM Warehouse_Products WHERE warehouse_id = vwarehouse_id) 
+        LOOP
+            -- Store values in variables
+            v_product_id := warehouse_prod.product_id;
+            v_total_quantity := warehouse_prod.total_quantity;
+    
+            -- Insert into Warehouse_Products_Audit_Log
+            INSERT INTO Warehouse_Products_Audit_Log (warehouse_id, product_id, old_warehouse_id, audit_type, audit_timestamp, total_quantity)
+            VALUES (NULL, v_product_id, vwarehouse_id, 'DELETE', SYSTIMESTAMP, v_total_quantity);
+    
+            -- Delete from Warehouse_Products table
+            DELETE FROM Warehouse_Products WHERE warehouse_id = vwarehouse_id AND product_id = v_product_id;
+        END LOOP;
+    
     END delete_warehouse;
-
+    
+    
     -- Deleting warehouse product
     PROCEDURE delete_warehouse_product(vwarehouse_id IN NUMBER, vproduct_id IN NUMBER) IS
     BEGIN
