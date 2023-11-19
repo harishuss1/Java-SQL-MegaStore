@@ -930,7 +930,6 @@ END;
 --Making Objects for each Table
 
 CREATE OR REPLACE TYPE PRODUCT_TYP AS OBJECT (
-    product_id NUMBER,
     product_name VARCHAR2(50),
     product_price NUMBER(10,2),
     product_category VARCHAR2(20)

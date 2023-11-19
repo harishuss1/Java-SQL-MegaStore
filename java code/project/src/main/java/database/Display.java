@@ -17,7 +17,7 @@ public class Display {
 
 
 
-     public static void main(String[] args) throws SQLException {
+     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -40,7 +40,7 @@ public class Display {
 
     
 
-    public static void displayLoginMenu() throws SQLException {
+    public static void displayLoginMenu() throws SQLException, ClassNotFoundException {
         System.out.println("Welcome to the Application!");
         System.out.println("1. Log In");
         System.out.println("2. Exit");
@@ -63,7 +63,7 @@ public class Display {
         }
     }
 
-    public static void displayMainMenu() throws SQLException {
+    public static void displayMainMenu() throws SQLException, ClassNotFoundException {
         System.out.println("\nMain Menu:");
         System.out.println("1. Add");
         System.out.println("2. Remove");
@@ -121,7 +121,7 @@ public class Display {
     }
 
 
-    public static void addData() throws SQLException {
+    public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -136,8 +136,8 @@ public class Display {
 
         switch (choice) {
             case 1:
-                // Call the method to add a product
-                // For example: addProduct();
+                Product productToAdd = Product.collectProductInformation();
+                productToAdd.AddToDatabase(connection);
                 break;
             case 2:
                 // Call the method to add a customer
@@ -203,7 +203,7 @@ public class Display {
         }
     }
 
-    public static void viewFunctions() throws SQLException{
+    public static void viewFunctions() throws SQLException, ClassNotFoundException{
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
         System.out.println("2. Show Total inventory For A Product");
