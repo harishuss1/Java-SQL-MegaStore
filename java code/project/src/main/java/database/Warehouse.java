@@ -72,7 +72,7 @@ public class Warehouse implements SQLData {
         displayAllAddresses(conn);
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nAdding Warehouse:");
-        System.out.println("Enter warehouse name: ");
+        System.out.println("Enter warehouse name (Ex: Warehouse A): ");
         String warehouseName = scanner.nextLine();
         System.out.println("Enter warehouse address: ");
         String address = scanner.nextLine();

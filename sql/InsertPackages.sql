@@ -4,7 +4,7 @@ CREATE OR REPLACE PACKAGE insert_data AS
 --    PROCEDURE add_project_address(vaddresses IN PROJECT_ADDRESS_TYP);
 --    PROCEDURE add_store(vstores IN STORE_TYP);
       PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP);
---    PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP);
+      PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP);
 --    PROCEDURE add_customer(vcustomers IN PROJECT_CUSTOMERS_TYP);
 --    PROCEDURE add_order(vorders IN PROJECT_ORDERS_TYP);
 --    PROCEDURE add_review(vreviews IN REVIEWS_TYP);
@@ -82,15 +82,15 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
     END add_warehouse;
 
     -- Adding warehouse product
---    PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP) IS
---    BEGIN
---        INSERT INTO Warehouse_Products
---        VALUES (
---            vwarehouse_products.warehouse_id,
---            vwarehouse_products.product_id,
---            vwarehouse_products.total_quantity
---        );
---    END add_warehouse_product;
+    PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP) IS
+    BEGIN
+        INSERT INTO Warehouse_Products
+        VALUES (
+            vwarehouse_products.warehouse_id,
+            vwarehouse_products.product_id,
+            vwarehouse_products.total_quantity
+        );
+    END add_warehouse_product;
 
     -- Adding customer
 --    PROCEDURE add_customer(vcustomers IN PROJECT_CUSTOMERS_TYP) IS
