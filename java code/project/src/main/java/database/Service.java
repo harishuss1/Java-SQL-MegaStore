@@ -2,6 +2,8 @@ package database;
 
 import java.sql.*;
 import java.util.Scanner;
+import java.io.Console;
+
 
 public class Service {
 
@@ -28,10 +30,12 @@ public class Service {
         Connection conn = null;
 
         Scanner scan = new Scanner(System.in);
+        Console console = System.console();
         System.out.println("Enter username: ");
         String username = scan.next();
-        System.out.println("Enter password: ");
-        String password = scan.next();
+        System.out.println("Enter password");
+        char[] passwordChars = console.readPassword();
+        String password = new String(passwordChars);
         
 
         String url = "jdbc:oracle:thin:@198.168.52.211: 1521/pdbora19c.dawsoncollege.qc.ca";

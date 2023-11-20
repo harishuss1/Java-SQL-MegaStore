@@ -2,9 +2,10 @@ package database;
 
 import java.sql.*;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Customers implements SQLData {
-    private int customer_id;
+    
     private String firstname;
     private String lastname;
     private String email;
@@ -12,18 +13,13 @@ public class Customers implements SQLData {
     private int city_id;
     private String typeName;
 
-    public Customers(int customer_id, String firstname, String lastname, String email, int address_id, int city_id) {
-        this.customer_id = customer_id;
+    public Customers(String firstname, String lastname, String email, int address_id, int city_id) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.address_id = address_id;
         this.city_id = city_id;
         this.typeName = "PROJECT_CUSTOMERS_TYP";
-    }
-
-    public void setCustomer_id(int customer_id) {
-        this.customer_id = customer_id;
     }
 
     public void setFirstname(String firstname) {
@@ -44,10 +40,6 @@ public class Customers implements SQLData {
 
     public void setCity_id(int city_id) {
         this.city_id = city_id;
-    }
-
-    public int getCustomer_id() {
-        return customer_id;
     }
 
     public String getFirstname() {
@@ -81,7 +73,6 @@ public class Customers implements SQLData {
 
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
-        setCustomer_id(stream.readInt());
         setFirstname(stream.readString());
         setLastname(stream.readString());
         setEmail(stream.readString());
@@ -91,7 +82,6 @@ public class Customers implements SQLData {
 
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
-        stream.writeInt(getCustomer_id());
         stream.writeString(getFirstname());
         stream.writeString(getLastname());
         stream.writeString(getEmail());
@@ -104,13 +94,25 @@ public class Customers implements SQLData {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
         map.put(this.typeName, Class.forName("database.Customers"));
-        Customers myCustomer = new Customers(this.customer_id, this.firstname, this.lastname, this.email,
+        Customers myCustomer = new Customers(this.firstname, this.lastname, this.email,
                 this.address_id, this.city_id);
         String sql = "{call add_customer(?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setObject(1, myCustomer);
             stmt.execute();
         }
+    }
+
+    public static Customers collectCustomerInformation() {
+        Scanner scanner = new Scanner(System.in);
+        
+        String firstname = Helpers.getUserInputString("Enter first name: ");
+        String lastname = Helpers.getUserInputString("Enter last name: ");
+        String email = Helpers.getUserInputString("Enter email: ");
+        int addressId = Helpers.getUserInputInt("Enter address ID: ");
+        int cityId = Helpers.getUserInputInt("Enter city ID: ");
+
+        return new Customers(firstname, lastname, email, addressId, cityId);
     }
 
 }
