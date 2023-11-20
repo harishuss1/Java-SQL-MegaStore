@@ -14,18 +14,15 @@ public class Display {
     private static Scanner scanner = new Scanner(System.in);
     private static Connection connection;
 
-
-
-
-     public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
         System.out.flush();
         Greet();
         displayLoginMenu();
     }
-    
-    public static void Greet(){
+
+    public static void Greet() {
         System.out.println("   ________________");
         System.out.println("  /\\              /\\");
         System.out.println(" /  \\____________/  \\");
@@ -35,10 +32,8 @@ public class Display {
         System.out.println("\\                    /");
         System.out.println(" \\__________________/");
         System.out.println("");
-       
-    }
 
-    
+    }
 
     public static void displayLoginMenu() throws SQLException, ClassNotFoundException {
         System.out.println("Welcome to the Application!");
@@ -120,7 +115,6 @@ public class Display {
         return choice;
     }
 
-
     public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
@@ -179,9 +173,10 @@ public class Display {
         System.out.println("2. Remove Warehouse");
         int choice = getUserChoice();
         scanner.nextLine();
-        switch(choice) {
+        switch (choice) {
             case 1:
-                System.out.println("Enter the ID of the product to remove. (Please refer to the list of products on top)");
+                System.out.println(
+                        "Enter the ID of the product to remove. (Please refer to the list of products on top)");
 
                 int productId = getUserChoice();
                 DeleteData deleteData = new DeleteData(connection);
@@ -195,7 +190,7 @@ public class Display {
                 Stocks.getTotalStockForAllProducts(connection);
                 break;
             case 3:
-                System.out.println("Enter which Review to delete: "); 
+                System.out.println("Enter which Review to delete: ");
                 int reviewId = getUserChoice();
                 DeleteData deleteData3 = new DeleteData(connection);
                 deleteData3.deleteReviews(reviewId);
@@ -204,49 +199,47 @@ public class Display {
         }
     }
 
-    public static void viewFunctions() throws SQLException, ClassNotFoundException{
+    public static void viewFunctions() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
         System.out.println("2. Show Total inventory For A Product");
         System.out.println("3. Show Flagged Customers");
         System.out.println("4. Show Audit Logs");
 
-             int choice = getUserChoice();
-             scanner.nextLine();
+        int choice = getUserChoice();
+        scanner.nextLine();
         switch (choice) {
             case 1:
                 System.out.println("Enter a Product's id You'd like to see the reviews for: ");
                 int productid = scanner.nextInt();
                 System.out.println("-------------------------------------");
                 DisplayFunctions displayFunctions = new DisplayFunctions(connection);
-                displayFunctions.displayAverageReviewScore(productid); 
+                displayFunctions.displayAverageReviewScore(productid);
                 break;
             case 2:
                 Stocks.getTotalStockForAllProducts(connection);
-                while(true) {
+                while (true) {
                     System.out.println("Do you want to display specific products of a category? YES/NO");
                     String answer = scanner.nextLine();
-                
-                    if(answer.equals("YES")) {
+
+                    if (answer.equals("YES")) {
                         System.out.println("Which category from this list? \n" +
-                        "Grocery\n" +
-                        "DVD\n" +
-                        "Cars\n" +
-                        "Toys\n" +
-                        "Electronics\n" +
-                        "Health\n" +
-                        "Beauty\n" +
-                        "Video Games\n" +
-                        "Vehicle\n" +
-                        "------------------------");
+                                "Grocery\n" +
+                                "DVD\n" +
+                                "Cars\n" +
+                                "Toys\n" +
+                                "Electronics\n" +
+                                "Health\n" +
+                                "Beauty\n" +
+                                "Video Games\n" +
+                                "Vehicle\n" +
+                                "------------------------");
                         String category_choice = scanner.nextLine();
                         DisplayProducts.displayProductsByCategory(connection, category_choice);
-                    }
-                    else if(answer.equals("NO")) {
+                    } else if (answer.equals("NO")) {
                         displayMainMenu();
                         break;
-                    }
-                    else {
+                    } else {
                         System.out.println("Invalid choice. Please enter YES or NO.");
                     }
                 }
@@ -262,13 +255,10 @@ public class Display {
             case 5:
 
                 break;
-                default:
+            default:
                 System.out.println("Invalid choice. Please try again.");
                 viewFunctions();
         }
     }
 
-
-    
 }
-
