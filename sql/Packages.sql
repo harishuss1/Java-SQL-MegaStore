@@ -1,6 +1,6 @@
 Create or Replace PACKAGE utility_package as 
 --    Procedure add_review;
---    Function CalculateAverageReviewScore (p_product_id NUMBER) return number;
+    FUNCTION calculate_average_review_score(p_product_id NUMBER) RETURN NUMBER;
     FUNCTION GetFlaggedReviews RETURN SYS_REFCURSOR;
 end utility_package;
 /
