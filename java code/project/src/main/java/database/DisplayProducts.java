@@ -31,4 +31,30 @@ public class DisplayProducts {
             e.printStackTrace();
         }
     }
+
+    public static void displayProduct(Connection connection) {
+        try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_product(?)}")) {
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+    
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+    
+            while (rs.next()) {
+                int productId = rs.getInt("product_id");
+                String productName = rs.getString("product_name");
+                double productPrice = rs.getDouble("product_price");
+                String productCategory = rs.getString("product_category");
+    
+                System.out.println("Product ID: " + productId);
+                System.out.println("Product Name: " + productName);
+                System.out.println("Product Price: " + productPrice);
+                System.out.println("Product Category: " + productCategory);
+                System.out.println("------------------------");
+            }
+        } 
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
