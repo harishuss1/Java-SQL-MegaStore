@@ -8,6 +8,9 @@ CREATE OR REPLACE PACKAGE delete_data AS
     PROCEDURE delete_customer(vcustomer_id IN NUMBER);
     PROCEDURE delete_order(vorder_id IN NUMBER);
     PROCEDURE delete_review(vreview_id IN NUMBER);
+    PROCEDURE display_store (p_cursor OUT SYS_REFCURSOR);
+    PROCEDURE display_product (p_product OUT SYS_REFCURSOR);
+    PROCEDURE display_order (p_order OUT SYS_REFCURSOR);
 END delete_data;
 /
 
@@ -31,6 +34,13 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
         INSERT INTO Products_Audit_Log ( product_id, old_product_id, audit_type, audit_timestamp, product_name, product_price, product_category)
             VALUES (NULL, vproduct_id, v_audit_type, v_audit_timestamp, v_product_name, v_product_price, v_product_category);
     END delete_product;
+    
+    -- Procedure to display_product is needed in order for app user to know which id to remove 
+    PROCEDURE display_product (p_product OUT SYS_REFCURSOR) IS
+    BEGIN
+    OPEN p_product FOR
+        SELECT product_id, product_name, product_price, product_category FROM Products;
+    END display_product;
 
     -- Deleting project city
     PROCEDURE delete_project_city(vcity_id IN NUMBER) IS
@@ -85,7 +95,14 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     INSERT INTO Stores_Audit_Log (store_id, old_store_id, audit_type, audit_timestamp, store_name)
         VALUES (NULL, v_old_store_id, v_audit_type, v_audit_timestamp, v_store_name);
     END delete_store;
-
+    
+    -- Procedure to display_store is needed in order for app user to know which id to remove 
+    PROCEDURE display_store (p_cursor OUT SYS_REFCURSOR) IS
+    BEGIN
+    OPEN p_cursor FOR
+        SELECT store_id, store_name FROM Stores;
+    END display_store;
+    
     -- Deleting warehouse
     PROCEDURE delete_warehouse(vwarehouse_name IN VARCHAR2) IS
         vwarehouse_id Warehouse.warehouse_id%TYPE;
@@ -137,6 +154,12 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     BEGIN
         DELETE FROM Project_Orders WHERE order_id = vorder_id;
     END delete_order;
+    -- Procedure to display_order is needed in order for app user to know which id to remove 
+    PROCEDURE display_order (p_order OUT SYS_REFCURSOR) IS
+    BEGIN
+        OPEN p_order FOR
+            SELECT order_id, order_quantity, order_date, store_id, customer_id, product_id FROM Project_Orders;
+    END display_order;
 
     -- Deleting review
     PROCEDURE delete_review(vreview_id IN NUMBER) IS

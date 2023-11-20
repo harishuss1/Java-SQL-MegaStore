@@ -3,6 +3,8 @@ package database;
 import java.sql.*;
 import java.util.Map;
 
+import oracle.jdbc.OracleTypes;
+
 public class Orders implements SQLData {
     private int order_id;
     private int order_quantity;
@@ -110,6 +112,34 @@ public class Orders implements SQLData {
         try (CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setObject(1, myOrders);
             stmt.execute();
+        }
+    }
+
+    public static void displayOrder(Connection connection) {
+        try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_order(?)}")) {
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.execute();
+
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                int orderQuantity = rs.getInt("order_quantity");
+                Date orderDate = rs.getDate("order_date");
+                int storeId = rs.getInt("store_id");
+                int customerId = rs.getInt("customer_id");
+                int productId = rs.getInt("product_id");
+
+                System.out.println("Order ID: " + orderId);
+                System.out.println("Order Quantity: " + orderQuantity);
+                System.out.println("Order Date: " + orderDate);
+                System.out.println("Store ID: " + storeId);
+                System.out.println("Customer ID: " + customerId);
+                System.out.println("Product ID: " + productId);
+                System.out.println("------------------------");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

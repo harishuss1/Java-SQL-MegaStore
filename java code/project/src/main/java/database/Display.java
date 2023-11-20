@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import oracle.jdbc.OracleTypes;
+
 //All the stuff related to Displaying information is here
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
@@ -81,7 +83,6 @@ public class Display {
                 displayMainMenu();
                 break;
             case 4:
-                viewFunctions();
                 viewFunctions();
                 displayMainMenu();
                 break;
@@ -247,15 +248,20 @@ public class Display {
                 deleteData3.deleteReviews(reviewId);
                 break;
             case 4: 
-                try (Statement stmt = connection.createStatement()) {
-                    String sql = "SELECT store_id, store_name FROM Stores";
-                    try (ResultSet rs = stmt.executeQuery(sql)) {
-                        while (rs.next()) {
-                            int storeId = rs.getInt("store_id");
-                            String storeName = rs.getString("store_name");
-                            System.out.println("Store ID: " + storeId + ", Store Name: " + storeName);
-                        }
+                try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_store(?)}")) {
+                    stmt.registerOutParameter(1, OracleTypes.CURSOR);
+                    stmt.execute();
+            
+                    ResultSet rs = (ResultSet) stmt.getObject(1);
+            
+                    while (rs.next()) {
+                        int storeId = rs.getInt("store_id");
+                        String storeName = rs.getString("store_name");
+                        System.out.println("Store ID: " + storeId + ", Store Name: " + storeName);
                     }
+                } 
+                catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 System.out.println("Enter which Store ID to delete: ");
                 int storeId = getUserChoice();
@@ -291,7 +297,9 @@ public class Display {
         System.out.println("2. Show Total inventory For A Product");
         System.out.println("3. Show Flagged Customers");
         System.out.println("4. Show Audit Logs");
-        System.out.println("5. Back to Main Menu");
+        System.out.println("5. Show all products");
+        System.out.println("6. Show all orders");
+        System.out.println("7. Back to Main Menu");
 
              int choice = getUserChoice();
              scanner.nextLine();
@@ -340,8 +348,14 @@ public class Display {
                 viewLogs();
                 break;
             case 5:
-
+                System.out.println("------------------------------------");
+                 DisplayProducts.displayProduct(connection);
                 break;
+            case 6:
+                System.out.println("------------------------------------");
+                Orders.displayOrder(connection);
+            case 7: 
+                displayMainMenu();
             default:
                 System.out.println("Invalid choice. Please try again.");
                 viewFunctions();
