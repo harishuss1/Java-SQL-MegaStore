@@ -2,8 +2,13 @@ package database;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+
+import oracle.jdbc.OracleTypes;
 
 import oracle.jdbc.OracleTypes;
 
@@ -60,4 +65,34 @@ public class DisplayFunctions {
             }
         }
     }
+
+    public static void displayAuditLogs(Connection conn, String tableName) {
+    try (Statement stmt = conn.createStatement()) {
+        String sql = "SELECT * FROM " + tableName + "_Audit_Log";
+        try (ResultSet rs = stmt.executeQuery(sql)) {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            System.out.println("Columns in the result set:");
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.println("Column " + i + ": " + metaData.getColumnName(i));
+            }
+            System.out.println("----------------------------");
+
+            System.out.println("Audit Logs for " + tableName + " Audits:");
+            while (rs.next()) {
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    System.out.println(columnName + ": " + rs.getString(columnName));
+                }
+                System.out.println("------------------------------");
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Error retrieving audit logs from the database for " + tableName + " Audits");
+    }
+}
+
+    
 }
