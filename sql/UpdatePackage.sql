@@ -68,8 +68,3 @@ CREATE OR REPLACE PACKAGE BODY update_data AS
     
 END update_data;
 /
-BEGIN
-    update_data.update_product(17, 'Train X745', 420, 'Vehicle');
-    update_data.update_warehouse(1, 'Warehouse A', 11, 6);
-    update_data.update_warehouse_products(1, 7, 10);
-END;
