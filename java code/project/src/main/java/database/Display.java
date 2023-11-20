@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import oracle.jdbc.OracleTypes;
+
 //All the stuff related to Displaying information is here
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
@@ -81,7 +83,6 @@ public class Display {
                 displayMainMenu();
                 break;
             case 4:
-                viewFunctions();
                 viewFunctions();
                 displayMainMenu();
                 break;
