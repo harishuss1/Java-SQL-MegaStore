@@ -2,26 +2,23 @@ package database;
 
 import java.sql.*;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Reviews implements SQLData {
-    private int review_id;
     private int flag;
     private String description;
+    private int review_score;
     private int customer_id;
     private int product_id;
     private String typeName;
 
-    public Reviews(int review_id, int flag, String description, int customer_id, int product_id) {
-        this.review_id = review_id;
+    public Reviews(int flag, String description, int review_score, int customer_id, int product_id) {
         this.flag = flag;
         this.description = description;
+        this.review_score = review_score;
         this.customer_id = customer_id;
         this.product_id = product_id;
         this.typeName = "REVIEWS_TYP";
-    }
-
-    public void setReview_id(int review_id) {
-        this.review_id = review_id;
     }
 
     public void setFlag(int flag) {
@@ -40,12 +37,16 @@ public class Reviews implements SQLData {
         this.product_id = product_id;
     }
 
-    public int getReview_id() {
-        return review_id;
+    public void setReviewScore(int review_score) {
+        this.review_score = review_score;
     }
 
     public int getFlag() {
         return flag;
+    }
+
+    public int getReviewScore() {
+        return review_score;
     }
 
     public String getDescription() {
@@ -71,18 +72,18 @@ public class Reviews implements SQLData {
 
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
-        setReview_id(stream.readInt());
         setFlag(stream.readInt());
         setDescription(stream.readString());
+        setReviewScore(stream.readInt());
         setCustomer_id(stream.readInt());
         setProduct_id(stream.readInt());
     }
 
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
-        stream.writeInt(getReview_id());
         stream.writeInt(getFlag());
         stream.writeString(getDescription());
+        stream.writeInt(getReviewScore());
         stream.writeInt(getCustomer_id());
         stream.writeInt(getProduct_id());
     }
@@ -92,12 +93,27 @@ public class Reviews implements SQLData {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
         map.put(this.typeName, Class.forName("database.Reviews"));
-        Reviews myReviews = new Reviews(this.review_id, this.flag, this.description, this.customer_id, this.product_id);
-        String sql = "{call add_review(?)}";
+        Reviews myReviews = new Reviews(this.flag, this.description, this.review_score, this.customer_id, this.product_id);
+        String sql = "{call insert_data.add_review(?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setObject(1, myReviews);
             stmt.execute();
         }
+    }
+
+    public static Reviews collectReviewInformation(Connection conn) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Collect review information from the user with input validation
+        int flag = Helpers.getUserInputInt("Enter flag: ");
+        System.out.println("Enter your description: ");
+        String description = scanner.nextLine();
+        
+        int score = Helpers.getUserInputInt("Enter Review Score: ");
+        int customerId = Helpers.getUserInputInt("Enter customer ID (null if you're admin): ");
+        int productId = Helpers.getUserInputInt("Enter product ID: ");
+
+        return new Reviews(flag, description, score, customerId, productId);
     }
 
 }

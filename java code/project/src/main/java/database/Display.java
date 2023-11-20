@@ -143,8 +143,21 @@ public class Display {
                 // For example: addProjectOrder();
                 break;
             case 4:
-                // Call the method to add a review
-                // For example: addReview();
+                try (Statement statement = connection.createStatement()) {
+                    String sql = "SELECT product_id, product_name FROM Products";
+            
+                    try (ResultSet resultSet = statement.executeQuery(sql)) {
+                        while (resultSet.next()) {
+                            int productId = resultSet.getInt("product_id");
+                            String productName = resultSet.getString("product_name");
+            
+                            System.out.println("Product ID: " + productId + ", Product Name: " + productName);
+                        }
+                    }
+                }
+
+                Reviews reviewToAdd = Reviews.collectReviewInformation(connection);
+                reviewToAdd.AddToDatabase(connection);
                 break;
             case 5:
                 // Call the method to add a project address

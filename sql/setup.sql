@@ -984,9 +984,9 @@ CREATE OR REPLACE TYPE PROJECT_ORDERS_TYP AS OBJECT (
 );
 /
 CREATE OR REPLACE TYPE REVIEWS_TYP AS OBJECT (
-    review_id NUMBER,
     flag NUMBER(5,0),
     description VARCHAR2(200),
+    review_score NUMBER,
     customer_id NUMBER,
     product_id NUMBER
 );

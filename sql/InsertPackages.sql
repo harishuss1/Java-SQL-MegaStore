@@ -7,7 +7,7 @@ CREATE OR REPLACE PACKAGE insert_data AS
       PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP);
 --    PROCEDURE add_customer(vcustomers IN PROJECT_CUSTOMERS_TYP);
 --    PROCEDURE add_order(vorders IN PROJECT_ORDERS_TYP);
---    PROCEDURE add_review(vreviews IN REVIEWS_TYP);
+      PROCEDURE add_review(vreviews IN REVIEWS_TYP);
 --    PROCEDURE add_order_audit_log(vorder_audit_logs IN ORDER_AUDIT_LOG_TYP);
 END insert_data;
 /
@@ -107,31 +107,31 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
 --    END add_customer;
 
     -- Adding order
-    PROCEDURE add_order(vorders IN PROJECT_ORDERS_TYP) IS
-    BEGIN
-        INSERT INTO Project_Orders
-        VALUES (
-            vorders.order_id,
-            vorders.order_quantity,
-            vorders.order_date,
-            vorders.store_id,
-            vorders.customer_id,
-            vorders.product_id
-        );
-    END add_order;
+--    PROCEDURE add_order(vorders IN PROJECT_ORDERS_TYP) IS
+--    BEGIN
+--        INSERT INTO Project_Orders
+--        VALUES (
+--            vorders.order_id,
+--            vorders.order_quantity,
+--            vorders.order_date,
+--            vorders.store_id,
+--            vorders.customer_id,
+--            vorders.product_id
+--        );
+--    END add_order;
 
     -- Adding review
---    PROCEDURE add_review(vreviews IN REVIEWS_TYP) IS
---    BEGIN
---        INSERT INTO Reviews
---        VALUES (
---            vreviews.review_id,
---            vreviews.flag,
---            vreviews.description,
---            vreviews.customer_id,
---            vreviews.product_id
---        );
---    END add_review;
+    PROCEDURE add_review(vreviews IN REVIEWS_TYP) IS
+    BEGIN
+        INSERT INTO Reviews (flag, description, review_score, customer_id, product_id)
+        VALUES (
+            vreviews.flag,
+            vreviews.description,
+            vreviews.review_score,
+            vreviews.customer_id,
+            vreviews.product_id
+        );
+    END add_review;
 
     -- Adding order audit log
 --    PROCEDURE add_order_audit_log(vorder_audit_logs IN ORDER_AUDIT_LOG_TYP) IS
