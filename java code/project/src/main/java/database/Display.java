@@ -48,7 +48,6 @@ public class Display {
                 // Call the method for user login
                 // For example: loginUser();
                 connection = Service.getConnection();
-<<<<<<< HEAD
                 Stocks.getTotalStockForAllProducts(connection);
                 while (true) {
                     System.out.println("Do you want to display specific products of a category? YES/NO");
@@ -76,9 +75,6 @@ public class Display {
                     }
                 }
 
-=======
-                displayMainMenu();
->>>>>>> 9dfabb3d43452e619c61e43f75ede0092cff9c13
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
@@ -146,12 +142,7 @@ public class Display {
         return choice;
     }
 
-<<<<<<< HEAD
-    public static void addData() {
-=======
-
     public static void addData() throws SQLException {
->>>>>>> 9dfabb3d43452e619c61e43f75ede0092cff9c13
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
