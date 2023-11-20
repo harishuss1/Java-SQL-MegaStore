@@ -10,6 +10,8 @@ import java.sql.Statement;
 
 import oracle.jdbc.OracleTypes;
 
+import oracle.jdbc.OracleTypes;
+
 public class DisplayFunctions {
 
     private Connection conn;

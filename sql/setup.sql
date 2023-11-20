@@ -930,7 +930,6 @@ END;
 --Making Objects for each Table
 
 CREATE OR REPLACE TYPE PRODUCT_TYP AS OBJECT (
-    product_id NUMBER,
     product_name VARCHAR2(50),
     product_price NUMBER(10,2),
     product_category VARCHAR2(20)
@@ -955,10 +954,9 @@ CREATE OR REPLACE TYPE STORE_TYP AS OBJECT (
 );
 /
 CREATE OR REPLACE TYPE WAREHOUSE_TYP AS OBJECT (
-    warehouse_id NUMBER,
     warehouse_name CHAR(11),
-    address_id NUMBER,
-    city_id NUMBER
+    address VARCHAR2(100),
+    city VARCHAR2(50)
 );
 /
 CREATE OR REPLACE TYPE WAREHOUSE_PRODUCTS_TYP AS OBJECT (
@@ -986,9 +984,9 @@ CREATE OR REPLACE TYPE PROJECT_ORDERS_TYP AS OBJECT (
 );
 /
 CREATE OR REPLACE TYPE REVIEWS_TYP AS OBJECT (
-    review_id NUMBER,
     flag NUMBER(5,0),
     description VARCHAR2(200),
+    review_score NUMBER,
     customer_id NUMBER,
     product_id NUMBER
 );
@@ -1001,19 +999,5 @@ CREATE OR REPLACE TYPE ORDER_AUDIT_LOG_TYP AS OBJECT (
     event_description VARCHAR2(200)
 );
 /
-CREATE OR REPLACE TYPE LOGIN_AUDIT_LOG_TYP AS OBJECT (
-    LOL_log_id NUMBER,
-    event_timestamp TIMESTAMP,
-    user_id NUMBER,
-    event_description VARCHAR2(200)
-);
-/
-CREATE OR REPLACE TYPE STOCK_UPDATE_AUDIT_LOG_TYP AS OBJECT (
-    SUOL_log_id NUMBER,
-    event_timestamp TIMESTAMP,
-    product_id NUMBER,
-    previous_stock NUMBER,
-    new_stock NUMBER,
-    event_description VARCHAR2(200)
-);
+
 /
