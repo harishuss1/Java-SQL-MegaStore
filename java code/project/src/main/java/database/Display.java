@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-import oracle.jdbc.OracleTypes;
-
 //All the stuff related to Displaying information is here
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
@@ -45,10 +43,7 @@ public class Display {
         scanner.nextLine();
         switch (choice) {
             case 1:
-                // Call the method for user login
-                // For example: loginUser();
                 connection = Service.getConnection();
-                displayMainMenu();
                 displayMainMenu();
                 break;
             case 2:
@@ -137,8 +132,9 @@ public class Display {
                 productToAdd.AddToDatabase(connection);
                 break;
             case 2:
-                // Call the method to add a customer
-                // For example: addCustomer();
+            Customers customerToAdd = Customers.collectCustomerInformation();
+            customerToAdd.AddToDatabase(connection);
+            // For example: addCustomer();
                 break;
             case 3:
                 // Call the method to add a project order
