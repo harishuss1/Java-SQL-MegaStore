@@ -1,15 +1,12 @@
 package database;
 
 import java.sql.CallableStatement;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import oracle.jdbc.OracleTypes;
 
 import oracle.jdbc.OracleTypes;
 
@@ -63,7 +60,7 @@ public class Display {
         }
     }
 
-    public static void displayMainMenu() throws SQLException, ClassNotFoundException throws SQLException, ClassNotFoundException {
+    public static void displayMainMenu() throws SQLException, ClassNotFoundException {
         System.out.println("\nMain Menu:");
         System.out.println("1. Add");
         System.out.println("2. Remove");
@@ -121,7 +118,7 @@ public class Display {
         return choice;
     }
 
-    public static void addData() throws SQLException, ClassNotFoundException throws SQLException, ClassNotFoundException {
+    public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -136,8 +133,6 @@ public class Display {
 
         switch (choice) {
             case 1:
-                Product productToAdd = Product.collectProductInformation();
-                productToAdd.AddToDatabase(connection);
                 Product productToAdd = Product.collectProductInformation();
                 productToAdd.AddToDatabase(connection);
                 break;
@@ -229,6 +224,8 @@ public class Display {
         System.out.println("2. Remove Warehouse");
         System.out.println("3. Remove Review");
         System.out.println("4. Remove Store");
+        System.out.println("5. Remove City");
+        System.out.println("6. Remove Address");
         int choice = getUserChoice();
         scanner.nextLine();
         switch (choice) {
@@ -268,6 +265,25 @@ public class Display {
                 int storeId = getUserChoice();
                 DeleteData deleteData4 = new DeleteData(connection);
                 deleteData4.deleteStores(storeId);
+                break;
+            case 5:
+                
+                try (Statement statement = connection.createStatement()) {
+                    String sql = "SELECT city_id, city_name FROM Project_City";
+                    try (ResultSet resultSet = statement.executeQuery(sql)) {
+                        System.out.println("List of City Names and IDs:");
+                        while (resultSet.next()) {
+                            int cityId = resultSet.getInt("city_id");
+                            String cityName = resultSet.getString("city_name");
+                            System.out.println("City ID: " + cityId + ", City Name: " + cityName);
+                        }
+                    }
+                }
+                // call method for it 
+                System.out.println("Enter which City ID to delete: ");
+                int cityId = getUserChoice();
+                DeleteData deleteData5 = new DeleteData(connection);
+                deleteData5.deleteProjectCity(cityId); // does not work yet so dont touch or try it
                 break;
 
         }
