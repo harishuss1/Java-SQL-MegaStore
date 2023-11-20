@@ -249,15 +249,20 @@ public class Display {
                 deleteData3.deleteReviews(reviewId);
                 break;
             case 4: 
-                try (Statement stmt = connection.createStatement()) {
-                    String sql = "SELECT store_id, store_name FROM Stores";
-                    try (ResultSet rs = stmt.executeQuery(sql)) {
-                        while (rs.next()) {
-                            int storeId = rs.getInt("store_id");
-                            String storeName = rs.getString("store_name");
-                            System.out.println("Store ID: " + storeId + ", Store Name: " + storeName);
-                        }
+                try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_store(?)}")) {
+                    stmt.registerOutParameter(1, OracleTypes.CURSOR);
+                    stmt.execute();
+            
+                    ResultSet rs = (ResultSet) stmt.getObject(1);
+            
+                    while (rs.next()) {
+                        int storeId = rs.getInt("store_id");
+                        String storeName = rs.getString("store_name");
+                        System.out.println("Store ID: " + storeId + ", Store Name: " + storeName);
                     }
+                } 
+                catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 System.out.println("Enter which Store ID to delete: ");
                 int storeId = getUserChoice();
@@ -293,6 +298,7 @@ public class Display {
         System.out.println("2. Show Total inventory For A Product");
         System.out.println("3. Show Flagged Customers");
         System.out.println("4. Show Audit Logs");
+        System.out.println("5. Show all products");
 
         int choice = getUserChoice();
         scanner.nextLine();
@@ -341,7 +347,7 @@ public class Display {
 
                 break;
             case 5:
-
+                
                 break;
             default:
                 System.out.println("Invalid choice. Please try again.");
