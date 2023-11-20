@@ -222,6 +222,8 @@ public class Display {
         System.out.println("2. Remove Warehouse");
         System.out.println("3. Remove Review");
         System.out.println("4. Remove Store");
+        System.out.println("5. Remove City");
+        System.out.println("6. Remove Address");
         int choice = getUserChoice();
         scanner.nextLine();
         switch (choice) {
@@ -261,6 +263,25 @@ public class Display {
                 int storeId = getUserChoice();
                 DeleteData deleteData4 = new DeleteData(connection);
                 deleteData4.deleteStores(storeId);
+                break;
+            case 5:
+                
+                try (Statement statement = connection.createStatement()) {
+                    String sql = "SELECT city_id, city_name FROM Project_City";
+                    try (ResultSet resultSet = statement.executeQuery(sql)) {
+                        System.out.println("List of City Names and IDs:");
+                        while (resultSet.next()) {
+                            int cityId = resultSet.getInt("city_id");
+                            String cityName = resultSet.getString("city_name");
+                            System.out.println("City ID: " + cityId + ", City Name: " + cityName);
+                        }
+                    }
+                }
+                // call method for it 
+                System.out.println("Enter which City ID to delete: ");
+                int cityId = getUserChoice();
+                DeleteData deleteData5 = new DeleteData(connection);
+                deleteData5.deleteProjectCity(cityId); // does not work yet so dont touch or try it
                 break;
 
         }
