@@ -49,6 +49,7 @@ public class Display {
                 // For example: loginUser();
                 connection = Service.getConnection();
                 displayMainMenu();
+                displayMainMenu();
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
@@ -85,6 +86,7 @@ public class Display {
                 displayMainMenu();
                 break;
             case 4:
+                viewFunctions();
                 viewFunctions();
                 displayMainMenu();
                 break;
@@ -292,16 +294,18 @@ public class Display {
         }
     }
 
-    public static void viewFunctions() throws SQLException, ClassNotFoundException {
+    public static void viewFunctions() throws SQLException, ClassNotFoundException{
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
         System.out.println("2. Show Total inventory For A Product");
         System.out.println("3. Show Flagged Customers");
         System.out.println("4. Show Audit Logs");
         System.out.println("5. Show all products");
+        System.out.println("6. Show all orders");
+        System.out.println("7. Back to Main Menu");
 
-        int choice = getUserChoice();
-        scanner.nextLine();
+             int choice = getUserChoice();
+             scanner.nextLine();
         switch (choice) {
             case 1:
                 System.out.println("Enter a Product's id You'd like to see the reviews for: ");
@@ -344,15 +348,71 @@ public class Display {
                 displayFunctions3.displayFlaggedReviews(connection);
                 break;
             case 4:
-
+                viewLogs();
                 break;
             case 5:
-                
+                System.out.println("------------------------------------");
+                 DisplayProducts.displayProduct(connection);
                 break;
+            case 6:
+                System.out.println("------------------------------------");
+                Orders.displayOrder(connection);
+            case 7: 
+                displayMainMenu();
             default:
                 System.out.println("Invalid choice. Please try again.");
                 viewFunctions();
         }
     }
 
+    public static void viewLogs() throws SQLException, ClassNotFoundException{
+        System.out.println("\nView Function Menu:");
+        System.out.println("1. View Product Audit Log");
+        System.out.println("2. View Address Audit Log");
+        System.out.println("3. View City Audit Log");
+        System.out.println("4. View Stores Audit Log");
+        System.out.println("5. View WareHouse Products Audit Log");
+        System.out.println("6. View Customers Audit Log");
+        System.out.println("7. View Orders Audit Log");
+        System.out.println("8. View Reviews Audit Log");
+        System.out.println("9. Back to Main Menu");
+
+
+        int choice = getUserChoice();
+             scanner.nextLine();
+        switch (choice){
+            case 1:
+            DisplayFunctions.displayAuditLogs(connection, "Products");
+                break;
+            case 2:
+            DisplayFunctions.displayAuditLogs(connection, "Project_Address");
+                break;
+            case 3:
+            DisplayFunctions.displayAuditLogs(connection, "Project_City");
+                break;
+            case 4:
+            DisplayFunctions.displayAuditLogs(connection, "Stores");
+                break;
+            case 5:
+            DisplayFunctions.displayAuditLogs(connection, "Warehouse_Products");
+                break;
+            case 6:
+            DisplayFunctions.displayAuditLogs(connection, "Project_Customers");
+                break;
+            case 7:
+            DisplayFunctions.displayAuditLogs(connection, "Project_Orders");
+                break;
+            case 8:
+            DisplayFunctions.displayAuditLogs(connection, "Reviews");
+                break;
+            case 9:
+                    displayMainMenu();
+                break;
+                default:
+                System.out.println("Invalid choice. Please try again.");
+                viewLogs();
+        
+        }
+    }
+    
 }
