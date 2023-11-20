@@ -1,9 +1,13 @@
 package database;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+
+import oracle.jdbc.OracleTypes;
 
 //All the stuff related to Displaying information is here
 public class Display {
@@ -13,7 +17,7 @@ public class Display {
 
 
 
-     public static void main(String[] args) throws SQLException {
+     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -36,7 +40,7 @@ public class Display {
 
     
 
-    public static void displayLoginMenu() throws SQLException {
+    public static void displayLoginMenu() throws SQLException, ClassNotFoundException {
         System.out.println("Welcome to the Application!");
         System.out.println("1. Log In");
         System.out.println("2. Exit");
@@ -48,36 +52,7 @@ public class Display {
                 // Call the method for user login
                 // For example: loginUser();
                 connection = Service.getConnection();
-                Stocks.getTotalStockForAllProducts(connection);
-                while(true) {
-                    System.out.println("Do you want to display specific products of a category? YES/NO");
-                    String answer = scanner.nextLine();
-                
-                    if(answer.equals("YES")) {
-                        System.out.println("Which category from this list? \n" +
-                        "Grocery\n" +
-                        "DVD\n" +
-                        "Cars\n" +
-                        "Toys\n" +
-                        "Electronics\n" +
-                        "Health\n" +
-                        "Beauty\n" +
-                        "Video Games\n" +
-                        "Vehicle\n" +
-                        "------------------------");
-                        String category_choice = scanner.nextLine();
-                        DisplayProducts.displayProductsByCategory(connection, category_choice);
-                    }
-                    else if(answer.equals("NO")) {
-                        displayMainMenu();
-                        break;
-                    }
-                    else {
-                        System.out.println("Invalid choice. Please enter YES or NO.");
-                    }
-                }
-                
-                
+                displayMainMenu();
                 break;
             case 2:
                 System.out.println("Exiting the application. Goodbye!");
@@ -88,7 +63,7 @@ public class Display {
         }
     }
 
-    public static void displayMainMenu() {
+    public static void displayMainMenu() throws SQLException, ClassNotFoundException {
         System.out.println("\nMain Menu:");
         System.out.println("1. Add");
         System.out.println("2. Remove");
@@ -114,8 +89,7 @@ public class Display {
                 displayMainMenu();
                 break;
             case 4:
-                // Call the method for viewing reports
-                // For example: viewfunctions();
+                viewFunctions();
                 displayMainMenu();
                 break;
             case 5:
@@ -147,7 +121,7 @@ public class Display {
     }
 
 
-    public static void addData() {
+    public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
         System.out.println("2. Add Customer");
@@ -162,8 +136,8 @@ public class Display {
 
         switch (choice) {
             case 1:
-                // Call the method to add a product
-                // For example: addProduct();
+                Product productToAdd = Product.collectProductInformation();
+                productToAdd.AddToDatabase(connection);
                 break;
             case 2:
                 // Call the method to add a customer
@@ -201,8 +175,7 @@ public class Display {
     public static void removeData() {
         System.out.println("\nRemove Data Menu:");
         System.out.println("1. Remove Product");
-        System.out.println("2. Remove Customer");
-        System.out.println("3. Remove Warehouse");
+        System.out.println("2. Remove Warehouse");
         int choice = getUserChoice();
         scanner.nextLine();
         switch(choice) {
@@ -214,28 +187,32 @@ public class Display {
                 deleteData.deleteProduct(productId);
                 break;
             case 2:
-                // call deleteData.deleteCustomer
-                break;
-            case 3:
                 System.out.println("Enter the Warehouse Name to delete: ");
                 String warehouseName = scanner.nextLine();
-                DeleteData deleteData3 = new DeleteData(connection);
-                deleteData3.deleteWarehouse(warehouseName);
+                DeleteData deleteData2 = new DeleteData(connection);
+                deleteData2.deleteWarehouse(warehouseName);
                 Stocks.getTotalStockForAllProducts(connection);
+                break;
+            case 3:
+                System.out.println("Enter which Review to delete: "); 
+                int reviewId = getUserChoice();
+                DeleteData deleteData3 = new DeleteData(connection);
+                deleteData3.deleteReviews(reviewId);
                 break;
 
         }
     }
 
-    public static void viewFunctions(){
+    public static void viewFunctions() throws SQLException, ClassNotFoundException{
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
         System.out.println("2. Show Total inventory For A Product");
         System.out.println("3. Show Flagged Customers");
         System.out.println("4. Show Audit Logs");
+        System.out.println("5. Back to Main Menu");
 
              int choice = getUserChoice();
-
+             scanner.nextLine();
         switch (choice) {
             case 1:
                 System.out.println("Enter a Product's id You'd like to see the reviews for: ");
@@ -244,15 +221,41 @@ public class Display {
                 displayFunctions.displayAverageReviewScore(productid); 
                 break;
             case 2:
+                Stocks.getTotalStockForAllProducts(connection);
+                while(true) {
+                    System.out.println("Do you want to display specific products of a category? YES/NO");
+                    String answer = scanner.nextLine();
                 
+                    if(answer.equals("YES")) {
+                        System.out.println("Which category from this list? \n" +
+                        "Grocery\n" +
+                        "DVD\n" +
+                        "Cars\n" +
+                        "Toys\n" +
+                        "Electronics\n" +
+                        "Health\n" +
+                        "Beauty\n" +
+                        "Video Games\n" +
+                        "Vehicle\n" +
+                        "------------------------");
+                        String category_choice = scanner.nextLine();
+                        DisplayProducts.displayProductsByCategory(connection, category_choice);
+                    }
+                    else if(answer.equals("NO")) {
+                        displayMainMenu();
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid choice. Please enter YES or NO.");
+                    }
+                }
                 break;
             case 3:
-                System.out.println("Here are The Flagged Reviews");
                 DisplayFunctions displayFunctions3 = new DisplayFunctions(connection);
-                displayFunctions3.displayFlaggedReviews();
+                displayFunctions3.displayFlaggedReviews(connection);
                 break;
             case 4:
-
+                viewLogs();
                 break;
             case 5:
 
@@ -262,5 +265,56 @@ public class Display {
                 viewFunctions();
         }
     }
+
+    public static void viewLogs() throws SQLException, ClassNotFoundException{
+        System.out.println("\nView Function Menu:");
+        System.out.println("1. View Product Audit Log");
+        System.out.println("2. View Address Audit Log");
+        System.out.println("3. View City Audit Log");
+        System.out.println("4. View Stores Audit Log");
+        System.out.println("5. View WareHouse Products Audit Log");
+        System.out.println("6. View Customers Audit Log");
+        System.out.println("7. View Orders Audit Log");
+        System.out.println("8. View Reviews Audit Log");
+        System.out.println("9. Back to Main Menu");
+
+
+        int choice = getUserChoice();
+             scanner.nextLine();
+        switch (choice){
+            case 1:
+            DisplayFunctions.displayAuditLogs(connection, "Products");
+                break;
+            case 2:
+            DisplayFunctions.displayAuditLogs(connection, "Project_Address");
+                break;
+            case 3:
+            DisplayFunctions.displayAuditLogs(connection, "Project_City");
+                break;
+            case 4:
+            DisplayFunctions.displayAuditLogs(connection, "Stores");
+                break;
+            case 5:
+            DisplayFunctions.displayAuditLogs(connection, "Warehouse_Products");
+                break;
+            case 6:
+            DisplayFunctions.displayAuditLogs(connection, "Project_Customers");
+                break;
+            case 7:
+            DisplayFunctions.displayAuditLogs(connection, "Project_Orders");
+                break;
+            case 8:
+            DisplayFunctions.displayAuditLogs(connection, "Reviews");
+                break;
+            case 9:
+                    displayMainMenu();
+                break;
+                default:
+                System.out.println("Invalid choice. Please try again.");
+                viewLogs();
+        
+        }
+    }
+    
 }
 
