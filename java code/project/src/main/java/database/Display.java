@@ -156,8 +156,9 @@ public class Display {
                 // For example: addProjectAddress();
                 break;
             case 6:
-                // Call the method to add a warehouse
-                // For example: addWarehouse();
+
+                Warehouse warehouseToAdd = Warehouse.collectWarehouseInformation(connection);
+                warehouseToAdd.AddToDatabase(connection);
                 break;
             case 7:
                 // Call the method to add a warehouse product
@@ -216,6 +217,7 @@ public class Display {
             case 1:
                 System.out.println("Enter a Product's id You'd like to see the reviews for: ");
                 int productid = scanner.nextInt();
+                System.out.println("-------------------------------------");
                 DisplayFunctions displayFunctions = new DisplayFunctions(connection);
                 displayFunctions.displayAverageReviewScore(productid); 
                 break;
@@ -250,6 +252,7 @@ public class Display {
                 }
                 break;
             case 3:
+                System.out.println("------------------------------------");
                 DisplayFunctions displayFunctions3 = new DisplayFunctions(connection);
                 displayFunctions3.displayFlaggedReviews(connection);
                 break;

@@ -1,9 +1,9 @@
 CREATE OR REPLACE PACKAGE insert_data AS
-    PROCEDURE add_product(vproduct_name VARCHAR2, vproduct_price NUMBER, vproduct_category VARCHAR2);
+    PROCEDURE add_product(vproduct IN PRODUCT_TYP);
 --    PROCEDURE add_project_city(vcities IN PROJECT_CITY_TYP);
 --    PROCEDURE add_project_address(vaddresses IN PROJECT_ADDRESS_TYP);
 --    PROCEDURE add_store(vstores IN STORE_TYP);
---    PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP);
+      PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP);
 --    PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP);
 --    PROCEDURE add_customer(vcustomers IN PROJECT_CUSTOMERS_TYP);
 --    PROCEDURE add_order(vorders IN PROJECT_ORDERS_TYP);
@@ -15,16 +15,14 @@ END insert_data;
 CREATE OR REPLACE PACKAGE BODY insert_data AS
     -- Adding product
     PROCEDURE add_product(
-        vproduct_name IN VARCHAR2,
-        vproduct_price IN NUMBER,
-        vproduct_category IN VARCHAR2
+        vproduct IN PRODUCT_TYP
     ) IS
     BEGIN
         INSERT INTO Products (product_name, product_price, product_category)
         VALUES (
-            vproduct_name,
-            vproduct_price,
-            vproduct_category
+            vproduct.product_name,
+            vproduct.product_price,
+            vproduct.product_category
         );
     END add_product;
 
@@ -62,16 +60,26 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
 --    END add_store;
 
     -- Adding warehouse
---    PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP) IS
---    BEGIN
---        INSERT INTO Warehouse
---        VALUES (
---            vwarehouses.warehouse_id,
---            vwarehouses.warehouse_name,
---            vwarehouses.address_id,
---            vwarehouses.city_id
---        );
---    END add_warehouse;
+    PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP) IS
+        vaddress_id NUMBER;
+        vcity_id NUMBER;
+    BEGIN
+    SELECT address_id INTO vaddress_id
+    FROM Project_Address
+    WHERE address = vwarehouses.address;
+
+    -- Fetch city_id based on the provided city
+    SELECT city_id INTO vcity_id
+    FROM Project_City
+    WHERE city_name = vwarehouses.city;
+    
+        INSERT INTO Warehouse (warehouse_name, address_id, city_id)
+        VALUES (
+            vwarehouses.warehouse_name,
+            vaddress_id,
+            vcity_id
+        );
+    END add_warehouse;
 
     -- Adding warehouse product
 --    PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP) IS
