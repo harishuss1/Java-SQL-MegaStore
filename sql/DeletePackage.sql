@@ -151,7 +151,21 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
 
     -- Deleting order
     PROCEDURE delete_order(vorder_id IN NUMBER) IS
+        v_order_id NUMBER;
+        v_audit_type VARCHAR2(30);
+        v_audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+        v_order_quantity NUMBER;
+        v_order_date DATE;
+        v_store_id NUMBER;
+        v_customer_id NUMBER;
+        v_product_id NUMBER;
     BEGIN
+        SELECT order_id, 'DELETE' AS audit_type, order_quantity, order_date, store_id, customer_id, product_id
+        INTO v_order_id, v_audit_type, v_order_quantity, v_order_date, v_store_id, v_customer_id, v_product_id
+        FROM Project_Orders WHERE order_id = vorder_id;
+        
+        INSERT INTO Project_Orders_Audit_Log (order_id, old_order_id, audit_type, audit_timestamp, order_quantity, order_date, store_id, customer_id, product_id)
+        VALUES (NULL, v_order_id, v_audit_type, v_audit_timestamp, v_order_quantity, v_order_date, v_store_id, v_customer_id, v_product_id);
         DELETE FROM Project_Orders WHERE order_id = vorder_id;
     END delete_order;
     -- Procedure to display_order is needed in order for app user to know which id to remove 

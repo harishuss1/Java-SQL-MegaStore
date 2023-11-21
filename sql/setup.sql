@@ -261,6 +261,7 @@ CREATE TABLE Project_Customers_Audit_Log (
 CREATE TABLE Project_Orders_Audit_Log (
     audit_id NUMBER GENERATED ALWAYS AS IDENTITY,
     order_id NUMBER,
+    old_order_id NUMBER,
     audit_type VARCHAR2(30),
     audit_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     order_quantity NUMBER(10,0),
@@ -459,8 +460,8 @@ BEGIN
     END IF;
     
     IF INSERTING OR UPDATING THEN
-    INSERT INTO Project_Orders_Audit_Log (order_id,audit_type,audit_timestamp,order_quantity,order_date,store_id,customer_id,product_id)
-        VALUES (:NEW.order_id, v_audit_type, CURRENT_TIMESTAMP, :NEW.order_quantity, :NEW.order_date, :NEW.store_id, :NEW.customer_id, :NEW.product_id);
+    INSERT INTO Project_Orders_Audit_Log (order_id, old_order_id,audit_type,audit_timestamp,order_quantity,order_date,store_id,customer_id,product_id)
+        VALUES (:NEW.order_id, NULL, v_audit_type, CURRENT_TIMESTAMP, :NEW.order_quantity, :NEW.order_date, :NEW.store_id, :NEW.customer_id, :NEW.product_id);
     END IF;
 END Project_Orders_Audit_Trigger;    
 /

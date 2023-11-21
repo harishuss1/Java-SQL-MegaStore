@@ -38,6 +38,10 @@ public class DeleteData {
     public void deleteWarehouse(String warehouse_Name) {
         executeStoredProcedure("delete_data.delete_warehouse(?)", warehouse_Name);
     }
+
+    public void deleteOrder(int orderId) {
+        executeStoredProcedure("delete_data.delete_order(?)", orderId);
+    }
     private void executeStoredProcedure(String procedureCall, int parameter) {
         try (CallableStatement callableStatement = conn.prepareCall("{call " + procedureCall + "}")) {
             callableStatement.setInt(1, parameter);

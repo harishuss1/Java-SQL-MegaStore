@@ -2,11 +2,11 @@ package database;
 
 import java.sql.*;
 import java.util.Map;
+import java.util.Scanner;
 
 import oracle.jdbc.OracleTypes;
 
 public class Orders implements SQLData {
-    private int order_id;
     private int order_quantity;
     private Date order_date;
     private int store_id;
@@ -14,8 +14,7 @@ public class Orders implements SQLData {
     private int product_id;
     private String typeName;
 
-    public Orders(int order_id, int order_quantity, Date order_date, int store_id, int customer_id, int product_id) {
-        this.order_id = order_id;
+    public Orders(int order_quantity, Date order_date, int store_id, int customer_id, int product_id) {
         this.order_quantity = order_quantity;
         this.order_date = order_date;
         this.store_id = store_id;
@@ -24,9 +23,6 @@ public class Orders implements SQLData {
         this.typeName = "PROJECT_ORDERS_TYP";
     }
 
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
-    }
 
     public void setOrder_quantity(int order_quantity) {
         this.order_quantity = order_quantity;
@@ -46,10 +42,6 @@ public class Orders implements SQLData {
 
     public void setProduct_id(int product_id) {
         this.product_id = product_id;
-    }
-
-    public int getOrder_id() {
-        return order_id;
     }
 
     public int getOrder_quantity() {
@@ -83,7 +75,6 @@ public class Orders implements SQLData {
 
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
-        setOrder_id(stream.readInt());
         setOrder_quantity(stream.readInt());
         setOrder_date(stream.readDate());
         setStore_id(stream.readInt());
@@ -93,7 +84,6 @@ public class Orders implements SQLData {
 
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
-        stream.writeInt(getOrder_id());
         stream.writeInt(getOrder_quantity());
         stream.writeDate(getOrder_date());
         stream.writeInt(getStore_id());
@@ -106,13 +96,29 @@ public class Orders implements SQLData {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
         map.put(this.typeName, Class.forName("database.Orders"));
-        Orders myOrders = new Orders(this.order_id, this.order_quantity, this.order_date, this.store_id,
+        Orders myOrders = new Orders(this.order_quantity, this.order_date, this.store_id,
                 this.customer_id, this.product_id);
-        String sql = "{call add_order(?)}";
+        String sql = "{call insert_data.add_order(?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
             stmt.setObject(1, myOrders);
             stmt.execute();
         }
+    }
+
+    public static Orders collectOrderInformation(Connection conn) {
+        Scanner scanner = new Scanner(System.in);
+
+        int orderQuantity = Helpers.getUserInputInt("Enter order quantity: ");
+        // You can add validation for date input as needed
+        System.out.println("Enter order date (yyyy-mm-dd): ");
+        String orderDateInput = scanner.nextLine();
+        Date orderDate = Date.valueOf(orderDateInput);
+
+        int storeId = Helpers.getUserInputInt("Enter store ID: ");
+        int customerId = Helpers.getUserInputInt("Enter customer ID: ");
+        int productId = Helpers.getUserInputInt("Enter product ID: ");
+
+        return new Orders(orderQuantity, orderDate, storeId, customerId, productId);
     }
 
     public static void displayOrder(Connection connection) {
