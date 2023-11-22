@@ -110,7 +110,7 @@ public class Reviews implements SQLData {
         String description = scanner.nextLine();
         
         int score = Helpers.getUserInputInt("Enter Review Score: ");
-        int customerId = Helpers.getUserInputInt("Enter customer ID (null if you're admin): ");
+        int customerId = Helpers.getUserInputInt("Enter customer ID: ");
         int productId = Helpers.getUserInputInt("Enter product ID: ");
 
         return new Reviews(flag, description, score, customerId, productId);

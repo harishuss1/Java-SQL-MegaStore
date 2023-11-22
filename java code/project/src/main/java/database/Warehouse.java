@@ -4,6 +4,8 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Scanner;
 
+import oracle.jdbc.OracleTypes;
+
 public class Warehouse implements SQLData {
     private String warehouse_name;
     private String address;
@@ -92,6 +94,26 @@ public class Warehouse implements SQLData {
                 String address = resultSet.getString("address");
                 System.out.println(address);
             }
+        }
+    }
+
+    public static void displayWarehouseNames(Connection connection) {
+        try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_warehouse(?)}")) {
+            // Register the OUT parameter for the cursor
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            // Execute the stored procedure
+            stmt.execute();
+            
+            // Retrieve the result set from the OUT parameter
+            ResultSet rs = (ResultSet) stmt.getObject(1);
+
+            // Print warehouse names
+            while (rs.next()) {
+                String warehouseName = rs.getString("warehouse_name");
+                System.out.println("Warehouse Name: " + warehouseName);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

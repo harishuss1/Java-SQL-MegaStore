@@ -11,6 +11,7 @@ CREATE OR REPLACE PACKAGE delete_data AS
     PROCEDURE display_store (p_cursor OUT SYS_REFCURSOR);
     PROCEDURE display_product (p_product OUT SYS_REFCURSOR);
     PROCEDURE display_order (p_order OUT SYS_REFCURSOR);
+    PROCEDURE display_warehouse (p_warehouse OUT SYS_REFCURSOR);
 END delete_data;
 /
 
@@ -134,6 +135,12 @@ CREATE OR REPLACE PACKAGE BODY delete_data AS
     
     END delete_warehouse;
     
+    -- Procedure to display warehouse names is needed for the user to know which name to delete in app
+    PROCEDURE display_warehouse (p_warehouse OUT SYS_REFCURSOR) IS
+    BEGIN
+        OPEN p_warehouse FOR
+        SELECT warehouse_name FROM Warehouse;
+    END display_warehouse;
     
     -- Deleting warehouse product
     PROCEDURE delete_warehouse_product(vwarehouse_id IN NUMBER, vproduct_id IN NUMBER) IS
