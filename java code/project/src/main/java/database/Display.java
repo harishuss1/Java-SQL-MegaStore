@@ -59,6 +59,7 @@ public class Display {
 
     public static void displayMainMenu() throws SQLException, ClassNotFoundException {
         System.out.println("\nMain Menu:");
+        System.out.println("Please refer to the View Functions option before manipulating data");
         System.out.println("1. Add");
         System.out.println("2. Remove");
         System.out.println("3. Update");
@@ -117,13 +118,11 @@ public class Display {
     public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
-        System.out.println("2. Add Customer");
-        System.out.println("3. Add Project Order");
-        System.out.println("4. Add Review");
-        System.out.println("5. Add Project Address");
-        System.out.println("6. Add Warehouse");
-        System.out.println("7. Add Warehouse Product");
-        System.out.println("8. Back to Main Menu");
+        System.out.println("2. Add Project Order");
+        System.out.println("3. Add Review");
+        System.out.println("4. Add Warehouse");
+        System.out.println("5. Add Warehouse Product");
+        System.out.println("6. Back to Main Menu");
 
         int choice = getUserChoice();
 
@@ -133,82 +132,26 @@ public class Display {
                 productToAdd.AddToDatabase(connection);
                 break;
             case 2:
-                Customers customerToAdd = Customers.collectCustomerInformation();
-                customerToAdd.AddToDatabase(connection);
-                // For example: addCustomer();
-                break;
-            case 3:
                 Orders orderToAdd = Orders.collectOrderInformation(connection);
 
                 orderToAdd.AddToDatabase(connection);
                 break;
-            case 4:
-                try (Statement statement = connection.createStatement()) {
-                    String sql = "SELECT product_id, product_name FROM Products";
-
-                    try (ResultSet resultSet = statement.executeQuery(sql)) {
-                        while (resultSet.next()) {
-                            int productId = resultSet.getInt("product_id");
-                            String productName = resultSet.getString("product_name");
-
-                            System.out.println("Product ID: " + productId + ", Product Name: " + productName);
-                        }
-                    }
-                }
-
+            case 3:
                 Reviews reviewToAdd = Reviews.collectReviewInformation(connection);
                 reviewToAdd.AddToDatabase(connection);
                 break;
-            case 5:
-                // Call the method to add a project address
-                // For example: addProjectAddress();
-                break;
-            case 6:
-
+            case 4:
                 Warehouse warehouseToAdd = Warehouse.collectWarehouseInformation(connection);
                 warehouseToAdd.AddToDatabase(connection);
+                
                 break;
-            case 7:
-
-                try (Statement statement = connection.createStatement()) {
-                    String sql = "SELECT w.warehouse_id, w.warehouse_name, wp.product_id, p.product_name " +
-                            "FROM Warehouse w " +
-                            "LEFT JOIN Warehouse_Products wp ON w.warehouse_id = wp.warehouse_id " +
-                            "LEFT JOIN Products p ON wp.product_id = p.product_id " +
-                            "ORDER BY w.warehouse_id, wp.product_id";
-
-                    try (ResultSet resultSet = statement.executeQuery(sql)) {
-                        int currentWarehouseId = 0;
-
-                        while (resultSet.next()) {
-                            int warehouseId = resultSet.getInt("warehouse_id");
-                            String warehouseName = resultSet.getString("warehouse_name");
-                            int productId = resultSet.getInt("product_id");
-                            String productName = resultSet.getString("product_name");
-
-                            // Check if we are still processing the same warehouse or a new one
-                            if (currentWarehouseId != warehouseId) {
-                                // Display warehouse information when encountering a new warehouse
-                                System.out.println("------------------------------");
-                                System.out.println("Warehouse ID: " + warehouseId);
-                                System.out.println("Warehouse Name: " + warehouseName);
-                                currentWarehouseId = warehouseId;
-                            }
-
-                            // Display associated product information
-                            System.out.println("   Product ID: " + productId);
-                            System.out.println("   Product Name: " + productName);
-                        }
-
-                    }
-                }
-
-                // Now, add a new warehouse product
+            case 5:
                 WarehouseProducts warehouseProductToAdd = WarehouseProducts
                         .collectWarehouseProductInformation(connection);
                 warehouseProductToAdd.AddToDatabase(connection);
+
                 break;
-            case 8:
+            case 6:
                 displayMainMenu();
                 break;
             default:
@@ -236,6 +179,7 @@ public class Display {
                 deleteData.deleteProduct(productId);
                 break;
             case 2:
+                Warehouse.displayWarehouseNames(connection);
                 System.out.println("Enter the Warehouse Name to delete: ");
                 String warehouseName = scanner.nextLine();
                 DeleteData deleteData2 = new DeleteData(connection);
@@ -243,6 +187,7 @@ public class Display {
                 Stocks.getTotalStockForAllProducts(connection);
                 break;
             case 3:
+                System.out.println("Refer to View Functions, flagged Reviews/Customers recommended");
                 System.out.println("Enter which Review to delete");
                 int reviewId = getUserChoice();
                 DeleteData deleteData3 = new DeleteData(connection);
@@ -269,6 +214,7 @@ public class Display {
                 deleteData4.deleteStores(storeId);
                 break;
             case 5:
+                System.out.println("Refer to View Functions option 6");
                 System.out.println("Enter which order ID to delete");
                 int orderId = getUserChoice();
                 DeleteData deleteData5 = new DeleteData(connection);
