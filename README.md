@@ -4,9 +4,9 @@ https://gitlab.com/wuKevin/fall2023database2finalproject.git
 
 *Group Members*
 
-Tony Do,
+Tony Do, 2239932
 Haris Hussain, 2234354
-Kevin Wu, 
+Kevin Wu, 2242923
 
 *Setup*
 
