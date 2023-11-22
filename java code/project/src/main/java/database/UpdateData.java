@@ -12,7 +12,7 @@ public class UpdateData {
     }
 
     public void updateProduct(int productId, String productName, int productPrice, String productCategory) {
-        try (CallableStatement callableStatement = conn.prepareCall("{call update_data.update_product(?)}")) {
+        try (CallableStatement callableStatement = conn.prepareCall("{call update_data.update_product(?, ?, ?, ?)}")) {
             callableStatement.setInt(1, productId);
             callableStatement.setString(2, productName);
             callableStatement.setInt(3, productPrice);
@@ -26,7 +26,8 @@ public class UpdateData {
     }
 
     public void updateWarehouse(int warehouseId, String warehouseName, int addressId, int cityId) {
-        try (CallableStatement callableStatement = conn.prepareCall("{call update_data.update_warehouse(?)}")) {
+        try (CallableStatement callableStatement = conn
+                .prepareCall("{call update_data.update_warehouse(?, ?, ?, ?)}")) {
             callableStatement.setInt(1, warehouseId);
             callableStatement.setString(2, warehouseName);
             callableStatement.setInt(3, addressId);

@@ -293,6 +293,7 @@ public class Display {
 
                 System.out.println(
                         "Enter the updated product name");
+                scanner.nextLine();
                 String productName = scanner.nextLine();
 
                 System.out.println(
@@ -301,6 +302,7 @@ public class Display {
 
                 System.out.println(
                         "Enter the updated product category");
+                scanner.nextLine();
                 String productCategory = scanner.nextLine();
 
                 UpdateData updateData = new UpdateData(connection);
@@ -313,6 +315,7 @@ public class Display {
 
                 System.out.println(
                         "Enter the updated warehouse name");
+                scanner.nextLine();
                 String warehouseName = scanner.nextLine();
 
                 System.out.println(
