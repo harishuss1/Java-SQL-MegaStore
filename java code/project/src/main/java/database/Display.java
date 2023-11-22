@@ -79,7 +79,7 @@ public class Display {
                 break;
             case 3:
                 // Call the method for updating data
-                // For example: updateData();
+                updateData();
                 displayMainMenu();
                 break;
             case 4:
@@ -133,9 +133,9 @@ public class Display {
                 productToAdd.AddToDatabase(connection);
                 break;
             case 2:
-            Customers customerToAdd = Customers.collectCustomerInformation();
-            customerToAdd.AddToDatabase(connection);
-            // For example: addCustomer();
+                Customers customerToAdd = Customers.collectCustomerInformation();
+                customerToAdd.AddToDatabase(connection);
+                // For example: addCustomer();
                 break;
             case 3:
                 Orders orderToAdd = Orders.collectOrderInformation(connection);
@@ -145,12 +145,12 @@ public class Display {
             case 4:
                 try (Statement statement = connection.createStatement()) {
                     String sql = "SELECT product_id, product_name FROM Products";
-            
+
                     try (ResultSet resultSet = statement.executeQuery(sql)) {
                         while (resultSet.next()) {
                             int productId = resultSet.getInt("product_id");
                             String productName = resultSet.getString("product_name");
-            
+
                             System.out.println("Product ID: " + productId + ", Product Name: " + productName);
                         }
                     }
@@ -168,24 +168,24 @@ public class Display {
                 Warehouse warehouseToAdd = Warehouse.collectWarehouseInformation(connection);
                 warehouseToAdd.AddToDatabase(connection);
                 break;
-                case 7:
-                
+            case 7:
+
                 try (Statement statement = connection.createStatement()) {
                     String sql = "SELECT w.warehouse_id, w.warehouse_name, wp.product_id, p.product_name " +
-                                 "FROM Warehouse w " +
-                                 "LEFT JOIN Warehouse_Products wp ON w.warehouse_id = wp.warehouse_id " +
-                                 "LEFT JOIN Products p ON wp.product_id = p.product_id " +
-                                 "ORDER BY w.warehouse_id, wp.product_id";
-            
+                            "FROM Warehouse w " +
+                            "LEFT JOIN Warehouse_Products wp ON w.warehouse_id = wp.warehouse_id " +
+                            "LEFT JOIN Products p ON wp.product_id = p.product_id " +
+                            "ORDER BY w.warehouse_id, wp.product_id";
+
                     try (ResultSet resultSet = statement.executeQuery(sql)) {
                         int currentWarehouseId = 0;
-            
+
                         while (resultSet.next()) {
                             int warehouseId = resultSet.getInt("warehouse_id");
                             String warehouseName = resultSet.getString("warehouse_name");
                             int productId = resultSet.getInt("product_id");
                             String productName = resultSet.getString("product_name");
-            
+
                             // Check if we are still processing the same warehouse or a new one
                             if (currentWarehouseId != warehouseId) {
                                 // Display warehouse information when encountering a new warehouse
@@ -194,17 +194,18 @@ public class Display {
                                 System.out.println("Warehouse Name: " + warehouseName);
                                 currentWarehouseId = warehouseId;
                             }
-            
+
                             // Display associated product information
                             System.out.println("   Product ID: " + productId);
                             System.out.println("   Product Name: " + productName);
                         }
-                       
+
                     }
                 }
-            
+
                 // Now, add a new warehouse product
-                WarehouseProducts warehouseProductToAdd = WarehouseProducts.collectWarehouseProductInformation(connection);
+                WarehouseProducts warehouseProductToAdd = WarehouseProducts
+                        .collectWarehouseProductInformation(connection);
                 warehouseProductToAdd.AddToDatabase(connection);
                 break;
             case 8:
@@ -247,20 +248,19 @@ public class Display {
                 DeleteData deleteData3 = new DeleteData(connection);
                 deleteData3.deleteReviews(reviewId);
                 break;
-            case 4: 
+            case 4:
                 try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_store(?)}")) {
                     stmt.registerOutParameter(1, OracleTypes.CURSOR);
                     stmt.execute();
-            
+
                     ResultSet rs = (ResultSet) stmt.getObject(1);
-            
+
                     while (rs.next()) {
                         int storeId = rs.getInt("store_id");
                         String storeName = rs.getString("store_name");
                         System.out.println("Store ID: " + storeId + ", Store Name: " + storeName);
                     }
-                } 
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
                 System.out.println("Enter which Store ID to delete");
@@ -278,7 +278,61 @@ public class Display {
         }
     }
 
-    public static void viewFunctions() throws SQLException, ClassNotFoundException{
+    public static void updateData() throws SQLException {
+        System.out.println("\nUpdate Data Menu:");
+        System.out.println("1. Update Product");
+        System.out.println("2. Update Warehouse");
+
+        int choice = getUserChoice();
+        scanner.nextLine();
+        switch (choice) {
+            case 1:
+                System.out.println(
+                        "Enter the ID of the product to update. (Please refer to the list of products on top)");
+                int productId = getUserChoice();
+
+                System.out.println(
+                        "Enter the updated product name");
+                scanner.nextLine();
+                String productName = scanner.nextLine();
+
+                System.out.println(
+                        "Enter the updated product price");
+                int productPrice = getUserChoice();
+
+                System.out.println(
+                        "Enter the updated product category");
+                scanner.nextLine();
+                String productCategory = scanner.nextLine();
+
+                UpdateData updateData = new UpdateData(connection);
+                updateData.updateProduct(productId, productName, productPrice, productCategory);
+                break;
+            case 2:
+                System.out.println(
+                        "Enter the ID of the warehouse to update.");
+                int warehouseId = getUserChoice();
+
+                System.out.println(
+                        "Enter the updated warehouse name");
+                scanner.nextLine();
+                String warehouseName = scanner.nextLine();
+
+                System.out.println(
+                        "Enter the updated address ID");
+                int addressId = getUserChoice();
+
+                System.out.println(
+                        "Enter the updated city ID");
+                int cityId = getUserChoice();
+
+                UpdateData updateData2 = new UpdateData(connection);
+                updateData2.updateWarehouse(warehouseId, warehouseName, addressId, cityId);
+                break;
+        }
+    }
+
+    public static void viewFunctions() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
         System.out.println("2. Show Total inventory For A Product");
@@ -288,8 +342,8 @@ public class Display {
         System.out.println("6. Show all orders");
         System.out.println("7. Back to Main Menu");
 
-             int choice = getUserChoice();
-             scanner.nextLine();
+        int choice = getUserChoice();
+        scanner.nextLine();
         switch (choice) {
             case 1:
                 System.out.println("Enter a Product's id You'd like to see the reviews for: ");
@@ -336,12 +390,12 @@ public class Display {
                 break;
             case 5:
                 System.out.println("------------------------------------");
-                 DisplayProducts.displayProduct(connection);
+                DisplayProducts.displayProduct(connection);
                 break;
             case 6:
                 System.out.println("------------------------------------");
                 Orders.displayOrder(connection);
-            case 7: 
+            case 7:
                 displayMainMenu();
             default:
                 System.out.println("Invalid choice. Please try again.");
@@ -349,7 +403,7 @@ public class Display {
         }
     }
 
-    public static void viewLogs() throws SQLException, ClassNotFoundException{
+    public static void viewLogs() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. View Product Audit Log");
         System.out.println("2. View Address Audit Log");
@@ -361,42 +415,41 @@ public class Display {
         System.out.println("8. View Reviews Audit Log");
         System.out.println("9. Back to Main Menu");
 
-
         int choice = getUserChoice();
-             scanner.nextLine();
-        switch (choice){
+        scanner.nextLine();
+        switch (choice) {
             case 1:
-            DisplayFunctions.displayAuditLogs(connection, "Products");
+                DisplayFunctions.displayAuditLogs(connection, "Products");
                 break;
             case 2:
-            DisplayFunctions.displayAuditLogs(connection, "Project_Address");
+                DisplayFunctions.displayAuditLogs(connection, "Project_Address");
                 break;
             case 3:
-            DisplayFunctions.displayAuditLogs(connection, "Project_City");
+                DisplayFunctions.displayAuditLogs(connection, "Project_City");
                 break;
             case 4:
-            DisplayFunctions.displayAuditLogs(connection, "Stores");
+                DisplayFunctions.displayAuditLogs(connection, "Stores");
                 break;
             case 5:
-            DisplayFunctions.displayAuditLogs(connection, "Warehouse_Products");
+                DisplayFunctions.displayAuditLogs(connection, "Warehouse_Products");
                 break;
             case 6:
-            DisplayFunctions.displayAuditLogs(connection, "Project_Customers");
+                DisplayFunctions.displayAuditLogs(connection, "Project_Customers");
                 break;
             case 7:
-            DisplayFunctions.displayAuditLogs(connection, "Project_Orders");
+                DisplayFunctions.displayAuditLogs(connection, "Project_Orders");
                 break;
             case 8:
-            DisplayFunctions.displayAuditLogs(connection, "Reviews");
+                DisplayFunctions.displayAuditLogs(connection, "Reviews");
                 break;
             case 9:
-                    displayMainMenu();
+                displayMainMenu();
                 break;
-                default:
+            default:
                 System.out.println("Invalid choice. Please try again.");
                 viewLogs();
-        
+
         }
     }
-    
+
 }
