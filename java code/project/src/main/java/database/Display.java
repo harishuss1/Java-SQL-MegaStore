@@ -294,16 +294,12 @@ public class Display {
                 String productName = scanner.nextLine();
 
                 System.out.println(
-                        "Enter the updated product price");
-                int productPrice = getUserChoice();
-
-                System.out.println(
                         "Enter the updated product category");
                 scanner.nextLine();
                 String productCategory = scanner.nextLine();
 
                 UpdateData updateData = new UpdateData(connection);
-                updateData.updateProduct(productId, productName, productPrice, productCategory);
+                updateData.updateProduct(productId, productName, productCategory);
                 break;
             case 2:
                 System.out.println(
