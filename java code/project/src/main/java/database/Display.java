@@ -143,7 +143,7 @@ public class Display {
             case 4:
                 Warehouse warehouseToAdd = Warehouse.collectWarehouseInformation(connection);
                 warehouseToAdd.AddToDatabase(connection);
-                
+
                 break;
             case 5:
                 WarehouseProducts warehouseProductToAdd = WarehouseProducts
@@ -160,13 +160,14 @@ public class Display {
         }
     }
 
-    public static void removeData() throws SQLException {
+    public static void removeData() throws SQLException, ClassNotFoundException {
         System.out.println("\nRemove Data Menu:");
         System.out.println("1. Remove Product");
         System.out.println("2. Remove Warehouse");
         System.out.println("3. Remove Review");
         System.out.println("4. Remove Store");
         System.out.println("5. Remove Order");
+        System.out.println("6. Back to Main Menu");
         int choice = getUserChoice();
         scanner.nextLine();
         switch (choice) {
@@ -220,14 +221,20 @@ public class Display {
                 DeleteData deleteData5 = new DeleteData(connection);
                 deleteData5.deleteOrder(orderId);
                 break;
+            case 6:
+                displayMainMenu();
+                break;
 
         }
     }
 
-    public static void updateData() throws SQLException {
+    public static void updateData() throws SQLException, ClassNotFoundException {
         System.out.println("\nUpdate Data Menu:");
         System.out.println("1. Update Product");
         System.out.println("2. Update Warehouse");
+        System.out.println("3. Update Inventory");
+        System.out.println("4. Update Reviews");
+        System.out.println("5. Back to Main Menu");
 
         int choice = getUserChoice();
         scanner.nextLine();
@@ -243,16 +250,12 @@ public class Display {
                 String productName = scanner.nextLine();
 
                 System.out.println(
-                        "Enter the updated product price");
-                int productPrice = getUserChoice();
-
-                System.out.println(
                         "Enter the updated product category");
                 scanner.nextLine();
                 String productCategory = scanner.nextLine();
 
                 UpdateData updateData = new UpdateData(connection);
-                updateData.updateProduct(productId, productName, productPrice, productCategory);
+                updateData.updateProduct(productId, productName, productCategory);
                 break;
             case 2:
                 System.out.println(
@@ -275,6 +278,37 @@ public class Display {
                 UpdateData updateData2 = new UpdateData(connection);
                 updateData2.updateWarehouse(warehouseId, warehouseName, addressId, cityId);
                 break;
+            case 3:
+                System.out.println(
+                        "Enter the ID of the warehouse to update inventory.");
+                int warehouseId2 = getUserChoice();
+
+                System.out.println(
+                        "Enter the ID of the product to update inventory");
+                int productId2 = getUserChoice();
+
+                System.out.println(
+                        "Enter the updated quantity");
+                int quantity = getUserChoice();
+
+                UpdateData updateData3 = new UpdateData(connection);
+                updateData3.updateWarehouseProducts(warehouseId2, productId2, quantity);
+                break;
+            case 4:
+                System.out.println(
+                        "Enter the ID of the flagged review to unflag.");
+                int reviewId = getUserChoice();
+
+                UpdateData updateData4 = new UpdateData(connection);
+                updateData4.updateReviews(reviewId);
+                break;
+            case 5:
+                displayMainMenu();
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                updateData();
+
         }
     }
 
