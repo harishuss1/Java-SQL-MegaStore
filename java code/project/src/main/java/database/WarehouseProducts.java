@@ -4,12 +4,23 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * The WarehouseProducts class represents information about products stored in a warehouse.
+ * @class
+ */
 public class WarehouseProducts implements SQLData {
     private int warehouse_id;
     private int product_id;
     private int total_quantity;
     private String typeName;
 
+    /**
+     * Creates an instance of WarehouseProducts with the specified information.
+     * @constructor
+     * @param {int} warehouse_id - The ID of the warehouse.
+     * @param {int} product_id - The ID of the product.
+     * @param {int} total_quantity - The total quantity of the product in the warehouse.
+     */
     public WarehouseProducts(int warehouse_id, int product_id, int total_quantity) {
         this.warehouse_id = warehouse_id;
         this.product_id = product_id;
@@ -50,6 +61,13 @@ public class WarehouseProducts implements SQLData {
         return typeName;
     }
 
+    /**
+     * Reads the SQL data into the WarehouseProducts object.
+     * @function
+     * @param {SQLInput} stream - The SQL input stream.
+     * @param {string} typeName - The SQL type name.
+     * @throws {SQLException}
+     */
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
         setWarehouse_id(stream.readInt());
@@ -57,6 +75,12 @@ public class WarehouseProducts implements SQLData {
         setTotal_quantity(stream.readInt());
     }
 
+    /**
+     * Writes the WarehouseProducts object to the SQL output stream.
+     * @function
+     * @param {SQLOutput} stream - The SQL output stream.
+     * @throws {SQLException}
+     */
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
         stream.writeInt(getWarehouse_id());
@@ -64,7 +88,13 @@ public class WarehouseProducts implements SQLData {
         stream.writeInt(getTotal_quantity());
     }
 
-    // ADD TO DATABASE METHOD
+    /**
+     * Adds the warehouse product information to the database.
+     * @function
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException}
+     * @throws {ClassNotFoundException}
+     */
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
@@ -77,6 +107,12 @@ public class WarehouseProducts implements SQLData {
         }
     }
 
+    /**
+     * Collects warehouse product information from the user.
+     * @function
+     * @param {Connection} conn - The database connection.
+     * @returns {WarehouseProducts} - The WarehouseProducts object with user-provided information.
+     */
     public static WarehouseProducts collectWarehouseProductInformation(Connection conn) {
         System.out.println("\nAdding Warehouse Product:");
         int warehouseID = Helpers.getUserInputInt("Enter warehouse ID: ");

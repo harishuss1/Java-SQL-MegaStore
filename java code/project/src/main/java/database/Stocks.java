@@ -6,8 +6,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import oracle.jdbc.OracleTypes;
 
+/**
+ * The Stocks class provides methods for retrieving total stock information for products.
+ * @class
+ */
 public class Stocks {
 
+    /**
+     * Retrieves and prints the total stock for all products.
+     * @static
+     * @function
+     * @param {Connection} connection - The database connection.
+     * @throws {SQLException}
+     */
     public static void getTotalStockForAllProducts(Connection connection) {
         
 
@@ -31,6 +42,14 @@ public class Stocks {
 
     }
 
+    /**
+     * Retrieves the total count of product IDs.
+     * @static
+     * @function
+     * @param {Connection} connection - The database connection.
+     * @returns {number} - The total count of product IDs.
+     * @throws {SQLException}
+     */
     private static int getTotalProductCount(Connection connection) throws SQLException {
         int totalProductCount = 0;
 
@@ -48,6 +67,15 @@ public class Stocks {
         return totalProductCount;
     }
 
+    /**
+     * Retrieves the total stock for a specific product.
+     * @static
+     * @function
+     * @param {Connection} connection - The database connection.
+     * @param {number} productId - The ID of the product.
+     * @returns {number} - The total stock for the specified product.
+     * @throws {SQLException}
+     */
     private static int getTotalStockForProduct(Connection connection, int productId) throws SQLException {
         int totalStock = 0;
 
