@@ -61,25 +61,30 @@ CREATE OR REPLACE PACKAGE BODY insert_data AS
 
     -- Adding warehouse
     PROCEDURE add_warehouse(vwarehouses IN WAREHOUSE_TYP) IS
-        vaddress_id NUMBER;
-        vcity_id NUMBER;
+    vaddress_id NUMBER;
+    vcity_id NUMBER;
+BEGIN
     BEGIN
-    SELECT address_id INTO vaddress_id
-    FROM Project_Address
-    WHERE address = vwarehouses.address;
+        SELECT address_id INTO vaddress_id
+        FROM Project_Address
+        WHERE address = vwarehouses.address;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+            -- Handle the case where no data is found
+            DBMS_OUTPUT.PUT_LINE('No data found for the specified address: ' || vwarehouses.address);
+            
+    END;
 
     -- Fetch city_id based on the provided city
     SELECT city_id INTO vcity_id
     FROM Project_City
     WHERE city_name = vwarehouses.city;
-    
-        INSERT INTO Warehouse (warehouse_name, address_id, city_id)
-        VALUES (
-            vwarehouses.warehouse_name,
-            vaddress_id,
-            vcity_id
-        );
+
+    -- Rest of your code
+    INSERT INTO Warehouse (warehouse_name, address_id, city_id)
+    VALUES (vwarehouses.warehouse_name, vaddress_id, vcity_id);
     END add_warehouse;
+
 
     -- Adding warehouse product
     PROCEDURE add_warehouse_product(vwarehouse_products IN WAREHOUSE_PRODUCTS_TYP) IS

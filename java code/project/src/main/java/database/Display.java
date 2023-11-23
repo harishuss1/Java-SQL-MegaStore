@@ -218,6 +218,7 @@ public class Display {
         scanner.nextLine();
         switch (choice) {
             case 1:
+                DisplayProducts.displayProduct(connection);
                 System.out.println(
                         "Enter the ID of the product to remove. (Please refer to the list of products on top)");
 
@@ -292,6 +293,7 @@ public class Display {
         scanner.nextLine();
         switch (choice) {
             case 1:
+                DisplayProducts.displayProduct(connection);
                 System.out.println(
                         "Enter the ID of the product to update. (Please refer to the list of products on top)");
                 int productId = getUserChoice();
