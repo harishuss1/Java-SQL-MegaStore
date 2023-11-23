@@ -1,8 +1,3 @@
-/**
- * The Display class contains methods for displaying menus, handling user input,
- * and interacting with the database to perform CRUD operations.
- * @class
- */
 package database;
 
 import java.sql.CallableStatement;
@@ -15,21 +10,11 @@ import java.util.Scanner;
 
 import oracle.jdbc.OracleTypes;
 
-/**
- * The Display class handles the display of menus, user input, and database interactions.
- * @class
- */
+//All the stuff related to Displaying information is here
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
     private static Connection connection;
 
-    /**
-     * The main method that initiates the program and displays the login menu.
-     * 
-     * @param args Command-line arguments (not used).
-     * @throws SQLException           If a SQL exception occurs.
-     * @throws ClassNotFoundException If the specified class cannot be found.
-     */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
@@ -38,9 +23,6 @@ public class Display {
         displayLoginMenu();
     }
 
-    /**
-     * Displays a greeting message.
-     */
     public static void Greet() {
         System.out.println("   ________________");
         System.out.println("  /\\              /\\");
@@ -54,12 +36,6 @@ public class Display {
 
     }
 
-    /**
-     * Displays the login menu and handles user input for login-related actions.
-     * 
-     * @throws SQLException           If a SQL exception occurs.
-     * @throws ClassNotFoundException If the specified class cannot be found.
-     */
     public static void displayLoginMenu() throws SQLException, ClassNotFoundException {
         System.out.println("Welcome to the Application!");
         System.out.println("1. Log In");
@@ -81,12 +57,6 @@ public class Display {
         }
     }
 
-    /**
-     * Displays the main menu and handles user input for main menu actions.
-     * 
-     * @throws SQLException           If a SQL exception occurs.
-     * @throws ClassNotFoundException If the specified class cannot be found.
-     */
     public static void displayMainMenu() throws SQLException, ClassNotFoundException {
         System.out.println("\nMain Menu:");
         System.out.println("Please refer to the View Functions option before manipulating data");
@@ -127,11 +97,6 @@ public class Display {
         }
     }
 
-    /**
-     * Gets the user's choice from the console input.
-     * 
-     * @return The user's choice.
-     */
     public static int getUserChoice() {
         int choice = 0;
         boolean isValidInput = false;
@@ -150,12 +115,6 @@ public class Display {
         return choice;
     }
 
-    /**
-     * Displays the "Add Data" menu and handles user input for adding data to the database.
-     * 
-     * @throws SQLException If a SQL exception occurs.
-     * @throws ClassNotFoundException If the specified class cannot be found.
-     */
     public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
@@ -184,7 +143,7 @@ public class Display {
             case 4:
                 Warehouse warehouseToAdd = Warehouse.collectWarehouseInformation(connection);
                 warehouseToAdd.AddToDatabase(connection);
-                
+
                 break;
             case 5:
                 WarehouseProducts warehouseProductToAdd = WarehouseProducts
@@ -201,18 +160,14 @@ public class Display {
         }
     }
 
-    /**
-     * Displays the "Remove Data" menu and handles user input for removing data from the database.
-     * 
-     * @throws SQLException If a SQL exception occurs.
-     */
-    public static void removeData() throws SQLException {
+    public static void removeData() throws SQLException, ClassNotFoundException {
         System.out.println("\nRemove Data Menu:");
         System.out.println("1. Remove Product");
         System.out.println("2. Remove Warehouse");
         System.out.println("3. Remove Review");
         System.out.println("4. Remove Store");
         System.out.println("5. Remove Order");
+        System.out.println("6. Back to Main Menu");
         int choice = getUserChoice();
         scanner.nextLine();
         switch (choice) {
@@ -266,19 +221,20 @@ public class Display {
                 DeleteData deleteData5 = new DeleteData(connection);
                 deleteData5.deleteOrder(orderId);
                 break;
+            case 6:
+                displayMainMenu();
+                break;
 
         }
     }
 
-    /**
-     * Displays the "Update Data" menu and handles user input for updating data in the database.
-     * 
-     * @throws SQLException If a SQL exception occurs.
-     */
-    public static void updateData() throws SQLException {
+    public static void updateData() throws SQLException, ClassNotFoundException {
         System.out.println("\nUpdate Data Menu:");
         System.out.println("1. Update Product");
         System.out.println("2. Update Warehouse");
+        System.out.println("3. Update Inventory");
+        System.out.println("4. Update Reviews");
+        System.out.println("5. Back to Main Menu");
 
         int choice = getUserChoice();
         scanner.nextLine();
@@ -322,15 +278,40 @@ public class Display {
                 UpdateData updateData2 = new UpdateData(connection);
                 updateData2.updateWarehouse(warehouseId, warehouseName, addressId, cityId);
                 break;
+            case 3:
+                System.out.println(
+                        "Enter the ID of the warehouse to update inventory.");
+                int warehouseId2 = getUserChoice();
+
+                System.out.println(
+                        "Enter the ID of the product to update inventory");
+                int productId2 = getUserChoice();
+
+                System.out.println(
+                        "Enter the updated quantity");
+                int quantity = getUserChoice();
+
+                UpdateData updateData3 = new UpdateData(connection);
+                updateData3.updateWarehouseProducts(warehouseId2, productId2, quantity);
+                break;
+            case 4:
+                System.out.println(
+                        "Enter the ID of the flagged review to unflag.");
+                int reviewId = getUserChoice();
+
+                UpdateData updateData4 = new UpdateData(connection);
+                updateData4.updateReviews(reviewId);
+                break;
+            case 5:
+                displayMainMenu();
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                updateData();
+
         }
     }
 
-    /**
-     * Displays the "View Functions" menu and handles user input for various view functions.
-     * 
-     * @throws SQLException           If a SQL exception occurs.
-     * @throws ClassNotFoundException If the specified class cannot be found.
-     */
     public static void viewFunctions() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
@@ -402,12 +383,6 @@ public class Display {
         }
     }
 
-    /**
-     * Displays the "View Logs" menu and handles user input for viewing audit logs.
-     * 
-     * @throws SQLException           If a SQL exception occurs.
-     * @throws ClassNotFoundException If the specified class cannot be found.
-     */
     public static void viewLogs() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. View Product Audit Log");
