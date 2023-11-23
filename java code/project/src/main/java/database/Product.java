@@ -4,12 +4,24 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * The Product class represents product information and provides methods for interacting with products in the database.
+ * @class
+ * @implements {SQLData}
+ */
 public class Product implements SQLData {
     private String product_name;
     private double product_price;
     private String product_category;
     private String typeName;
 
+    /**
+     * Creates an instance of the Product class.
+     * @constructor
+     * @param {string} product_name - The name of the product.
+     * @param {number} product_price - The price of the product.
+     * @param {string} product_category - The category of the product.
+     */
     public Product(String product_name, double product_price, String product_category) {
         this.product_name = product_name;
         this.product_price = product_price;
@@ -50,6 +62,13 @@ public class Product implements SQLData {
         return typeName;
     }
 
+   /**
+     * Reads SQL data from a stream and sets the properties of the Product instance.
+     * @override
+     * @param {SQLInput} stream - The SQL input stream.
+     * @param {string} typeName - The SQL type name.
+     * @throws {SQLException}
+     */
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
         this.product_name = stream.readString();
@@ -57,6 +76,12 @@ public class Product implements SQLData {
         this.product_category = stream.readString();
     }
 
+    /**
+     * Writes SQL data to a stream based on the properties of the Product instance.
+     * @override
+     * @param {SQLOutput} stream - The SQL output stream.
+     * @throws {SQLException}
+     */
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
         stream.writeString(product_name);
@@ -105,7 +130,11 @@ public class Product implements SQLData {
         }
     }
 
-    // ADD TO DATABASE METHOD
+    /**
+     * Adds product information to the database.
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException, ClassNotFoundException}
+     */
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
@@ -124,6 +153,10 @@ public class Product implements SQLData {
         }
     }
 
+    /**
+     * Collects product information from the user.
+     * @returns {Product} The Product instance with user-provided information.
+     */
     public static Product collectProductInformation() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nAdding Product:");

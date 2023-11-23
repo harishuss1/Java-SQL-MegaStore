@@ -4,6 +4,11 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * The Reviews class represents review information for a product and provides methods for interacting with reviews in the database.
+ * @class
+ * @implements {SQLData}
+ */
 public class Reviews implements SQLData {
     private int flag;
     private String description;
@@ -12,6 +17,15 @@ public class Reviews implements SQLData {
     private int product_id;
     private String typeName;
 
+    /**
+     * Creates an instance of the Reviews class.
+     * @constructor
+     * @param {number} flag - The flag associated with the review.
+     * @param {string} description - The description or content of the review.
+     * @param {number} review_score - The score given in the review.
+     * @param {number} customer_id - The unique identifier for the customer providing the review.
+     * @param {number} product_id - The unique identifier for the product being reviewed.
+     */
     public Reviews(int flag, String description, int review_score, int customer_id, int product_id) {
         this.flag = flag;
         this.description = description;
@@ -70,6 +84,13 @@ public class Reviews implements SQLData {
         return typeName;
     }
 
+    /**
+     * Reads SQL data from a stream and sets the properties of the Reviews instance.
+     * @override
+     * @param {SQLInput} stream - The SQL input stream.
+     * @param {string} typeName - The SQL type name.
+     * @throws {SQLException}
+     */
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
         setFlag(stream.readInt());
@@ -79,6 +100,12 @@ public class Reviews implements SQLData {
         setProduct_id(stream.readInt());
     }
 
+    /**
+     * Writes SQL data to a stream based on the properties of the Reviews instance.
+     * @override
+     * @param {SQLOutput} stream - The SQL output stream.
+     * @throws {SQLException}
+     */
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
         stream.writeInt(getFlag());
@@ -88,7 +115,11 @@ public class Reviews implements SQLData {
         stream.writeInt(getProduct_id());
     }
 
-    // ADD TO DATABASE METHOD
+    /**
+     * Adds review information to the database.
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException, ClassNotFoundException}
+     */
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
@@ -101,6 +132,11 @@ public class Reviews implements SQLData {
         }
     }
 
+    /**
+     * Collects review information from the user.
+     * @param {Connection} conn - The database connection.
+     * @returns {Reviews} An instance of the Reviews class with user-provided information.
+     */
     public static Reviews collectReviewInformation(Connection conn) {
         Scanner scanner = new Scanner(System.in);
         

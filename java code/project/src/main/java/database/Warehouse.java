@@ -6,12 +6,23 @@ import java.util.Scanner;
 
 import oracle.jdbc.OracleTypes;
 
+/**
+ * The Warehouse class represents information about a warehouse.
+ * @class
+ */
 public class Warehouse implements SQLData {
     private String warehouse_name;
     private String address;
     private String city;
     private String typeName;
 
+    /**
+     * Creates an instance of Warehouse with the specified information.
+     * @constructor
+     * @param {string} warehouse_name - The name of the warehouse.
+     * @param {string} address - The address of the warehouse.
+     * @param {string} city - The city where the warehouse is located.
+     */
     public Warehouse(String warehouse_name, String address, String city) {
         this.warehouse_name = warehouse_name;
         this.address = address;
@@ -44,6 +55,13 @@ public class Warehouse implements SQLData {
         return typeName;
     }
 
+    /**
+     * Reads the SQL data into the Warehouse object.
+     * @function
+     * @param {SQLInput} stream - The SQL input stream.
+     * @param {string} typeName - The SQL type name.
+     * @throws {SQLException}
+     */
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
         this.warehouse_name = stream.readString();
@@ -51,6 +69,12 @@ public class Warehouse implements SQLData {
         this.city = stream.readString();
     }
 
+    /**
+     * Writes the Warehouse object to the SQL output stream.
+     * @function
+     * @param {SQLOutput} stream - The SQL output stream.
+     * @throws {SQLException}
+     */
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
         stream.writeString(getWarehouse_name());
@@ -58,7 +82,13 @@ public class Warehouse implements SQLData {
         stream.writeString(getCity());
     }
 
-    // ADD TO DATABASE METHOD
+    /**
+     * Adds the warehouse information to the database.
+     * @function
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException}
+     * @throws {ClassNotFoundException}
+     */
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
@@ -70,6 +100,13 @@ public class Warehouse implements SQLData {
         }
     }
 
+    /**
+     * Collects warehouse information from the user.
+     * @function
+     * @param {Connection} conn - The database connection.
+     * @returns {Warehouse} - The Warehouse object with user-provided information.
+     * @throws {SQLException}
+     */
     public static Warehouse collectWarehouseInformation(Connection conn) throws SQLException {
         displayAllAddresses(conn);
         Scanner scanner = new Scanner(System.in);
@@ -84,6 +121,12 @@ public class Warehouse implements SQLData {
         return new Warehouse(warehouseName, address, city);
     }
 
+    /**
+     * Displays all addresses from the Project_Address table.
+     * @function
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException}
+     */
     public static void displayAllAddresses(Connection conn) throws SQLException {
         String sql = "SELECT address FROM Project_Address";
         try (Statement stmt = conn.createStatement();
@@ -97,6 +140,12 @@ public class Warehouse implements SQLData {
         }
     }
 
+    /**
+     * Displays warehouse names using a stored procedure.
+     * @function
+     * @param {Connection} connection - The database connection.
+     * @throws {SQLException}
+     */
     public static void displayWarehouseNames(Connection connection) {
         try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_warehouse(?)}")) {
             // Register the OUT parameter for the cursor

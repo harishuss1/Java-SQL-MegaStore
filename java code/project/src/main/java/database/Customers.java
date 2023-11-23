@@ -4,6 +4,11 @@ import java.sql.*;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * The Customers class represents customer information and provides methods for interacting with the database.
+ * @class
+ * @implements {SQLData}
+ */
 public class Customers implements SQLData {
     
     private String firstname;
@@ -13,6 +18,15 @@ public class Customers implements SQLData {
     private int city_id;
     private String typeName;
 
+    /**
+     * Creates an instance of Customers with the specified customer details.
+     * @constructor
+     * @param {string} firstname - The first name of the customer.
+     * @param {string} lastname - The last name of the customer.
+     * @param {string} email - The email address of the customer.
+     * @param {number} address_id - The ID of the customer's address.
+     * @param {number} city_id - The ID of the customer's city.
+     */
     public Customers(String firstname, String lastname, String email, int address_id, int city_id) {
         this.firstname = firstname;
         this.lastname = lastname;
@@ -71,6 +85,12 @@ public class Customers implements SQLData {
         return typeName;
     }
 
+    /**
+     * Reads the SQL data from a SQLInput stream.
+     * @param {SQLInput} stream - The SQLInput stream.
+     * @param {string} typeName - The SQL type name.
+     * @throws {SQLException} - If an SQL error occurs.
+     */
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
         setFirstname(stream.readString());
@@ -80,6 +100,11 @@ public class Customers implements SQLData {
         setCity_id(stream.readInt());
     }
 
+    /**
+     * Writes the SQL data to a SQLOutput stream.
+     * @param {SQLOutput} stream - The SQLOutput stream.
+     * @throws {SQLException} - If an SQL error occurs.
+     */
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
         stream.writeString(getFirstname());
@@ -89,7 +114,12 @@ public class Customers implements SQLData {
         stream.writeInt(getCity_id());
     }
 
-    // ADD TO DATABASE METHOD
+    /**
+     * Adds customer information to the database.
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException} - If an SQL error occurs.
+     * @throws {ClassNotFoundException} - If the class is not found.
+     */
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
@@ -103,6 +133,10 @@ public class Customers implements SQLData {
         }
     }
 
+    /**
+     * Collects customer information from user input.
+     * @returns {Customers} - An instance of Customers with user-provided information.
+     */
     public static Customers collectCustomerInformation() {
         Scanner scanner = new Scanner(System.in);
         

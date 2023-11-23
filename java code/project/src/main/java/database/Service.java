@@ -4,7 +4,10 @@ import java.sql.*;
 import java.util.Scanner;
 import java.io.Console;
 
-
+/**
+ * The Service class provides methods for establishing and closing connections to a database.
+ * @class
+ */
 public class Service {
 
     private Connection conn;
@@ -13,6 +16,13 @@ public class Service {
     public Service() {
     }
 
+    /**
+     * Creates an instance of the Service class and establishes a database connection using the provided username and password.
+     * @constructor
+     * @param {string} username - The username for the database connection.
+     * @param {string} password - The password for the database connection.
+     * @throws {SQLException}
+     */
     public Service(String username, String password) throws SQLException {
 
         String url = "jdbc:oracle:thin:@198.168.52.211: 1521/pdbora19c.dawsoncollege.qc.ca";
@@ -26,6 +36,13 @@ public class Service {
 
     }
 
+     /**
+     * Retrieves a database connection based on user input for the username and password.
+     * @static
+     * @function
+     * @returns {Connection} The database connection.
+     * @throws {SQLException}
+     */
     public static Connection getConnection() throws SQLException {
         Connection conn = null;
 
@@ -44,6 +61,11 @@ public class Service {
         return conn;
     }
 
+    /**
+     * Closes the database connection.
+     * @function
+     * @throws {SQLException}
+     */
     public void Close() throws SQLException {
         if (!this.conn.isClosed() && this.conn != null) {
             this.conn.close();

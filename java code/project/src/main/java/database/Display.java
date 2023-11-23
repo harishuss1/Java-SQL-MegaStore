@@ -10,11 +10,24 @@ import java.util.Scanner;
 
 import oracle.jdbc.OracleTypes;
 
-//All the stuff related to Displaying information is here
+
+/**
+ * The main method that initiates the program and displaythe login * menu.
+ * 
+ * @param args Command-line arguments (not used).
+ * @throws SQLException           If a SQL exception occurs.
+ * @throws ClassNotFoundException If the specified clascannot be found.
+ */
 public class Display {
     private static Scanner scanner = new Scanner(System.in);
     private static Connection connection;
 
+    /**
+     * The main method that initiates the program and displays the login menu.
+     * @param args Command-line arguments (not used).
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         // Assume the program starts here
         System.out.print("\033[H\033[2J");
@@ -23,6 +36,10 @@ public class Display {
         displayLoginMenu();
     }
 
+    /**
+     * Displays a welcome message.
+     * @function
+     */
     public static void Greet() {
         System.out.println("   ________________");
         System.out.println("  /\\              /\\");
@@ -36,6 +53,12 @@ public class Display {
 
     }
 
+    /**
+     * Displays the login menu and processes user input.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void displayLoginMenu() throws SQLException, ClassNotFoundException {
         System.out.println("Welcome to the Application!");
         System.out.println("1. Log In");
@@ -57,6 +80,12 @@ public class Display {
         }
     }
 
+    /**
+     * Displays the main menu and processes user input.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void displayMainMenu() throws SQLException, ClassNotFoundException {
         System.out.println("\nMain Menu:");
         System.out.println("Please refer to the View Functions option before manipulating data");
@@ -97,6 +126,11 @@ public class Display {
         }
     }
 
+    /**
+     * Gets the user's choice from the console input.
+     * @function
+     * @return {int} The user's choice.
+     */
     public static int getUserChoice() {
         int choice = 0;
         boolean isValidInput = false;
@@ -115,6 +149,12 @@ public class Display {
         return choice;
     }
 
+    /**
+     * Handles the "Add Data" menu options.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void addData() throws SQLException, ClassNotFoundException {
         System.out.println("\nAdd Data Menu:");
         System.out.println("1. Add Product");
@@ -160,6 +200,12 @@ public class Display {
         }
     }
 
+    /**
+     * Handles the "Remove Data" menu options.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void removeData() throws SQLException, ClassNotFoundException {
         System.out.println("\nRemove Data Menu:");
         System.out.println("1. Remove Product");
@@ -228,6 +274,12 @@ public class Display {
         }
     }
 
+    /**
+     * Handles the "Update Data" menu options.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void updateData() throws SQLException, ClassNotFoundException {
         System.out.println("\nUpdate Data Menu:");
         System.out.println("1. Update Product");
@@ -312,6 +364,12 @@ public class Display {
         }
     }
 
+    /**
+     * Handles the "View Functions" menu options.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void viewFunctions() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. Show Average Rating Score For A Product");
@@ -383,6 +441,12 @@ public class Display {
         }
     }
 
+    /**
+     * Displays the audit logs for different entities.
+     * @function
+     * @throws SQLException If a SQL exception occurs.
+     * @throws ClassNotFoundException If the specified class cannot be found.
+     */
     public static void viewLogs() throws SQLException, ClassNotFoundException {
         System.out.println("\nView Function Menu:");
         System.out.println("1. View Product Audit Log");

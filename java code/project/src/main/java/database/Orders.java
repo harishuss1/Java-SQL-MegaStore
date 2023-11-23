@@ -6,6 +6,11 @@ import java.util.Scanner;
 
 import oracle.jdbc.OracleTypes;
 
+/**
+ * The Orders class represents order information and provides methods for interacting with orders in the database.
+ * @class
+ * @implements {SQLData}
+ */
 public class Orders implements SQLData {
     private int order_quantity;
     private Date order_date;
@@ -14,6 +19,15 @@ public class Orders implements SQLData {
     private int product_id;
     private String typeName;
 
+    /**
+     * Creates an instance of the Orders class.
+     * @constructor
+     * @param {number} order_quantity - The quantity of the order.
+     * @param {Date} order_date - The date of the order.
+     * @param {number} store_id - The store ID associated with the order.
+     * @param {number} customer_id - The customer ID associated with the order.
+     * @param {number} product_id - The product ID associated with the order.
+     */
     public Orders(int order_quantity, Date order_date, int store_id, int customer_id, int product_id) {
         this.order_quantity = order_quantity;
         this.order_date = order_date;
@@ -73,6 +87,13 @@ public class Orders implements SQLData {
         return typeName;
     }
 
+    /**
+     * Reads SQL data from a stream and sets the properties of the Orders instance.
+     * @override
+     * @param {SQLInput} stream - The SQL input stream.
+     * @param {string} typeName - The SQL type name.
+     * @throws {SQLException}
+     */
     @Override
     public void readSQL(SQLInput stream, String typeName) throws SQLException {
         setOrder_quantity(stream.readInt());
@@ -82,6 +103,12 @@ public class Orders implements SQLData {
         setProduct_id(stream.readInt());
     }
 
+    /**
+     * Writes SQL data to a stream based on the properties of the Orders instance.
+     * @override
+     * @param {SQLOutput} stream - The SQL output stream.
+     * @throws {SQLException}
+     */
     @Override
     public void writeSQL(SQLOutput stream) throws SQLException {
         stream.writeInt(getOrder_quantity());
@@ -91,7 +118,11 @@ public class Orders implements SQLData {
         stream.writeInt(getProduct_id());
     }
 
-    // ADD TO DATABASE METHOD
+    /**
+     * Adds order information to the database.
+     * @param {Connection} conn - The database connection.
+     * @throws {SQLException, ClassNotFoundException}
+     */
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
@@ -105,6 +136,11 @@ public class Orders implements SQLData {
         }
     }
 
+    /**
+     * Collects order information from the user.
+     * @param {Connection} conn - The database connection.
+     * @returns {Orders} The Orders instance with user-provided information.
+     */
     public static Orders collectOrderInformation(Connection conn) {
         Scanner scanner = new Scanner(System.in);
 
@@ -121,6 +157,10 @@ public class Orders implements SQLData {
         return new Orders(orderQuantity, orderDate, storeId, customerId, productId);
     }
 
+    /**
+     * Displays order information from the database.
+     * @param {Connection} connection - The database connection.
+     */
     public static void displayOrder(Connection connection) {
         try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_order(?)}")) {
             stmt.registerOutParameter(1, OracleTypes.CURSOR);

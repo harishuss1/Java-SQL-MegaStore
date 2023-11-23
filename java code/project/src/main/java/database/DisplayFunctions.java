@@ -10,14 +10,28 @@ import java.sql.Statement;
 
 import oracle.jdbc.OracleTypes;
 
+/**
+ * The DisplayFunctions class provides methods for displaying information from the database.
+ * @class
+ */
 public class DisplayFunctions {
 
     private Connection conn;
 
+    /**
+     * Creates an instance of DisplayFunctions with the specified database connection.
+     * @constructor
+     * @param {Connection} conn - The database connection.
+     */
     public DisplayFunctions(Connection conn) {
         this.conn = conn;
     }
 
+    /**
+     * Displays the average review score for a given product ID.
+     * @param {number} productId - The ID of the product.
+     * @throws {SQLException} - If an SQL error occurs.
+     */
     public void displayAverageReviewScore(int productId) {
         try (CallableStatement callableStatement = conn.prepareCall("{ ? = call utility_package.calculate_average_review_score(?) }")) {
             callableStatement.registerOutParameter(1, java.sql.Types.NUMERIC);
@@ -35,6 +49,11 @@ public class DisplayFunctions {
         }
     }
 
+    /**
+     * Displays flagged reviews from the database.
+     * @param {Connection} connection - The database connection.
+     * @throws {SQLException} - If an SQL error occurs.
+     */
     public void displayFlaggedReviews(Connection connection) throws SQLException {
         try (CallableStatement statement = connection.prepareCall("{ ? = call utility_package.GetFlaggedReviews }")) {
             // Register the output parameter as a cursor
@@ -64,6 +83,11 @@ public class DisplayFunctions {
         }
     }
 
+    /**
+     * Displays audit logs for a specified table in the database.
+     * @param {Connection} conn - The database connection.
+     * @param {string} tableName - The name of the table for which to display audit logs.
+     */
     public static void displayAuditLogs(Connection conn, String tableName) {
     try (Statement stmt = conn.createStatement()) {
         String sql = "SELECT * FROM " + tableName + "_Audit_Log";

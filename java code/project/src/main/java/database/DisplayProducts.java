@@ -3,8 +3,18 @@ import java.sql.*;
 
 import oracle.jdbc.OracleTypes;
 
+/**
+ * The DisplayProducts class provides methods for displaying product information from the database.
+ * @class
+ */
 public class DisplayProducts {
 
+    /**
+     * Displays products based on the specified category.
+     * @param {Connection} connection - The database connection.
+     * @param {string} category - The category for which to display products.
+     * @throws {SQLException} - If an SQL error occurs.
+     */
     public static void displayProductsByCategory(Connection connection, String category) {
         try (CallableStatement statement = connection.prepareCall("{ call ProductStockPackage.DisplayProductPerCategory(?, ?) }")) {
             // Register the OUT parameter for the result set
@@ -32,6 +42,11 @@ public class DisplayProducts {
         }
     }
 
+    /**
+     * Displays all products from the database.
+     * @param {Connection} connection - The database connection.
+     * @throws {SQLException} - If an SQL error occurs.
+     */
     public static void displayProduct(Connection connection) {
         try (CallableStatement stmt = connection.prepareCall("{call delete_data.display_product(?)}")) {
             stmt.registerOutParameter(1, OracleTypes.CURSOR);
