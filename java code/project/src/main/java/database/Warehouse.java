@@ -92,6 +92,7 @@ public class Warehouse implements SQLData {
     public void AddToDatabase(Connection conn) throws SQLException, ClassNotFoundException {
         Map map = conn.getTypeMap();
         conn.setTypeMap(map);
+        map.put(this.typeName, Class.forName("database.Warehouse"));
         Warehouse myWarehouse = new Warehouse(this.warehouse_name, this.address, this.city);
         String sql = "{call insert_data.add_warehouse(?)}";
         try (CallableStatement stmt = conn.prepareCall(sql)) {
@@ -114,6 +115,7 @@ public class Warehouse implements SQLData {
         System.out.println("Enter warehouse name (Ex: Warehouse A): ");
         String warehouseName = scanner.nextLine();
         System.out.println("Enter warehouse address: ");
+        System.out.println("Use an existing Address from the list above.");
         String address = scanner.nextLine();
         System.out.println("Enter warehouse city: ");
         String city = scanner.nextLine();
