@@ -31,7 +31,7 @@ public class Service {
             this.conn = DriverManager.getConnection(url, username, password);
             System.out.println("Connected to database");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Invalid username or password. Please try again.");
         }
 
     }
@@ -45,7 +45,9 @@ public class Service {
      */
     public static Connection getConnection() throws SQLException {
         Connection conn = null;
+        boolean validCredentials = false;
 
+        while(!validCredentials){
         Scanner scan = new Scanner(System.in);
         Console console = System.console();
         System.out.println("Enter username: ");
@@ -53,11 +55,17 @@ public class Service {
         System.out.println("Enter password");
         char[] passwordChars = console.readPassword();
         String password = new String(passwordChars);
-        
-
+    
         String url = "jdbc:oracle:thin:@198.168.52.211: 1521/pdbora19c.dawsoncollege.qc.ca";
+        try{
         conn = DriverManager.getConnection(url, username, password);
         System.out.println("Connected to database");
+        validCredentials =true;
+        }catch(SQLException e){
+            System.out.println("Invalid username or password. Please try again.");
+
+        }
+    }
         return conn;
     }
 
