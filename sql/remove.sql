@@ -16,6 +16,11 @@ DROP TABLE Products;
 DROP TABLE Project_Customers;
 DROP TABLE Project_Address;
 DROP TABLE Project_City;
+DROP PACKAGE Delete_Data;
+DROP PACKAGE Insert_Data;
+DROP PACKAGE PRODUCTSTOCKPACKAGE;
+DROP PACKAGE utility_package;
+DROP PACKAGE update_data;
 
 
 
